@@ -1,8 +1,10 @@
 package mk.ukim.finki.sentimentengine.data.dto.gharchive;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * POJO representing a single event from GitHub Archive (GH Archive).
@@ -18,7 +20,9 @@ public record GhArchiveEvent(
 	GhRepo repo,
 	GhActor actor,
 	GhOrg org,
-	@JsonProperty("created_at") String createdAt,
+	@JsonProperty("created_at")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss z", timezone = "UTC")
+	Instant createdAt,
 	String other
 ) implements Serializable {
 

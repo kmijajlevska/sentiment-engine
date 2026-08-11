@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tools.jackson.databind.ObjectMapper;
 
-import java.time.Instant;
-
 /**
  * @author kristina
  */
@@ -36,7 +34,7 @@ public class DataTestController {
 	public void importEvent(@Valid @RequestBody GhArchiveEvent ghArchiveEvent) {
 		try {
 			String eventType = ghArchiveEvent.type();
-			Long timestamp = Instant.parse(ghArchiveEvent.createdAt()).toEpochMilli();
+			Long timestamp = ghArchiveEvent.createdAt().toEpochMilli();
 			String source = ghArchiveEvent.repo().name();
 			String payload = objectMapper.writeValueAsString(ghArchiveEvent);
 			EventDTO eventDTO = DataSourceTransformer.generateEvent(eventType, timestamp, source, payload);
