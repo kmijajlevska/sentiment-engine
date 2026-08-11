@@ -1,0 +1,224 @@
+{
+    "_id":
+    {
+        "$oid": "60840c5dac853c77b2e706c6"
+    },
+    "changelog":
+    {
+        "histories":
+        [
+            {
+                "author":
+                {
+                    "active": true,
+                    "avatarUrls": "<<|author_avatarUrls|>>",
+                    "displayName": "<<|author_displayName|88ef89de-5c51-4e01-adb2-eaeba0121c54|>>",
+                    "emailAddress": "<<|author_emailAddress|d237fdf9-d2fe-47e3-a2e6-4f4278654b61|>>",
+                    "key": "<<|author_key|bf686f15-1b83-4719-b7f2-654deb776643|>>",
+                    "name": "<<|author_name|4e98e21f-9289-4480-892d-3cd7479fdd51|>>",
+                    "self": "<<|author_self|>>",
+                    "timeZone": "<<|author_timeZone|>>"
+                },
+                "created": "2018-11-26T14:35:55.644+0000",
+                "id": "12173",
+                "items":
+                [
+                    {
+                        "field": "priority",
+                        "fieldtype": "jira",
+                        "from": "5",
+                        "fromString": "Lowest",
+                        "to": "4",
+                        "toString": "Low"
+                    }
+                ]
+            },
+            {
+                "author":
+                {
+                    "active": true,
+                    "avatarUrls": "<<|author_avatarUrls|>>",
+                    "displayName": "<<|author_displayName|88ef89de-5c51-4e01-adb2-eaeba0121c54|>>",
+                    "emailAddress": "<<|author_emailAddress|d237fdf9-d2fe-47e3-a2e6-4f4278654b61|>>",
+                    "key": "<<|author_key|bf686f15-1b83-4719-b7f2-654deb776643|>>",
+                    "name": "<<|author_name|4e98e21f-9289-4480-892d-3cd7479fdd51|>>",
+                    "self": "<<|author_self|>>",
+                    "timeZone": "<<|author_timeZone|>>"
+                },
+                "created": "2018-11-29T09:00:40.740+0000",
+                "id": "12175",
+                "items":
+                [
+                    {
+                        "field": "resolution",
+                        "fieldtype": "jira",
+                        "from": null,
+                        "fromString": null,
+                        "to": "10000",
+                        "toString": "Done"
+                    },
+                    {
+                        "field": "status",
+                        "fieldtype": "jira",
+                        "from": "1",
+                        "fromString": "Open",
+                        "to": "6",
+                        "toString": "Closed"
+                    }
+                ]
+            }
+        ],
+        "maxResults": 2,
+        "startAt": 0,
+        "total": 2
+    },
+    "expand": "operations,versionedRepresentations,editmeta,changelog,renderedFields",
+    "fields":
+    {
+        "aggregateprogress":
+        {
+            "progress": 0,
+            "total": 0
+        },
+        "aggregatetimeestimate": null,
+        "aggregatetimeoriginalestimate": null,
+        "aggregatetimespent": null,
+        "assignee": null,
+        "components":
+        [],
+        "created": "2018-11-26T14:35:19.000+0000",
+        "creator":
+        {
+            "active": true,
+            "avatarUrls": "<<|author_avatarUrls|>>",
+            "displayName": "<<|author_displayName|88ef89de-5c51-4e01-adb2-eaeba0121c54|>>",
+            "emailAddress": "<<|author_emailAddress|d237fdf9-d2fe-47e3-a2e6-4f4278654b61|>>",
+            "key": "<<|author_key|bf686f15-1b83-4719-b7f2-654deb776643|>>",
+            "name": "<<|author_name|4e98e21f-9289-4480-892d-3cd7479fdd51|>>",
+            "self": "<<|author_self|>>",
+            "timeZone": "<<|author_timeZone|>>"
+        },
+        "customfield_10000": null,
+        "customfield_10004": null,
+        "customfield_10005": "0|i007i7:",
+        "customfield_10101": null,
+        "customfield_10102": null,
+        "customfield_10200": "{}",
+        "customfield_10300": null,
+        "customfield_10301": null,
+        "customfield_10302": null,
+        "customfield_10303": null,
+        "customfield_10304": null,
+        "customfield_10305": null,
+        "customfield_10306": null,
+        "customfield_10307": null,
+        "customfield_10400": null,
+        "description": "h2. Symptoms\r\n\r\nOpen a confluence page with the macro. You should see your objects. \r\n\r\nNow try to login from an incognito window. You will not be able to see the objects' icons\r\nh2. Expected results\r\n\r\nIcons should be rendered\r\nh2. Actual results\r\n\r\nNo icons are shown",
+        "duedate": null,
+        "environment": null,
+        "fixVersions":
+        [],
+        "issuelinks":
+        [],
+        "issuetype":
+        {
+            "avatarId": 10303,
+            "description": "A problem which impairs or prevents the functions of the product.",
+            "iconUrl": "https://jira.mindville.com/secure/viewavatar?size=xsmall&avatarId=10303&avatarType=issuetype",
+            "id": "10006",
+            "name": "Bug",
+            "self": "https://jira.mindville.com/rest/api/2/issuetype/10006",
+            "subtask": false
+        },
+        "labels":
+        [],
+        "lastViewed": null,
+        "priority":
+        {
+            "iconUrl": "https://jira.mindville.com/images/icons/priorities/low.svg",
+            "id": "4",
+            "name": "Low",
+            "self": "https://jira.mindville.com/rest/api/2/priority/4"
+        },
+        "progress":
+        {
+            "progress": 0,
+            "total": 0
+        },
+        "project":
+        {
+            "avatarUrls":
+            {
+                "16x16": "https://jira.mindville.com/secure/projectavatar?size=xsmall&avatarId=10324",
+                "24x24": "https://jira.mindville.com/secure/projectavatar?size=small&avatarId=10324",
+                "32x32": "https://jira.mindville.com/secure/projectavatar?size=medium&avatarId=10324",
+                "48x48": "https://jira.mindville.com/secure/projectavatar?avatarId=10324"
+            },
+            "id": "10104",
+            "key": "IMFC",
+            "name": "Insight Macro for Confluence",
+            "projectTypeKey": "software",
+            "self": "https://jira.mindville.com/rest/api/2/project/10104"
+        },
+        "reporter":
+        {
+            "active": true,
+            "avatarUrls": "<<|author_avatarUrls|>>",
+            "displayName": "<<|author_displayName|88ef89de-5c51-4e01-adb2-eaeba0121c54|>>",
+            "emailAddress": "<<|author_emailAddress|d237fdf9-d2fe-47e3-a2e6-4f4278654b61|>>",
+            "key": "<<|author_key|bf686f15-1b83-4719-b7f2-654deb776643|>>",
+            "name": "<<|author_name|4e98e21f-9289-4480-892d-3cd7479fdd51|>>",
+            "self": "<<|author_self|>>",
+            "timeZone": "<<|author_timeZone|>>"
+        },
+        "resolution":
+        {
+            "description": "Work has been completed on this issue.",
+            "id": "10000",
+            "name": "Done",
+            "self": "https://jira.mindville.com/rest/api/2/resolution/10000"
+        },
+        "resolutiondate": "2018-11-29T09:00:40.000+0000",
+        "status":
+        {
+            "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+            "iconUrl": "https://jira.mindville.com/images/icons/statuses/closed.png",
+            "id": "6",
+            "name": "Closed",
+            "self": "https://jira.mindville.com/rest/api/2/status/6",
+            "statusCategory":
+            {
+                "colorName": "green",
+                "id": 3,
+                "key": "done",
+                "name": "Done",
+                "self": "https://jira.mindville.com/rest/api/2/statuscategory/3"
+            }
+        },
+        "subtasks":
+        [],
+        "summary": "objects Icons are not visible from incognito/un-cached browser window",
+        "timeestimate": null,
+        "timeoriginalestimate": null,
+        "timespent": null,
+        "updated": "2018-11-29T09:00:40.000+0000",
+        "versions":
+        [],
+        "votes":
+        {
+            "hasVoted": false,
+            "self": "https://jira.mindville.com/rest/api/2/issue/IMFC-36/votes",
+            "votes": 0
+        },
+        "watches":
+        {
+            "isWatching": false,
+            "self": "https://jira.mindville.com/rest/api/2/issue/IMFC-36/watchers",
+            "watchCount": 1
+        },
+        "workratio": -1
+    },
+    "id": "11343",
+    "key": "IMFC-36",
+    "self": "https://jira.mindville.com/rest/api/2/issue/11343"
+}

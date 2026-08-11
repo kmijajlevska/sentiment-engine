@@ -1,0 +1,157 @@
+{
+    "_id":
+    {
+        "$oid": "60840c5dac853c77b2e70693"
+    },
+    "changelog":
+    {
+        "histories":
+        [],
+        "maxResults": 0,
+        "startAt": 0,
+        "total": 0
+    },
+    "expand": "operations,versionedRepresentations,editmeta,changelog,renderedFields",
+    "fields":
+    {
+        "aggregateprogress":
+        {
+            "progress": 0,
+            "total": 0
+        },
+        "aggregatetimeestimate": null,
+        "aggregatetimeoriginalestimate": null,
+        "aggregatetimespent": null,
+        "assignee": null,
+        "components":
+        [],
+        "created": "2019-10-14T14:53:56.000+0000",
+        "creator":
+        {
+            "active": true,
+            "avatarUrls": "<<|author_avatarUrls|>>",
+            "displayName": "<<|author_displayName|afbbc91b-0f07-440d-9824-423af8ec1699|>>",
+            "emailAddress": "<<|author_emailAddress|b050e4ca-cbc2-4822-9b7b-e0bd9e67bae7|>>",
+            "key": "<<|author_key|e6182eec-d0f0-4282-9c3f-36acdf6e50a8|>>",
+            "name": "<<|author_name|e1a5e3b6-0ae8-4ded-abc3-c7e065f41b7a|>>",
+            "self": "<<|author_self|>>",
+            "timeZone": "<<|author_timeZone|>>"
+        },
+        "customfield_10000": null,
+        "customfield_10004": null,
+        "customfield_10005": "0|i00af3:",
+        "customfield_10101": null,
+        "customfield_10102": null,
+        "customfield_10200": "{}",
+        "customfield_10300": null,
+        "customfield_10301": null,
+        "customfield_10302": null,
+        "customfield_10303": null,
+        "customfield_10304": null,
+        "customfield_10305": null,
+        "customfield_10306": null,
+        "customfield_10307": null,
+        "customfield_10400": null,
+        "description": "If the status of a Tempo account is changed to \"Archived\" then the account will no longer be found by the Insight Tempo Integration. For instance, if there are 30 accounts in Tempo that are all either Open or Closed, the sync will find 30 entries in external source. If the status of one account in Tempo is changed to Archived then the sync will report that there are only 29 entries in external source. The account that had its status changed to \"Archived\" is considered to be missing from external source (and as such can be subject for deletion/update if the object type mapping option \"Missing objects\" is configured as such).\r\n\r\nAs a consequence, other changes (e.g. Tempo Account Lead) are not detected by Insight either.\r\n\r\nThe behavior is seen in v2.0.0 and 1.1.0.\r\n\r\nIt could be that the Tempo API used to retrieve the accounts does not include Archived accounts by default...",
+        "duedate": null,
+        "environment": null,
+        "fixVersions":
+        [],
+        "issuelinks":
+        [],
+        "issuetype":
+        {
+            "avatarId": 10303,
+            "description": "A problem which impairs or prevents the functions of the product.",
+            "iconUrl": "https://jira.mindville.com/secure/viewavatar?size=xsmall&avatarId=10303&avatarType=issuetype",
+            "id": "10006",
+            "name": "Bug",
+            "self": "https://jira.mindville.com/rest/api/2/issuetype/10006",
+            "subtask": false
+        },
+        "labels":
+        [],
+        "lastViewed": null,
+        "priority":
+        {
+            "iconUrl": "https://jira.mindville.com/images/icons/priorities/lowest.svg",
+            "id": "5",
+            "name": "Lowest",
+            "self": "https://jira.mindville.com/rest/api/2/priority/5"
+        },
+        "progress":
+        {
+            "progress": 0,
+            "total": 0
+        },
+        "project":
+        {
+            "avatarUrls":
+            {
+                "16x16": "https://jira.mindville.com/secure/projectavatar?size=xsmall&avatarId=10324",
+                "24x24": "https://jira.mindville.com/secure/projectavatar?size=small&avatarId=10324",
+                "32x32": "https://jira.mindville.com/secure/projectavatar?size=medium&avatarId=10324",
+                "48x48": "https://jira.mindville.com/secure/projectavatar?avatarId=10324"
+            },
+            "id": "10102",
+            "key": "ITI",
+            "name": "Insight Tempo Integration",
+            "projectTypeKey": "software",
+            "self": "https://jira.mindville.com/rest/api/2/project/10102"
+        },
+        "reporter":
+        {
+            "active": true,
+            "avatarUrls": "<<|author_avatarUrls|>>",
+            "displayName": "<<|author_displayName|afbbc91b-0f07-440d-9824-423af8ec1699|>>",
+            "emailAddress": "<<|author_emailAddress|b050e4ca-cbc2-4822-9b7b-e0bd9e67bae7|>>",
+            "key": "<<|author_key|e6182eec-d0f0-4282-9c3f-36acdf6e50a8|>>",
+            "name": "<<|author_name|e1a5e3b6-0ae8-4ded-abc3-c7e065f41b7a|>>",
+            "self": "<<|author_self|>>",
+            "timeZone": "<<|author_timeZone|>>"
+        },
+        "resolution": null,
+        "resolutiondate": null,
+        "status":
+        {
+            "description": "The issue is open and ready for the assignee to start work on it.",
+            "iconUrl": "https://jira.mindville.com/images/icons/statuses/open.png",
+            "id": "1",
+            "name": "Open",
+            "self": "https://jira.mindville.com/rest/api/2/status/1",
+            "statusCategory":
+            {
+                "colorName": "blue-gray",
+                "id": 2,
+                "key": "new",
+                "name": "To Do",
+                "self": "https://jira.mindville.com/rest/api/2/statuscategory/2"
+            }
+        },
+        "subtasks":
+        [],
+        "summary": "Tempo sync considers archived Tempo accounts as missing from source",
+        "timeestimate": null,
+        "timeoriginalestimate": null,
+        "timespent": null,
+        "updated": "2019-10-14T14:53:56.000+0000",
+        "versions":
+        [],
+        "votes":
+        {
+            "hasVoted": false,
+            "self": "https://jira.mindville.com/rest/api/2/issue/ITI-7/votes",
+            "votes": 1
+        },
+        "watches":
+        {
+            "isWatching": false,
+            "self": "https://jira.mindville.com/rest/api/2/issue/ITI-7/watchers",
+            "watchCount": 1
+        },
+        "workratio": -1
+    },
+    "id": "11897",
+    "key": "ITI-7",
+    "self": "https://jira.mindville.com/rest/api/2/issue/11897"
+}
