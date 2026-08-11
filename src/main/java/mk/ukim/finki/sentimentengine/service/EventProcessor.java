@@ -1,0 +1,121 @@
+package mk.ukim.finki.sentimentengine.service;
+
+
+import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
+import mk.ukim.finki.sentimentengine.data.entity.ProcessedEvent;
+import mk.ukim.finki.sentimentengine.data.entity.RawEvent;
+import mk.ukim.finki.sentimentengine.data.entity.SentimentResult;
+import mk.ukim.finki.sentimentengine.data.entity.SentimentRule;
+import mk.ukim.finki.sentimentengine.data.service.ProcessedEventService;
+import mk.ukim.finki.sentimentengine.data.service.RawEventService;
+import mk.ukim.finki.sentimentengine.data.service.SentimentRuleService;
+import mk.ukim.finki.sentimentengine.util.AggregationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+
+/**
+ * @author kristina
+ */
+@Service
+public class EventProcessor {
+
+	private static final Logger logger = LoggerFactory.getLogger(EventProcessor.class);
+
+	private final RawEventService rawEventService;
+	private final EventTypeRegistry eventTypeRegistry;
+	private final SentimentRuleService sentimentRuleService;
+	private final SentimentEvaluationEngine evaluationEngine;
+	private final ProcessedEventService processedEventService;
+	private final RuleGenerationService ruleGenerationService;
+	private final AbsenceDetectionService absenceDetectionService;
+
+	@Value("${rulegen.auto.enabled:true}")
+	private boolean autoRuleGenEnabled;
+
+	public EventProcessor(RawEventService rawEventService,
+	                      EventTypeRegistry eventTypeRegistry,
+	                      SentimentRuleService sentimentRuleService,
+	                      SentimentEvaluationEngine evaluationEngine,
+	                      ProcessedEventService processedEventService, RuleGenerationService ruleGenerationService, AbsenceDetectionService absenceDetectionService) {
+		this.rawEventService = rawEventService;
+		this.eventTypeRegistry = eventTypeRegistry;
+		this.sentimentRuleService = sentimentRuleService;
+		this.evaluationEngine = evaluationEngine;
+		this.processedEventService = processedEventService;
+		this.ruleGenerationService = ruleGenerationService;
+		this.absenceDetectionService = absenceDetectionService;
+	}
+
+	public void onEvent(EventDTO event) {
+		// check for absence first
+		absenceDetectionService.checkForAbsenceOnArrival(event.getEventTimestamp(), event.getEventType());
+
+		RawEvent rawEventEntity = RawEvent.builder()
+		                                  .eventType(event.getEventType())
+		                                  .timestamp(event.getEventTimestamp())
+		                                  .source(event.getSource())
+		                                  .payload(event.getPayload())
+		                                  .build();
+
+		// Register event type if not known already
+		logger.info("[EVENT-PROCESSOR] Processing event of type: {}", event.getEventType());
+		if (!eventTypeRegistry.isKnownType(event.getEventType())) {
+			eventTypeRegistry.register(event.getEventType(), event.getPayload(), event.getEventTimestamp());
+		}
+		eventTypeRegistry.recordOccurrence(event.getEventType(), event.getEventTimestamp());
+
+		try {
+			rawEventEntity = rawEventService.save(rawEventEntity);
+			absenceDetectionService.updateLastReceivedTimestamp(rawEventEntity.getTimestamp());
+
+			SentimentRule sentimentRule = sentimentRuleService.findTopByEventTypeOrderByVersionDesc(rawEventEntity.getEventType());
+
+			if (sentimentRule == null && autoRuleGenEnabled) {
+				sentimentRule = ruleGenerationService.generateRule(rawEventEntity.getEventType(), rawEventEntity.getPayload());
+			}
+
+			SentimentResult result = evaluationEngine.evaluate(rawEventEntity, sentimentRule);
+
+			// -----
+			// Compute time buckets and assign them to processed event
+			ProcessedEvent processedEvent = generateProcessedEvent(rawEventEntity, result);
+			processedEventService.save(processedEvent);
+		} catch (Exception e) {
+			logger.warn("[EVENT-PROCESSOR] Sentiment evaluation failed for event {}: {}", rawEventEntity.getId(), e.getMessage());
+		}
+		event.getMetrics().setFinishedProcessingAt(System.currentTimeMillis());
+		logger.info("[PERFORMANCE-LOG] Finished processing event {}, eventType: {}, bufferTookMs: {} processingTookMs: {}",
+			event.getId(), event.getEventType(), event.getMetrics().getReceivedAt() - event.getMetrics().getImportedAt(),
+			event.getMetrics().getFinishedProcessingAt() - event.getMetrics().getReceivedAt());
+	}
+
+
+
+	private ProcessedEvent generateProcessedEvent(RawEvent rawEvent, SentimentResult result) {
+		long eventTimestamp = rawEvent.getTimestamp();
+		long minuteBucket = (eventTimestamp / 60000) * 60000;
+		long hourBucket = (eventTimestamp / 3600000) * 3600000;
+		Date dayBucket = AggregationUtils.toDateTruncatedToDay(eventTimestamp);
+		Date weekBucket = AggregationUtils.toDateTruncatedToWeek(eventTimestamp);
+		Date monthBucket = AggregationUtils.toDateTruncatedToMonth(eventTimestamp);
+
+		return ProcessedEvent.builder()
+		                     .eventId(rawEvent.getId())
+		                     .eventType(rawEvent.getEventType())
+		                     .eventTimestamp(eventTimestamp)
+		                     .sentimentScore(result.score())
+		                     .confidence(result.confidence())
+		                     .appliedRuleId(result.ruleId())
+		                     .minuteBucket(minuteBucket)
+		                     .hourBucket(hourBucket)
+		                     .dayBucket(dayBucket)
+		                     .weekBucket(weekBucket)
+		                     .monthBucket(monthBucket)
+		                     .build();
+	}
+
+}
