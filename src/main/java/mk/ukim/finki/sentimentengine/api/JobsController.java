@@ -27,5 +27,7 @@ public class JobsController {
 		ruleGenerationJob.generateMissingRules();
 	}
 
+	//todo add endpoint to manually regenerate a new rule for event (new version)
+
 
 }

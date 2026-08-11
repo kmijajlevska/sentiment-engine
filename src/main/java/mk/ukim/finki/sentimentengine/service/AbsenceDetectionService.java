@@ -92,6 +92,7 @@ public class AbsenceDetectionService {
 	public void checkPerTypeAbsence(long now) {
 		List<EventType> allTypes = eventTypeRegistry.getAllEventTypes();
 
+		// fixme exclude absence events here
 		for (EventType type : allTypes) {
 			long lastSeenAt = type.getLastSeenAt();
 			if (lastSeenAt == 0) {

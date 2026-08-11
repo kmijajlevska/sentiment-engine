@@ -77,6 +77,7 @@ public class EventTypeRegistry {
 	}
 
 	public void recordOccurrence(String eventType, long timestamp) {
+		// todo KM double check this, seems like starts with occurrence count 2
 		lastSeenPerType.merge(eventType, timestamp, Math::max); // if exists, update with greater timestamp value
 		EventType eventTypeEntity = eventTypeService.findByName(eventType);
 		if (eventTypeEntity != null) {
