@@ -5,7 +5,6 @@ import mk.ukim.finki.sentimentengine.ai.GenAiClient;
 import mk.ukim.finki.sentimentengine.ai.GenAiException;
 import mk.ukim.finki.sentimentengine.data.entity.EventType;
 import mk.ukim.finki.sentimentengine.data.entity.SentimentRule;
-import mk.ukim.finki.sentimentengine.data.repository.EventTypeRepository;
 import mk.ukim.finki.sentimentengine.data.repository.SentimentRuleRepository;
 import mk.ukim.finki.sentimentengine.data.service.EventTypeService;
 import mk.ukim.finki.sentimentengine.data.service.SentimentRuleService;
@@ -25,13 +24,6 @@ import tools.jackson.databind.ObjectMapper;
 public class RuleGenerationService {
 
 	private static final Logger log = LoggerFactory.getLogger(RuleGenerationService.class);
-
-	@Value("${rulegen.max-retries:3}")
-	private int maxRetries;
-
-	@Value("${rulegen.retry-delay-ms:1000}")
-	private long delayMs;
-
 	private static final String PROMPT_TEMPLATE = """
 		You are a sentiment analysis expert for an event monitoring system.
 		Analyze the following event type and provide a sentiment rule.
@@ -51,14 +43,16 @@ public class RuleGenerationService {
 		  "explanation": "<one paragraph explanation>"
 		}
 		""";
-
 	private static final String FALLBACK_JSON = """
 		{"baseScore":0.0,"keywords":[],"explanation":"Fallback - AI unavailable"}""";
-
 	private final GenAiClient genAiClient;
 	private final SentimentRuleService sentimentRuleService;
 	private final EventTypeService eventTypeService;
 	private final ObjectMapper objectMapper;
+	@Value("${rulegen.max-retries:3}")
+	private int maxRetries;
+	@Value("${rulegen.retry-delay-ms:1000}")
+	private long delayMs;
 
 	public RuleGenerationService(GenAiClient genAiClient,
 	                             SentimentRuleRepository sentimentRuleRepository,
@@ -71,13 +65,14 @@ public class RuleGenerationService {
 	}
 
 	public SentimentRule generateRule(String eventType, String samplePayload) {
-		log.info("[RULE-GEN] Generating rule for event type: {}" , eventType);
+		log.info("[RULE-GEN] Generating rule for event type: {}", eventType);
 		String prompt = PROMPT_TEMPLATE
 			.replace("{eventType}", eventType)
 			.replace("{samplePayload}", samplePayload != null ? samplePayload : "{}");
 
 		String aiResponse = callWithRetry(prompt);
 
+		//fixme aiResponse is never null, there is a fallback response
 		if (aiResponse == null) {
 			// TODO if no AI response, save no rule, or mark the event neutral?
 			log.warn("[RULE-GENERATION] AI call failed for eventType: {}, no rule saved", eventType);
@@ -87,6 +82,7 @@ public class RuleGenerationService {
 		double baseScore = 0.0;
 		String explanation = "Fallback - AI unavailable";
 		String ruleDefinition = FALLBACK_JSON;
+		aiResponse = aiResponse.replaceAll("(?s)^```(?:json)?\\s*|\\s*```$", "").strip();
 
 		try {
 			JsonNode parsed = objectMapper.readTree(aiResponse);
@@ -128,7 +124,10 @@ public class RuleGenerationService {
 
 		for (int attempt = 1; attempt <= maxRetries; attempt++) {
 			try {
-				return genAiClient.generateCompletion(prompt);
+				String aiResponse = genAiClient.generateCompletion(prompt);
+				if (aiResponse != null) {
+					return aiResponse.replaceAll("(?s)^```(?:json)?\\s*|\\s*```$", "").strip();
+				}
 			} catch (GenAiException e) {
 				log.warn("[GEN-AI] GenAI call attempt {}/{} failed: {}", attempt, maxRetries, e.getMessage());
 				if (attempt < maxRetries) {

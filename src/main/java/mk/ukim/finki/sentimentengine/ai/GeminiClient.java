@@ -50,8 +50,7 @@ public class GeminiClient implements GenAiClient {
 			Map<String, Object> requestBody = Map.of(
 				"contents", List.of(
 					Map.of("parts", List.of(Map.of("text", prompt)))
-				)
-			);
+				));
 
 			String jsonBody = objectMapper.writeValueAsString(requestBody);
 
@@ -61,7 +60,7 @@ public class GeminiClient implements GenAiClient {
 			                            .retrieve()
 			                            .body(String.class);
 
-			return extractGeminiContent(response);
+			return extractGeminiContent(response); //todo add stripping here
 
 		} catch (GenAiException e) {
 			throw e;
