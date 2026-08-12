@@ -94,6 +94,8 @@ public class AbsenceDetectionService {
 
 		// fixme exclude absence events here
 		for (EventType type : allTypes) {
+			if (type.getName().contains(ABSENCE_EVENT_TYPE))
+				continue;
 			long lastSeenAt = type.getLastSeenAt();
 			if (lastSeenAt == 0) {
 				continue;
