@@ -1,12 +1,12 @@
 package mk.ukim.finki.sentimentengine.importer;
 
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
+import mk.ukim.finki.sentimentengine.data.dto.gharchive.GhArchiveEvent;
 import mk.ukim.finki.sentimentengine.messaging.InternalBufferProducer;
 import mk.ukim.finki.sentimentengine.util.DataSourceTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -54,12 +53,16 @@ public class GithubArchiveDataSource implements FileDataSource {
 				if (line.isBlank()) continue;
 
 				try {
-					// ATM full model parsing is not necessary
-					JsonNode node = objectMapper.readTree(line);
-					String eventType = parseEventType(node, lineNumber);
-					Long timestamp = parseTimestamp(node, lineNumber);
-					String source = parseSource(node, lineNumber);
-					//  add user if necessary
+					GhArchiveEvent ghEvent = objectMapper.readValue(line, GhArchiveEvent.class);
+
+					String eventType = ghEvent.type();
+					Long timestamp = ghEvent.createdAt() != null ? ghEvent.createdAt().toEpochMilli() : null;
+					String source = ghEvent.repo() != null ? ghEvent.repo().name() : null;
+
+					if (timestamp == null) {
+						logger.warn("[DATA-IMPORT] Failed to parse timestamp, skipping event on line {}", lineNumber);
+						continue;
+					}
 
 					EventDTO eventDTO = DataSourceTransformer.generateEvent(eventType, timestamp, source, line);
 					bufferProducer.sendToBuffer(eventDTO);
@@ -76,44 +79,6 @@ public class GithubArchiveDataSource implements FileDataSource {
 		}
 		logger.info("[DATA-IMPORT] Finished loading {} events from {} in {} ms", count, filePath, System.currentTimeMillis() - importStartTime);
 		return count;
-	}
-
-
-	private String parseSource(JsonNode node, int lineNumber) {
-		if (node == null) {
-			logger.warn("[DATA-IMPORT] Failed to parse source, node is null on line: {}", lineNumber);
-			return null;
-		}
-		if (node.has("repo") && node.get("repo").has("name")) {
-			return node.get("repo").get("name").asString();
-		}
-		return null;
-	}
-
-	private Long parseTimestamp(JsonNode node, int lineNumber) {
-		if (node == null) {
-			logger.warn("[DATA-IMPORT] Failed to parse timestamp, node is null on line: {}", lineNumber);
-			return null;
-		}
-
-		if (node.has("created_at")) {
-			String raw = node.get("created_at").asString();
-			try {
-				return Instant.parse(raw).toEpochMilli();
-			} catch (Exception e) {
-				logger.warn("[DATA-IMPORT] Failed to parse timestamp on line: {}", lineNumber);
-			}
-		}
-		return null; // should we process events without timestamp at all ?
-	}
-
-
-	private String parseEventType(JsonNode node, int lineNumber) {
-		if (node == null) {
-			logger.warn("[DATA-IMPORT] Failed to parse eventType, node is null on line: {}", lineNumber);
-			return null;
-		}
-		return node.has("type") ? node.get("type").asString() : null;
 	}
 
 
