@@ -65,9 +65,10 @@ public class EventProcessor {
 		logger.info("[EVENT-PROCESSOR] Processing event of type: {}", event.getEventType());
 		if (!eventTypeRegistry.isKnownType(event.getEventType())) {
 			eventTypeRegistry.register(event.getEventType(), event.getPayload(), event.getEventTimestamp());
+		} else {
+			eventTypeRegistry.recordOccurrence(event.getEventType(), event.getEventTimestamp());
 		}
-		eventTypeRegistry.recordOccurrence(event.getEventType(), event.getEventTimestamp());
-
+		eventTypeRegistry.updateLastSeenPerType(event.getEventType(), event.getEventTimestamp());
 		try {
 			rawEventEntity = rawEventService.save(rawEventEntity);
 			absenceDetectionService.updateLastReceivedTimestamp(rawEventEntity.getTimestamp());
@@ -92,7 +93,6 @@ public class EventProcessor {
 			event.getId(), event.getEventType(), event.getMetrics().getReceivedAt() - event.getMetrics().getImportedAt(),
 			event.getMetrics().getFinishedProcessingAt() - event.getMetrics().getReceivedAt());
 	}
-
 
 
 	private ProcessedEvent generateProcessedEvent(RawEvent rawEvent, SentimentResult result) {
