@@ -74,6 +74,8 @@ public final class AggregationUtils {
 			return d.getTime();
 		} else if (value instanceof Date d) {
 			return d.getTime();
+		} else if (value instanceof java.time.LocalDate ld) {
+			return ld.atStartOfDay(java.time.ZoneOffset.UTC).toInstant().toEpochMilli();
 		} else if (value instanceof Number n) {
 			return n.longValue();
 		}
