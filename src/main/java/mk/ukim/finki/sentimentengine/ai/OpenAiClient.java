@@ -32,14 +32,19 @@ public class OpenAiClient implements GenAiClient {
 	@Value("${genai.openai.temperature}")
 	private double temperature;
 
-	private final RestClient restClient;
+	private RestClient restClient;
 	private final ObjectMapper objectMapper;
 
 	public OpenAiClient(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
+	}
+
+	@PostConstruct
+	void init() {
 		this.restClient = RestClient.builder()
 		                            .baseUrl(url)
 		                            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+		                            .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
 		                            .build();
 	}
 
