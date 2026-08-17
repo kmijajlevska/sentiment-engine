@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Engine Dashboard</title>
+
+    <!-- Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+    <style>
+        /* ========================================
+           CSS Variables — change these to re-theme
+           ======================================== */
+        :root {
+            --color-bg: #f8f9fa;
+            --color-surface: #ffffff;
+            --color-border: #dee2e6;
+            --color-text: #212529;
+            --color-text-muted: #6c757d;
+            --color-primary: #4a90d9;
+            --color-primary-hover: #357abd;
+            --color-sentiment: #e67e22;
+            --color-count: rgba(74, 144, 217, 0.6);
+            --color-count-border: rgba(74, 144, 217, 1);
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --radius: 6px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        /* ========================================
+           Dark theme overrides
+           ======================================== */
+        [data-theme="dark"] {
+            --color-bg: #1a1b1e;
+            --color-surface: #2c2d31;
+            --color-border: #3e3f44;
+            --color-text: #e4e4e7;
+            --color-text-muted: #9ca3af;
+            --color-primary: #5b9bd5;
+            --color-primary-hover: #4a8bc4;
+            --color-sentiment: #f59e0b;
+            --color-count: rgba(91, 155, 213, 0.5);
+            --color-count-border: rgba(91, 155, 213, 1);
+        }
+
+        /* ========================================
+           Base styles
+           ======================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--color-bg);
+            color: var(--color-text);
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        /* ========================================
+           Header
+           ======================================== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        #theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--radius);
+        }
+
+        #theme-toggle:hover {
+            background: var(--color-border);
+        }
+
+        /* ========================================
+           Controls bar — all inputs in one row
+           ======================================== */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .control-group label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group select,
+        .control-group input {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-family: var(--font-family);
+            background: var(--color-surface);
+            color: var(--color-text);
+        }
+
+        .control-group select:focus,
+        .control-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        #btn-load {
+            padding: 8px 20px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #btn-load:hover {
+            background: var(--color-primary-hover);
+        }
+
+        /* ========================================
+           Chart area
+           ======================================== */
+        .chart-container {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-container canvas {
+            width: 100% !important;
+            max-height: 400px;
+        }
+
+        /* ========================================
+           Drill-down table — hidden by default
+           ======================================== */
+        .drilldown {
+            display: none;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .drilldown.visible {
+            display: block;
+        }
+
+        .drilldown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .drilldown-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        #btn-close-drilldown {
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--color-text-muted);
+        }
+
+        #btn-close-drilldown:hover {
+            background: var(--color-bg);
+        }
+
+        .drilldown table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .drilldown th,
+        .drilldown td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.85rem;
+        }
+
+        .drilldown th {
+            font-weight: 600;
+            color: var(--color-text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .drilldown tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================
+         Header
+         ======================================== -->
+    <div class="header">
+        <h1>Sentiment Engine Dashboard</h1>
+        <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    </div>
+
+    <!-- ========================================
+         Controls bar
+         ======================================== -->
+    <div class="controls">
+        <div class="control-group">
+            <label for="event-type">Event Type</label>
+            <select id="event-type">
+                <option value="">All Types</option>
+                <!-- Populated from API on page load -->
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="resolution">Resolution</label>
+            <select id="resolution">
+                <option value="MINUTE">Minute</option>
+                <option value="HOUR" selected>Hour</option>
+                <option value="DAY">Day</option>
+                <option value="WEEK">Week</option>
+                <option value="MONTH">Month</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="from-date">From</label>
+            <input type="datetime-local" id="from-date">
+        </div>
+
+        <div class="control-group">
+            <label for="to-date">To</label>
+            <input type="datetime-local" id="to-date">
+        </div>
+
+        <button id="btn-load">Load</button>
+    </div>
+
+    <!-- ========================================
+         Chart area
+         ======================================== -->
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+    </div>
+
+    <!-- ========================================
+         Drill-down table (hidden until click)
+         ======================================== -->
+    <div class="drilldown" id="drilldown">
+        <div class="drilldown-header">
+            <h3 id="drilldown-title">Bucket Details</h3>
+            <button id="btn-close-drilldown">Close</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Event Type</th>
+                    <th>Timestamp</th>
+                    <th>Sentiment Score</th>
+                    <th>Confidence</th>
+                </tr>
+            </thead>
+            <tbody id="drilldown-body">
+                <!-- Filled dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ========================================
+         JavaScript — all logic below
+         ======================================== -->
+    <script>
+        // ==========================================
+        // Theme toggle
+        // ==========================================
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ==========================================
+        // Configuration — change API base path here
+        // ==========================================
+        const API_BASE = '/api';
+
+        // Reference to the Chart.js instance (we destroy + recreate on each load)
+        let chartInstance = null;
+
+        // Store the last loaded data so we can drill-down by index
+        let lastTimeSeriesData = [];
+        let lastResolution = 'HOUR';
+        let lastEventType = '';
+
+        // ==========================================
+        // Initialization — runs on page load
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+            setDefaultDateRange();
+            loadEventTypes();
+
+            document.getElementById('btn-load').addEventListener('click', loadTimeSeries);
+            document.getElementById('btn-close-drilldown').addEventListener('click', closeDrillDown);
+        });
+
+        // ==========================================
+        // Set default date range to last 7 days
+        // ==========================================
+        function setDefaultDateRange() {
+            const now = new Date();
+            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            document.getElementById('to-date').value = formatForDatetimeLocal(now);
+            document.getElementById('from-date').value = formatForDatetimeLocal(sevenDaysAgo);
+        }
+
+        // ==========================================
+        // Format a Date object for datetime-local input
+        // ==========================================
+        function formatForDatetimeLocal(date) {
+            // datetime-local expects "YYYY-MM-DDTHH:mm"
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        // ==========================================
+        // Fetch event types and populate dropdown
+        // ==========================================
+        async function loadEventTypes() {
+            try {
+                const response = await fetch(`${API_BASE}/event-types`);
+                if (!response.ok) throw new Error('Failed to load event types');
+
+                const types = await response.json();
+                const select = document.getElementById('event-type');
+
+                types.forEach(t => {
+                    const option = document.createElement('option');
+                    // Each event type object has a "name" field
+                    option.value = t.name;
+                    option.textContent = t.name;
+                    select.appendChild(option);
+                });
+            } catch (err) {
+                // Non-blocking: if event types fail to load, user can still type or use "All"
+                console.warn('Could not load event types:', err.message);
+            }
+        }
+
+        // ==========================================
+        // Load time-series data and render chart
+        // ==========================================
+        async function loadTimeSeries() {
+            const eventType = document.getElementById('event-type').value;
+            const resolution = document.getElementById('resolution').value;
+            const fromDate = document.getElementById('from-date').value;
+            const toDate = document.getElementById('to-date').value;
+
+            // Validate dates are filled
+            if (!fromDate || !toDate) {
+                alert('Please select both From and To dates.');
+                return;
+            }
+
+            // Convert datetime-local values to ISO Instant strings
+            const fromInstant = new Date(fromDate).toISOString();
+            const toInstant = new Date(toDate).toISOString();
+
+            // Build query string
+            const params = new URLSearchParams();
+            if (eventType) params.set('eventType', eventType);
+            params.set('from', fromInstant);
+            params.set('to', toInstant);
+            params.set('resolution', resolution);
+
+            try {
+                const response = await fetch(`${API_BASE}/analytics/timeseries?${params}`);
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+                const data = await response.json();
+
+                // Store for drill-down use
+                lastTimeSeriesData = data;
+                lastResolution = resolution;
+                lastEventType = eventType;
+
+                renderChart(data, resolution);
+                closeDrillDown(); // Hide drill-down when loading new data
+
+            } catch (err) {
+                alert('Error loading time-series: ' + err.message);
+            }
+        }
+
+        // ==========================================
+        // Render the chart (destroys previous one)
+        // ==========================================
+        function renderChart(data, resolution) {
+            // Destroy old chart to prevent memory leaks
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+
+            const ctx = document.getElementById('chart').getContext('2d');
+
+            // Prepare labels and datasets
+            const labels = data.map(d => formatTimestamp(d.bucketStart, resolution));
+            const sentimentValues = data.map(d => d.avgSentiment);
+            const countValues = data.map(d => d.eventCount);
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar', // base type for the mixed chart
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            // Sentiment line on left Y axis
+                            type: 'line',
+                            label: 'Avg Sentiment',
+                            data: sentimentValues,
+                            borderColor: getComputedStyle(document.documentElement)
+                                .getPropertyValue('--color-sentiment').trim(),
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            yAxisID: 'y-sentiment',
+                            tension: 0.3
+                        },
+                        {
+                            // Event count bars on right Y axis
+                            type: 'bar',
+                            label: 'Event Count',
+                            data: countValues,
+                            backgroundColor: getComputedStyle(document.documentElement)
+                                .getPropertyValue('--color-count').trim(),
+                            borderColor: getComputedStyle(document.documentElement)
+                                .getPropertyValue('--color-count-border').trim(),
+                            borderWidth: 1,
+                            yAxisID: 'y-count'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    onClick: handleChartClick,
+                    scales: {
+                        'y-sentiment': {
+                            type: 'linear',
+                            position: 'left',
+                            min: -1.0,
+                            max: 1.0,
+                            title: {
+                                display: true,
+                                text: 'Avg Sentiment'
+                            },
+                            grid: {
+                                drawOnChartArea: true
+                            }
+                        },
+                        'y-count': {
+                            type: 'linear',
+                            position: 'right',
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Event Count'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: (items) => {
+                                    if (items.length === 0) return '';
+                                    const idx = items[0].dataIndex;
+                                    const bucket = lastTimeSeriesData[idx];
+                                    // Show full date/time in tooltip
+                                    return new Date(bucket.bucketStart).toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // Handle click on a chart data point
+        // ==========================================
+        function handleChartClick(event, elements) {
+            if (!elements || elements.length === 0) return;
+
+            const index = elements[0].index;
+            const bucket = lastTimeSeriesData[index];
+
+            if (!bucket) return;
+
+            loadDrillDown(bucket.bucketStart);
+        }
+
+        // ==========================================
+        // Fetch drill-down data for a specific bucket
+        // ==========================================
+        async function loadDrillDown(bucketStartMs) {
+            // Convert millis to ISO Instant for the API
+            const bucketInstant = new Date(bucketStartMs).toISOString();
+
+            const params = new URLSearchParams();
+            if (lastEventType) params.set('eventType', lastEventType);
+            params.set('bucket', bucketInstant);
+            params.set('resolution', lastResolution);
+
+            try {
+                const response = await fetch(`${API_BASE}/analytics/details?${params}`);
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+                const details = await response.json();
+                renderDrillDown(details, bucketStartMs);
+
+            } catch (err) {
+                alert('Error loading drill-down: ' + err.message);
+            }
+        }
+
+        // ==========================================
+        // Render drill-down table
+        // ==========================================
+        function renderDrillDown(details, bucketStartMs) {
+            const container = document.getElementById('drilldown');
+            const title = document.getElementById('drilldown-title');
+            const tbody = document.getElementById('drilldown-body');
+
+            // Set title with bucket timestamp
+            title.textContent = `Events in bucket: ${new Date(bucketStartMs).toLocaleString()}`;
+
+            // Clear previous rows
+            tbody.innerHTML = '';
+
+            // Populate rows from the events array
+            if (details.events && details.events.length > 0) {
+                details.events.forEach(ev => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${escapeHtml(ev.eventType || '-')}</td>
+                        <td>${formatEventTimestamp(ev.eventTimestamp)}</td>
+                        <td>${ev.sentimentScore != null ? ev.sentimentScore.toFixed(3) : '-'}</td>
+                        <td>${ev.confidence != null ? ev.confidence.toFixed(3) : '-'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="4" style="text-align:center; color:var(--color-text-muted);">No events in this bucket</td>';
+                tbody.appendChild(row);
+            }
+
+            // Show the drill-down section
+            container.classList.add('visible');
+        }
+
+        // ==========================================
+        // Close the drill-down table
+        // ==========================================
+        function closeDrillDown() {
+            document.getElementById('drilldown').classList.remove('visible');
+        }
+
+        // ==========================================
+        // Format bucket timestamp based on resolution
+        // ==========================================
+        function formatTimestamp(epochMs, resolution) {
+            const date = new Date(epochMs);
+
+            switch (resolution) {
+                case 'MINUTE':
+                    // Show time with hours:minutes
+                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                case 'HOUR':
+                    // Show date + hour
+                    return date.toLocaleDateString([], { month: 'short', day: 'numeric' })
+                         + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                case 'DAY':
+                    // Show date only
+                    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                case 'WEEK':
+                    // Show week start date
+                    return 'W ' + date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                case 'MONTH':
+                    // Show month and year
+                    return date.toLocaleDateString([], { year: 'numeric', month: 'short' });
+                default:
+                    return date.toLocaleString();
+            }
+        }
+
+        // ==========================================
+        // Format event timestamp (millis to readable)
+        // ==========================================
+        function formatEventTimestamp(epochMs) {
+            if (!epochMs) return '-';
+            return new Date(epochMs).toLocaleString();
+        }
+
+        // ==========================================
+        // Simple HTML escaping to prevent XSS
+        // ==========================================
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
