@@ -33,7 +33,8 @@ public class SentimentEvaluationEngine {
 	public SentimentResult evaluate(RawEvent event, SentimentRule rule) {
 		if (rule == null) {
 			logger.warn("[SENTIMENT-EVALUATION] No rule exists for eventType: {}, returning score: 0.0", event.getEventType());
-			return new SentimentResult(0.0, null, 0.0);
+//			return new SentimentResult(0.0, null, 0.0);
+			return null;
 		}
 
 		double baseScore = rule.getBaseScore();

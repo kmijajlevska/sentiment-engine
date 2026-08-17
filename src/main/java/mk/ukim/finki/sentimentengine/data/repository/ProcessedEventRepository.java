@@ -1,5 +1,6 @@
 package mk.ukim.finki.sentimentengine.data.repository;
 
+import mk.ukim.finki.sentimentengine.data.entity.EvaluationStatus;
 import mk.ukim.finki.sentimentengine.data.entity.ProcessedEvent;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,6 +23,7 @@ public interface ProcessedEventRepository extends GenericRepository<ProcessedEve
 		"SUM(CASE WHEN event_type LIKE 'system.absence.%' THEN 1 ELSE 0 END) AS absence_count " +
 		"FROM processed_events WHERE (:eventType IS NULL OR event_type = :eventType) " +
 		"AND minute_bucket >= :from AND minute_bucket < :to " +
+		"AND evaluation_status = 'COMPLETED' " +
 		"GROUP BY minute_bucket ORDER BY minute_bucket", nativeQuery = true)
 	List<Object[]> aggregateByMinute(@Param("eventType") String eventType,
 	                                 @Param("from") long from,
@@ -33,6 +35,7 @@ public interface ProcessedEventRepository extends GenericRepository<ProcessedEve
 		"SUM(CASE WHEN event_type LIKE 'system.absence.%' THEN 1 ELSE 0 END) AS absence_count " +
 		"FROM processed_events WHERE (:eventType IS NULL OR event_type = :eventType) " +
 		"AND hour_bucket >= :from AND hour_bucket < :to " +
+		"AND evaluation_status = 'COMPLETED' " +
 		"GROUP BY hour_bucket ORDER BY hour_bucket", nativeQuery = true)
 	List<Object[]> aggregateByHour(@Param("eventType") String eventType,
 	                               @Param("from") long from,
@@ -44,6 +47,7 @@ public interface ProcessedEventRepository extends GenericRepository<ProcessedEve
 		"SUM(CASE WHEN event_type LIKE 'system.absence.%' THEN 1 ELSE 0 END) AS absence_count " +
 		"FROM processed_events WHERE (:eventType IS NULL OR event_type = :eventType) " +
 		"AND day_bucket >= :from AND day_bucket < :to " +
+		"AND evaluation_status = 'COMPLETED' " +
 		"GROUP BY day_bucket ORDER BY day_bucket", nativeQuery = true)
 	List<Object[]> aggregateByDay(@Param("eventType") String eventType,
 	                              @Param("from") Date from,
@@ -55,6 +59,7 @@ public interface ProcessedEventRepository extends GenericRepository<ProcessedEve
 		"SUM(CASE WHEN event_type LIKE 'system.absence.%' THEN 1 ELSE 0 END) AS absence_count " +
 		"FROM processed_events WHERE (:eventType IS NULL OR event_type = :eventType) " +
 		"AND week_bucket >= :from AND week_bucket < :to " +
+		"AND evaluation_status = 'COMPLETED' " +
 		"GROUP BY week_bucket ORDER BY week_bucket", nativeQuery = true)
 	List<Object[]> aggregateByWeek(@Param("eventType") String eventType,
 	                               @Param("from") Date from,
@@ -66,6 +71,7 @@ public interface ProcessedEventRepository extends GenericRepository<ProcessedEve
 		"SUM(CASE WHEN event_type LIKE 'system.absence.%' THEN 1 ELSE 0 END) AS absence_count " +
 		"FROM processed_events WHERE (:eventType IS NULL OR event_type = :eventType) " +
 		"AND month_bucket >= :from AND month_bucket < :to " +
+		"AND evaluation_status = 'COMPLETED' " +
 		"GROUP BY month_bucket ORDER BY month_bucket", nativeQuery = true)
 	List<Object[]> aggregateByMonth(@Param("eventType") String eventType,
 	                                @Param("from") Date from,
@@ -73,13 +79,17 @@ public interface ProcessedEventRepository extends GenericRepository<ProcessedEve
 
 	// ─── Detail view queries ────────────────────────────────────────────────────
 
-	List<ProcessedEvent> findByEventTypeAndMinuteBucket(String eventType, long minuteBucket);
+	List<ProcessedEvent> findByEventTypeAndMinuteBucketAndEvaluationStatus(String eventType, long minuteBucket, EvaluationStatus evaluationStatus);
 
-	List<ProcessedEvent> findByEventTypeAndHourBucket(String eventType, long hourBucket);
+	List<ProcessedEvent> findByEventTypeAndHourBucketAndEvaluationStatus(String eventType, long hourBucket, EvaluationStatus evaluationStatus);
 
-	List<ProcessedEvent> findByEventTypeAndDayBucket(String eventType, Date dayBucket);
+	List<ProcessedEvent> findByEventTypeAndDayBucketAndEvaluationStatus(String eventType, Date dayBucket, EvaluationStatus evaluationStatus);
 
-	List<ProcessedEvent> findByEventTypeAndWeekBucket(String eventType, Date weekBucket);
+	List<ProcessedEvent> findByEventTypeAndWeekBucketAndEvaluationStatus(String eventType, Date weekBucket, EvaluationStatus evaluationStatus);
 
-	List<ProcessedEvent> findByEventTypeAndMonthBucket(String eventType, Date monthBucket);
+	List<ProcessedEvent> findByEventTypeAndMonthBucketAndEvaluationStatus(String eventType, Date monthBucket, EvaluationStatus evaluationStatus);
+
+	// ─── Re-evaluation queries ──────────────────────────────────────────────────
+
+	List<ProcessedEvent> findByEvaluationStatusAndEventType(EvaluationStatus evaluationStatus, String eventType);
 }

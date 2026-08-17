@@ -60,7 +60,7 @@ public class GeminiClient implements GenAiClient {
 			                            .retrieve()
 			                            .body(String.class);
 
-			return extractGeminiContent(response); //todo add stripping here
+			return extractGeminiContent(response);
 
 		} catch (GenAiException e) {
 			throw e;

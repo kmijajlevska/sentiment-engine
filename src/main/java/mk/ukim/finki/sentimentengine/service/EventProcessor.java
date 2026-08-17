@@ -2,10 +2,7 @@ package mk.ukim.finki.sentimentengine.service;
 
 
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
-import mk.ukim.finki.sentimentengine.data.entity.ProcessedEvent;
-import mk.ukim.finki.sentimentengine.data.entity.RawEvent;
-import mk.ukim.finki.sentimentengine.data.entity.SentimentResult;
-import mk.ukim.finki.sentimentengine.data.entity.SentimentRule;
+import mk.ukim.finki.sentimentengine.data.entity.*;
 import mk.ukim.finki.sentimentengine.data.service.ProcessedEventService;
 import mk.ukim.finki.sentimentengine.data.service.RawEventService;
 import mk.ukim.finki.sentimentengine.data.service.SentimentRuleService;
@@ -103,13 +100,16 @@ public class EventProcessor {
 		Date weekBucket = AggregationUtils.toDateTruncatedToWeek(eventTimestamp);
 		Date monthBucket = AggregationUtils.toDateTruncatedToMonth(eventTimestamp);
 
+		boolean evaluated = result != null;
+
 		return ProcessedEvent.builder()
 		                     .eventId(rawEvent.getId())
 		                     .eventType(rawEvent.getEventType())
 		                     .eventTimestamp(eventTimestamp)
-		                     .sentimentScore(result.score())
-		                     .confidence(result.confidence())
-		                     .appliedRuleId(result.ruleId())
+		                     .sentimentScore(evaluated ? result.score() : 0.0)
+		                     .confidence(evaluated ? result.confidence() : 0.0)
+		                     .appliedRuleId(evaluated ? result.ruleId() : null)
+		                     .evaluationStatus(evaluated ? EvaluationStatus.COMPLETED : EvaluationStatus.PENDING)
 		                     .minuteBucket(minuteBucket)
 		                     .hourBucket(hourBucket)
 		                     .dayBucket(dayBucket)

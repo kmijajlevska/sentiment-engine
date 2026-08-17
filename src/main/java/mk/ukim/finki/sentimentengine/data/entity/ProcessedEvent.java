@@ -56,4 +56,8 @@ public class ProcessedEvent extends GenericEntity {
 	@Temporal(TemporalType.DATE)
 	private Date monthBucket;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "evaluation_status", nullable = false, length = 16)
+	private EvaluationStatus evaluationStatus = EvaluationStatus.COMPLETED;
+
 }

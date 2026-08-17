@@ -3,6 +3,7 @@ package mk.ukim.finki.sentimentengine.service;
 
 import mk.ukim.finki.sentimentengine.ai.GenAiClient;
 import mk.ukim.finki.sentimentengine.ai.GenAiException;
+import mk.ukim.finki.sentimentengine.data.dto.GenAiRuleResponse;
 import mk.ukim.finki.sentimentengine.data.entity.EventType;
 import mk.ukim.finki.sentimentengine.data.entity.SentimentRule;
 import mk.ukim.finki.sentimentengine.data.service.EventTypeService;
@@ -11,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,10 +77,7 @@ public class RuleGenerationService {
 				.replace("{samplePayload}", samplePayload != null ? samplePayload : "{}");
 
 			String aiResponse = callWithRetry(prompt);
-
-			JsonNode parsed = objectMapper.readTree(aiResponse);
-			double baseScore = parsed.has("baseScore") ? parsed.get("baseScore").asDouble() : 0.0;
-			String explanation = parsed.has("explanation") ? parsed.get("explanation").asString() : "No explanation provided";
+			GenAiRuleResponse ruleResponse = objectMapper.readValue(aiResponse, GenAiRuleResponse.class);
 
 			SentimentRule sentimentRule = sentimentRuleService.findTopByEventTypeOrderByVersionDesc(eventType);
 			int nextVersion = sentimentRule != null ? sentimentRule.getVersion() + 1 : 1;
@@ -89,8 +86,8 @@ public class RuleGenerationService {
 			                                  .eventType(eventType)
 			                                  .ruleType("EVENT")
 			                                  .ruleDefinition(aiResponse)
-			                                  .baseScore(baseScore)
-			                                  .explanation(explanation)
+			                                  .baseScore(ruleResponse.getBaseScore())
+			                                  .explanation(ruleResponse.getExplanation())
 			                                  .version(nextVersion)
 			                                  .build();
 
@@ -135,7 +132,8 @@ public class RuleGenerationService {
 			}
 		}
 
-		log.warn("[GEN-AI] All {} GenAI retries exhausted, returning fallback", maxRetries);
-		return FALLBACK_JSON;
+		log.warn("[GEN-AI] All {} GenAI retries exhausted, returning null", maxRetries);
+		// return FALLBACK_JSON;
+		return null;
 	}
 }
