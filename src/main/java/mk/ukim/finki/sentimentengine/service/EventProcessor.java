@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -106,8 +107,8 @@ public class EventProcessor {
 		                     .eventId(rawEvent.getId())
 		                     .eventType(rawEvent.getEventType())
 		                     .eventTimestamp(eventTimestamp)
-		                     .sentimentScore(evaluated ? result.score() : 0.0)
-		                     .confidence(evaluated ? result.confidence() : 0.0)
+		                     .sentimentScore(BigDecimal.valueOf(evaluated ? result.score() : 0.0))
+		                     .confidence(BigDecimal.valueOf(evaluated ? result.confidence() : 0.0))
 		                     .appliedRuleId(evaluated ? result.ruleId() : null)
 		                     .evaluationStatus(evaluated ? EvaluationStatus.COMPLETED : EvaluationStatus.PENDING)
 		                     .minuteBucket(minuteBucket)

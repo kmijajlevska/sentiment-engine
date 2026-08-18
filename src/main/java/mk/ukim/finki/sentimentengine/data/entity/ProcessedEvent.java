@@ -3,6 +3,7 @@ package mk.ukim.finki.sentimentengine.data.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -29,11 +30,11 @@ public class ProcessedEvent extends GenericEntity {
 	@Column(name = "event_timestamp", nullable = false)
 	private long eventTimestamp;
 
-	@Column(name = "sentiment_score", nullable = false)
-	private double sentimentScore;
+	@Column(name = "sentiment_score", nullable = false, precision = 3, scale = 2)
+	private BigDecimal sentimentScore;
 
-	@Column(name = "confidence", nullable = false)
-	private double confidence;
+	@Column(name = "confidence", nullable = false, precision = 3, scale = 2)
+	private BigDecimal confidence;
 
 	@Column(name = "applied_rule_id")
 	private Long appliedRuleId;

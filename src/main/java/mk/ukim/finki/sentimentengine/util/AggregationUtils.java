@@ -102,8 +102,8 @@ public final class AggregationUtils {
 			event.getEventId(),
 			event.getEventType(),
 			event.getEventTimestamp(),
-			event.getSentimentScore(),
-			event.getConfidence(),
+			event.getSentimentScore().doubleValue(),
+			event.getConfidence().doubleValue(),
 			event.getAppliedRuleId());
 	}
 
@@ -115,7 +115,7 @@ public final class AggregationUtils {
 		long absenceCount = 0;
 
 		for (ProcessedEvent e : events) {
-			double score = e.getSentimentScore();
+			double score = e.getSentimentScore().doubleValue();
 			sum += score;
 			if (score < min) min = score;
 			if (score > max) max = score;
@@ -130,6 +130,6 @@ public final class AggregationUtils {
 			max = 0.0;
 		}
 
-		return new BucketMetricsDTO(bucketStart, count,  avg, min, max, absenceCount);
+		return new BucketMetricsDTO(bucketStart, count, avg, min, max, absenceCount);
 	}
 }

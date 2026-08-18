@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -78,8 +79,8 @@ public class ReEvaluationJob {
 
 					SentimentResult result = evaluationEngine.evaluate(rawEvent, rule);
 					if (result != null) {
-						pendingEvent.setSentimentScore(result.score());
-						pendingEvent.setConfidence(result.confidence());
+						pendingEvent.setSentimentScore(BigDecimal.valueOf(result.score()));
+						pendingEvent.setConfidence(BigDecimal.valueOf(result.confidence()));
 						pendingEvent.setAppliedRuleId(result.ruleId());
 						pendingEvent.setEvaluationStatus(EvaluationStatus.COMPLETED);
 						processedEventService.save(pendingEvent);
