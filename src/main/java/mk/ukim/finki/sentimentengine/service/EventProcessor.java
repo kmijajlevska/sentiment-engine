@@ -49,8 +49,12 @@ public class EventProcessor {
 	}
 
 	public void onEvent(EventDTO event) {
-		// check for absence first
-		absenceDetectionService.checkForAbsenceOnArrival(event.getEventTimestamp(), event.getEventType());
+		boolean isAbsenceEvent = event.getEventType().startsWith(AbsenceDetectionService.ABSENCE_EVENT_TYPE);
+
+		// check for absence only for basic event types
+		if (!isAbsenceEvent) {
+			absenceDetectionService.checkForAbsenceOnArrival(event.getEventTimestamp(), event.getEventType());
+		}
 
 		RawEvent rawEventEntity = RawEvent.builder()
 		                                  .eventType(event.getEventType())
@@ -69,7 +73,9 @@ public class EventProcessor {
 		eventTypeRegistry.updateLastSeenPerType(event.getEventType(), event.getEventTimestamp());
 		try {
 			rawEventEntity = rawEventService.save(rawEventEntity);
-			absenceDetectionService.updateLastReceivedTimestamp(rawEventEntity.getTimestamp());
+			if (!isAbsenceEvent) {
+				absenceDetectionService.updateLastReceivedTimestamp(rawEventEntity.getTimestamp());
+			}
 
 			SentimentRule sentimentRule = sentimentRuleService.findTopByEventTypeOrderByVersionDesc(rawEventEntity.getEventType());
 

@@ -77,14 +77,16 @@ public class AbsenceDetectionService {
 		}
 
 		long gap = now - lastTimestamp;
-		if (gap > absenceGlobalThresholdMs && !globalAbsenceFired) {
-			EventDTO absenceEventDto = this.createAbsenceEventDto(GLOBAL_ABSENCE_EVENT_TYPE, lastTimestamp, gap, now, false);
-			bufferProducer.sendToBuffer(absenceEventDto);
-			globalAbsenceFired = true;
+		if (gap > absenceGlobalThresholdMs) {
+			if (!globalAbsenceFired) {
+				EventDTO absenceEventDto = this.createAbsenceEventDto(GLOBAL_ABSENCE_EVENT_TYPE, lastTimestamp, gap, now, false);
+				bufferProducer.sendToBuffer(absenceEventDto);
+				globalAbsenceFired = true;
 
-			log.info("[ABSENCE-DETECTION][GLOBAL] Detected global absence, lastReceivedTimestamp:{}, gapDurationMs:{}", lastTimestamp, gap);
+				log.info("[ABSENCE-DETECTION][GLOBAL] Detected global absence, lastReceivedTimestamp:{}, gapDurationMs:{}", lastTimestamp, gap);
+			}
 		} else {
-			globalAbsenceFired = false; // reset flag
+			globalAbsenceFired = false; // reset flag only when a real event has arrived
 			log.info("[ABSENCE-DETECTION][GLOBAL] No absence detected");
 		}
 	}
@@ -92,7 +94,7 @@ public class AbsenceDetectionService {
 	public void checkPerTypeAbsence(long now) {
 		List<EventType> allTypes = eventTypeRegistry.getAllEventTypes();
 
-		// fixme exclude absence events here
+		// skip absence event types — they are outputs, not inputs for detection
 		for (EventType type : allTypes) {
 			if (type.getName().contains(ABSENCE_EVENT_TYPE))
 				continue;
@@ -106,7 +108,8 @@ public class AbsenceDetectionService {
 				String typeName = type.getName();
 
 				if (!perTypeAbsenceFired.contains(typeName)) {
-					EventDTO absenceEventDto = this.createAbsenceEventDto(typeName, lastSeenAt, gap, now, false);
+					String messageType = TYPE_ABSENCE_EVENT_TYPE + "." + typeName;
+					EventDTO absenceEventDto = this.createAbsenceEventDto(messageType, lastSeenAt, gap, now, false);
 					bufferProducer.sendToBuffer(absenceEventDto);
 					perTypeAbsenceFired.add(typeName);
 
@@ -125,6 +128,9 @@ public class AbsenceDetectionService {
 	public void checkForAbsenceOnArrival(Long eventTimestamp, String eventType) {
 		if (!checkAbsenceOnArrivalEnabled) {
 			return;
+		}
+		if (eventType.startsWith(ABSENCE_EVENT_TYPE)) {
+			return; // skip absence events to avoid recursive double-prefixing
 		}
 		long lastTimestamp = lastTimestampReceived.get();
 
