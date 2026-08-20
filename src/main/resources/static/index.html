@@ -10,38 +10,63 @@
 
     <style>
         /* ========================================
-           CSS Variables — change these to re-theme
+           Design Tokens
            ======================================== */
         :root {
-            --color-bg: #f8f9fa;
+            /* Light theme */
+            --color-bg: #f6f7f9;
             --color-surface: #ffffff;
-            --color-border: #dee2e6;
-            --color-text: #212529;
-            --color-text-muted: #6c757d;
-            --color-primary: #4a90d9;
-            --color-primary-hover: #357abd;
-            --color-sentiment: #e67e22;
-            --color-count: rgba(74, 144, 217, 0.6);
-            --color-count-border: rgba(74, 144, 217, 1);
-            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --radius: 6px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+            --color-surface-raised: #ffffff;
+            --color-border: rgba(0, 0, 0, 0.06);
+            --color-border-subtle: rgba(0, 0, 0, 0.04);
+            --color-text: #1a1d23;
+            --color-text-muted: #7c8497;
+            --color-primary: #5e6ad2;
+            --color-primary-hover: #4e5bc2;
+            --color-primary-subtle: rgba(94, 106, 210, 0.07);
+            --color-sentiment: #e8590c;
+            --color-count: rgba(94, 106, 210, 0.55);
+            --color-count-border: rgba(94, 106, 210, 0.9);
+            --color-danger: #e5484d;
+            --color-danger-hover: #d13438;
+            --color-warning: #e5a000;
+            --color-warning-hover: #cc8f00;
+            --color-success: #30a46c;
+            --color-success-hover: #268a5a;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, monospace;
+            --radius: 8px;
+            --radius-sm: 5px;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+            --transition: 150ms ease;
         }
 
         /* ========================================
-           Dark theme overrides
+           Dark theme — flagship
            ======================================== */
         [data-theme="dark"] {
-            --color-bg: #1a1b1e;
-            --color-surface: #2c2d31;
-            --color-border: #3e3f44;
-            --color-text: #e4e4e7;
-            --color-text-muted: #9ca3af;
-            --color-primary: #5b9bd5;
-            --color-primary-hover: #4a8bc4;
-            --color-sentiment: #f59e0b;
-            --color-count: rgba(91, 155, 213, 0.5);
-            --color-count-border: rgba(91, 155, 213, 1);
+            --color-bg: #0f1117;
+            --color-surface: #1a1d24;
+            --color-surface-raised: #22252e;
+            --color-border: rgba(255, 255, 255, 0.07);
+            --color-border-subtle: rgba(255, 255, 255, 0.04);
+            --color-text: #edeef0;
+            --color-text-muted: #7c8497;
+            --color-primary: #8b8ff8;
+            --color-primary-hover: #a0a4fc;
+            --color-primary-subtle: rgba(139, 143, 248, 0.1);
+            --color-sentiment: #f97316;
+            --color-count: rgba(139, 143, 248, 0.45);
+            --color-count-border: rgba(139, 143, 248, 0.8);
+            --color-danger: #f87171;
+            --color-danger-hover: #ef4444;
+            --color-warning: #fbbf24;
+            --color-warning-hover: #f59e0b;
+            --color-success: #4ade80;
+            --color-success-hover: #34d399;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
         /* ========================================
@@ -53,8 +78,10 @@
             font-family: var(--font-family);
             background: var(--color-bg);
             color: var(--color-text);
-            padding: 24px;
+            padding: 32px 40px;
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* ========================================
@@ -64,26 +91,29 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
 
         .header h1 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: var(--color-text);
+            letter-spacing: -0.3px;
         }
 
         #theme-toggle {
             background: none;
-            border: none;
-            font-size: 1.5rem;
+            border: 1px solid var(--color-border);
+            font-size: 1.1rem;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: var(--radius);
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            transition: background var(--transition), border-color var(--transition);
         }
 
         #theme-toggle:hover {
-            background: var(--color-border);
+            background: var(--color-surface-raised);
+            border-color: var(--color-border);
         }
 
         /* ========================================
@@ -97,7 +127,7 @@
             background: var(--color-surface);
             border: 1px solid var(--color-border);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 16px 20px;
             margin-bottom: 24px;
             box-shadow: var(--shadow);
         }
@@ -131,6 +161,7 @@
         .control-group input:focus {
             outline: none;
             border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px var(--color-primary-subtle);
         }
 
         #btn-load {
@@ -156,7 +187,7 @@
             background: var(--color-surface);
             border: 1px solid var(--color-border);
             border-radius: var(--radius);
-            padding: 20px;
+            padding: 24px;
             margin-bottom: 24px;
             box-shadow: var(--shadow);
         }
@@ -174,8 +205,9 @@
             background: var(--color-surface);
             border: 1px solid var(--color-border);
             border-radius: var(--radius);
-            padding: 20px;
+            padding: 24px;
             box-shadow: var(--shadow);
+            margin-top: 24px;
         }
 
         .drilldown.visible {
@@ -232,6 +264,1049 @@
         .drilldown tr:last-child td {
             border-bottom: none;
         }
+
+        /* ========================================
+           Tab Navigation
+           ======================================== */
+        .tab-bar {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 28px;
+            padding: 3px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            width: fit-content;
+        }
+
+        .tab-bar button {
+            padding: 8px 20px;
+            background: none;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 500;
+            font-family: var(--font-family);
+            color: var(--color-text-muted);
+            cursor: pointer;
+            transition: color var(--transition), background var(--transition);
+        }
+
+        .tab-bar button:hover {
+            color: var(--color-text);
+        }
+
+        .tab-bar button.tab-active {
+            color: var(--color-text);
+            background: var(--color-surface-raised);
+            box-shadow: var(--shadow);
+        }
+
+        /* ========================================
+           Rule Management — Split Pane Layout
+           ======================================== */
+        .rules-split-pane {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 0;
+            height: calc(100vh - 180px);
+            min-height: 400px;
+            max-height: 720px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            background: var(--color-surface);
+        }
+
+        /* --- Left pane: rule list --- */
+        .rules-left-pane {
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .rules-left-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border-subtle);
+            flex-shrink: 0;
+        }
+
+        .rules-left-header h3 {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-icon-create {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            line-height: 1;
+        }
+
+        .btn-icon-create:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .rules-list-scroll {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--color-border-subtle);
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+
+        .rule-item:last-child {
+            border-bottom: none;
+        }
+
+        .rule-item:hover {
+            background: var(--color-primary-subtle);
+        }
+
+        .rule-item.active {
+            background: var(--color-primary-subtle);
+            border-left: 2px solid var(--color-primary);
+            padding-left: 14px;
+        }
+
+        .rule-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .rule-item-name {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--color-text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rule-item-meta {
+            font-size: 0.72rem;
+            color: var(--color-text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-absence {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.1);
+            padding: 1px 5px;
+            border-radius: 3px;
+            margin-right: 4px;
+        }
+
+        .badge-pending-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--color-warning);
+        }
+
+        .rule-item-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.15s;
+            flex-shrink: 0;
+        }
+
+        .rule-item:hover .rule-item-actions {
+            opacity: 1;
+        }
+
+        .btn-row-action {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--color-text-muted);
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+
+        .btn-row-action:hover {
+            background: var(--color-bg);
+            color: var(--color-text);
+            border-color: var(--color-text-muted);
+        }
+
+        .btn-row-action.regenerate:hover {
+            color: var(--color-success);
+            border-color: var(--color-success);
+        }
+
+        .btn-row-action.delete:hover {
+            color: var(--color-danger);
+            border-color: var(--color-danger);
+        }
+
+        /* Loading/empty/error states in left pane */
+        .rules-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            padding: 40px 20px;
+            color: var(--color-text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .rules-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--color-border);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-retry {
+            padding: 6px 16px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-retry:hover {
+            background: var(--color-primary-hover);
+        }
+
+        /* --- Right pane: detail/form --- */
+        .rules-right-pane {
+            background: var(--color-bg);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .right-pane-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            flex: 1;
+            color: var(--color-text-muted);
+            font-size: 0.85rem;
+            padding: 48px 40px;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .right-pane-placeholder::before {
+            content: '📋';
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            opacity: 0.6;
+        }
+
+        /* Detail view in right pane */
+        .rule-detail-view {
+            display: none;
+            padding: 32px;
+            flex-direction: column;
+            gap: 24px;
+            animation: fade-in 0.2s ease;
+        }
+
+        .rule-detail-view.visible {
+            display: flex;
+        }
+
+        .detail-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .detail-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--color-text);
+            letter-spacing: -0.3px;
+        }
+
+        .detail-title .badge-absence {
+            font-size: 0.7rem;
+            vertical-align: middle;
+        }
+
+        .detail-version-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            background: var(--color-primary-subtle);
+            padding: 4px 10px;
+            border-radius: 12px;
+            letter-spacing: 0.02em;
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 14px 16px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius);
+        }
+
+        .detail-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .detail-meta-item .meta-label {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-weight: 500;
+            color: var(--color-text-muted);
+        }
+
+        .detail-meta-item .meta-value {
+            font-size: 0.82rem;
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .detail-explanation {
+            font-size: 0.84rem;
+            color: var(--color-text);
+            line-height: 1.7;
+            padding: 12px 16px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius);
+        }
+
+        .detail-definition-block {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            overflow-x: auto;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .detail-definition-block pre {
+            margin: 0;
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            line-height: 1.7;
+            color: var(--color-text);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-border-subtle);
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 7px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            letter-spacing: 0.01em;
+        }
+
+        .btn-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-action.primary {
+            background: var(--color-primary);
+            color: white;
+        }
+        .btn-action.primary:hover:not(:disabled) {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-action.danger {
+            background: var(--color-danger);
+            color: white;
+        }
+        .btn-action.danger:hover:not(:disabled) {
+            background: var(--color-danger-hover);
+        }
+
+        .btn-action.warning {
+            background: var(--color-warning);
+            color: white;
+        }
+        .btn-action.warning:hover:not(:disabled) {
+            background: var(--color-warning-hover);
+        }
+
+        .btn-action.ghost {
+            background: transparent;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+        }
+        .btn-action.ghost:hover:not(:disabled) {
+            background: var(--color-surface);
+            border-color: var(--color-text-muted);
+            color: var(--color-text);
+        }
+
+        /* Inline form in right pane */
+        .rule-form-view {
+            display: none;
+            padding: 32px;
+            flex-direction: column;
+            gap: 18px;
+            animation: fade-in 0.2s ease;
+        }
+
+        .rule-form-view.visible {
+            display: flex;
+        }
+
+        .form-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 4px;
+            letter-spacing: -0.2px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.84rem;
+            font-family: var(--font-family);
+            background: var(--color-surface);
+            color: var(--color-text);
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px var(--color-primary-subtle);
+        }
+
+        .form-group input:disabled,
+        .form-group select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--color-bg);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 64px;
+        }
+
+        .form-group textarea.mono {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            min-height: 120px;
+            line-height: 1.6;
+            background: var(--color-bg);
+        }
+
+        .form-error {
+            display: none;
+            color: var(--color-danger);
+            font-size: 0.78rem;
+            padding: 8px 12px;
+            background: rgba(220, 53, 69, 0.06);
+            border: 1px solid rgba(220, 53, 69, 0.15);
+            border-radius: var(--radius-sm);
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--color-surface-raised);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 12px 20px;
+            box-shadow: var(--shadow-lg);
+            font-size: 0.82rem;
+            color: var(--color-text);
+            z-index: 1000;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+            max-width: 360px;
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--color-success);
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--color-danger);
+        }
+
+        /* Version history in detail panel */
+        .version-history {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .version-history-title {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 10px;
+        }
+
+        .version-history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .version-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background 0.12s, border-color 0.12s;
+            font-size: 0.8rem;
+        }
+
+        .version-item:hover {
+            background: var(--color-primary-subtle);
+            border-color: var(--color-primary);
+        }
+
+        .version-item.current {
+            border-color: var(--color-primary);
+            background: var(--color-primary-subtle);
+        }
+
+        .version-item-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .version-item-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            background: rgba(74, 144, 217, 0.08);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .version-item-date {
+            color: var(--color-text-muted);
+            font-size: 0.75rem;
+        }
+
+        .version-item-score {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .version-item-current-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--color-success);
+            text-transform: uppercase;
+        }
+
+        /* Custom select dropdown */
+        .custom-select {
+            position: relative;
+            min-width: 200px;
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-family: var(--font-family);
+            color: var(--color-text);
+            cursor: pointer;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            text-align: left;
+        }
+
+        .custom-select-trigger:hover {
+            border-color: var(--color-primary);
+        }
+
+        .custom-select-trigger:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px var(--color-primary-subtle);
+        }
+
+        .custom-select-trigger svg {
+            flex-shrink: 0;
+            color: var(--color-text-muted);
+            transition: transform var(--transition);
+        }
+
+        .custom-select.open .custom-select-trigger svg {
+            transform: rotate(180deg);
+        }
+
+        .custom-select-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--color-surface-raised);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .custom-select.open .custom-select-dropdown {
+            display: block;
+            animation: dropdown-enter 0.15s ease;
+        }
+
+        @keyframes dropdown-enter {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .custom-select-search {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.82rem;
+            font-family: var(--font-family);
+            background: transparent;
+            color: var(--color-text);
+            outline: none;
+        }
+
+        .custom-select-search::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .custom-select-options {
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .custom-select-group-label {
+            padding: 6px 10px 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-text-muted);
+        }
+
+        .custom-select-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            color: var(--color-text);
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+
+        .custom-select-option:hover {
+            background: var(--color-primary-subtle);
+        }
+
+        .custom-select-option.selected {
+            background: var(--color-primary-subtle);
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        .custom-select-option .option-badge {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--color-warning);
+            background: rgba(229, 160, 0, 0.1);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+
+        .rule-list-group-label {
+            padding: 8px 16px 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-text-muted);
+        }
+
+
+        /* ========================================
+           Data Import Tab
+           ======================================== */
+        .import-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .import-source-bar {
+            display: flex;
+            gap: 8px;
+            padding: 4px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            width: fit-content;
+        }
+
+        .source-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .source-option:hover {
+            color: var(--color-text);
+            background: var(--color-surface-raised);
+        }
+
+        .source-option.active {
+            color: var(--color-text);
+            background: var(--color-surface-raised);
+            border-color: var(--color-border);
+            box-shadow: var(--shadow);
+        }
+
+        .source-option svg {
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        .source-option.active svg {
+            opacity: 1;
+        }
+
+        .import-unsupported {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            text-align: center;
+            gap: 12px;
+        }
+
+        .unsupported-icon {
+            font-size: 2rem;
+            margin-bottom: 4px;
+        }
+
+        .import-unsupported h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .import-unsupported p {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            max-width: 400px;
+        }
+
+        .import-content {
+            animation: fade-in 0.2s ease;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .import-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .import-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .import-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 1px var(--color-primary-subtle);
+        }
+
+        .import-card-wide {
+            grid-column: 1 / -1;
+        }
+
+        .import-card-header {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .import-card-icon {
+            font-size: 1.3rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .import-card-header h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 2px;
+        }
+
+        .import-card-header p {
+            font-size: 0.78rem;
+            color: var(--color-text-muted);
+            line-height: 1.4;
+        }
+
+        .import-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .import-card-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .import-card-detail .detail-label {
+            font-size: 0.68rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--color-text-muted);
+        }
+
+        .import-card-detail code {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            background: var(--color-bg);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--color-border-subtle);
+        }
+
+        .import-json-editor {
+            width: 100%;
+            min-height: 180px;
+            padding: 14px 16px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            line-height: 1.6;
+            color: var(--color-text);
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            resize: vertical;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .import-json-editor:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px var(--color-primary-subtle);
+        }
+
+        .import-json-editor::placeholder {
+            color: var(--color-text-muted);
+            opacity: 0.6;
+        }
+
+        .import-event-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+
+        .import-path-input {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .import-path-input label {
+            font-size: 0.68rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--color-text-muted);
+        }
+
+        .import-path-input input {
+            padding: 8px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--color-text);
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .import-path-input input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px var(--color-primary-subtle);
+        }
+
+        .import-path-input input::placeholder {
+            color: var(--color-text-muted);
+            font-family: var(--font-family);
+            font-style: italic;
+        }
+
     </style>
 </head>
 <body>
@@ -245,15 +1320,33 @@
     </div>
 
     <!-- ========================================
-         Controls bar
+         Tab Navigation
          ======================================== -->
+    <div class="tab-bar">
+        <button class="tab-active" onclick="switchTab('analytics')">Analytics</button>
+        <button onclick="switchTab('rules')">Rule Management</button>
+        <button onclick="switchTab('import')">Data Import</button>
+    </div>
+
+    <!-- ========================================
+         Analytics Tab Content
+         ======================================== -->
+    <div id="tab-analytics">
+
     <div class="controls">
         <div class="control-group">
-            <label for="event-type">Event Type</label>
-            <select id="event-type">
-                <option value="">All Types</option>
-                <!-- Populated from API on page load -->
-            </select>
+            <label>Event Type</label>
+            <div class="custom-select" id="event-type-select">
+                <button type="button" class="custom-select-trigger" id="event-type-trigger" onclick="toggleEventTypeDropdown()">
+                    <span id="event-type-label">All Types</span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="custom-select-dropdown" id="event-type-dropdown">
+                    <input type="text" class="custom-select-search" id="event-type-search" placeholder="Search…" oninput="filterEventTypeOptions()">
+                    <div class="custom-select-options" id="event-type-options"></div>
+                </div>
+            </div>
+            <input type="hidden" id="event-type" value="">
         </div>
 
         <div class="control-group">
@@ -280,16 +1373,10 @@
         <button id="btn-load">Load</button>
     </div>
 
-    <!-- ========================================
-         Chart area
-         ======================================== -->
     <div class="chart-container">
         <canvas id="chart"></canvas>
     </div>
 
-    <!-- ========================================
-         Drill-down table (hidden until click)
-         ======================================== -->
     <div class="drilldown" id="drilldown">
         <div class="drilldown-header">
             <h3 id="drilldown-title">Bucket Details</h3>
@@ -304,16 +1391,246 @@
                     <th>Confidence</th>
                 </tr>
             </thead>
-            <tbody id="drilldown-body">
-                <!-- Filled dynamically -->
-            </tbody>
+            <tbody id="drilldown-body"></tbody>
         </table>
     </div>
+
+    </div> <!-- end #tab-analytics -->
+
+    <!-- ========================================
+         Rule Management Tab — Split Pane
+         ======================================== -->
+    <div id="tab-rules" style="display:none">
+        <div class="rules-split-pane">
+
+            <!-- Left pane: rule list -->
+            <div class="rules-left-pane">
+                <div class="rules-left-header">
+                    <h3>Rules</h3>
+                    <button class="btn-icon-create" onclick="openCreateForm()" title="Create new rule">+</button>
+                </div>
+
+                <div class="rules-list-scroll" id="rules-list-scroll">
+                    <!-- Loading state -->
+                    <div id="rules-loading" class="rules-state" style="display:none">
+                        <div class="rules-spinner"></div>
+                        <span>Loading rules…</span>
+                    </div>
+                    <!-- Error state -->
+                    <div id="rules-error" class="rules-state" style="display:none">
+                        <p id="rules-error-message">Failed to load rules.</p>
+                        <button class="btn-retry" onclick="loadRules()">Retry</button>
+                    </div>
+                    <!-- Empty state -->
+                    <div id="rules-empty" class="rules-state" style="display:none">
+                        <p>No rules yet.<br>Create one to get started.</p>
+                    </div>
+                    <!-- Rule items rendered here -->
+                    <div id="rules-list-items"></div>
+                </div>
+            </div>
+
+            <!-- Right pane: detail / form / placeholder -->
+            <div class="rules-right-pane">
+                <!-- Placeholder -->
+                <div id="right-placeholder" class="right-pane-placeholder">
+                    Select a rule to view details, or create a new one.
+                </div>
+
+                <!-- Detail view -->
+                <div id="rule-detail-view" class="rule-detail-view">
+                    <div class="detail-title-row">
+                        <span class="detail-title" id="detail-title">—</span>
+                        <span class="detail-version-badge" id="detail-version-badge">v1</span>
+                    </div>
+                    <div class="detail-meta">
+                        <div class="detail-meta-item">
+                            <span class="meta-label">Rule Type</span>
+                            <span class="meta-value" id="detail-rule-type">—</span>
+                        </div>
+                        <div class="detail-meta-item">
+                            <span class="meta-label">Base Score</span>
+                            <span class="meta-value" id="detail-base-score">—</span>
+                        </div>
+                        <div class="detail-meta-item">
+                            <span class="meta-label">Created</span>
+                            <span class="meta-value" id="detail-created-at">—</span>
+                        </div>
+                        <div class="detail-meta-item">
+                            <span class="meta-label">Assigned</span>
+                            <span class="meta-value" id="detail-assigned">—</span>
+                        </div>
+                        <div class="detail-meta-item" id="detail-pending-item" style="display:none">
+                            <span class="meta-label">Pending</span>
+                            <span class="meta-value badge-pending-sm" id="detail-pending">0</span>
+                        </div>
+                    </div>
+                    <div class="detail-explanation" id="detail-explanation">—</div>
+                    <div class="detail-definition-block">
+                        <pre id="detail-rule-definition">—</pre>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="btn-action primary" id="btn-rule-edit" onclick="openEditForm(currentRule)">Edit</button>
+                        <button class="btn-action warning" id="btn-rule-reevaluate" onclick="reevaluatePending()" style="display:none">Re-evaluate Pending</button>
+                        <button class="btn-action ghost" id="btn-rule-regenerate" onclick="regenerateForRule(currentRule.eventType)">⟳ Regenerate</button>
+                        <button class="btn-action danger" id="btn-rule-delete" onclick="deleteCurrentRule()">Delete</button>
+                    </div>
+                    <div class="version-history" id="version-history" style="display:none">
+                        <div class="version-history-title">Version History</div>
+                        <div class="version-history-list" id="version-history-list"></div>
+                    </div>
+                </div>
+
+                <!-- Inline form view -->
+                <div id="rule-form-view" class="rule-form-view">
+                    <h3 class="form-title" id="form-title">Create Rule</h3>
+                    <div id="form-error" class="form-error"></div>
+                    <form id="rule-form" onsubmit="return handleRuleFormSubmit(event)">
+                        <div class="form-group">
+                            <label for="form-event-type">Event Type</label>
+                            <select id="form-event-type" required>
+                                <option value="">Select event type…</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-rule-type">Rule Type</label>
+                            <input type="text" id="form-rule-type" value="EVENT" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-rule-definition">Rule Definition (JSON)</label>
+                            <textarea id="form-rule-definition" class="mono" placeholder='{"factors": [], "baseScore": 0.0}' required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-base-score">Base Score</label>
+                            <input type="number" id="form-base-score" min="-1" max="1" step="0.01" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-explanation">Explanation</label>
+                            <textarea id="form-explanation" placeholder="Describe what this rule evaluates…"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-action primary" id="btn-form-submit">Create</button>
+                            <button type="button" class="btn-action ghost" onclick="closeForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         Data Import Tab
+         ======================================== -->
+    <div id="tab-import" style="display:none">
+        <div class="import-layout">
+            <!-- Data source selector -->
+            <div class="import-source-bar">
+                <div class="source-option active" data-source="github" onclick="selectDataSource('github')">
+                    <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                    <span>GitHub Archive</span>
+                </div>
+                <div class="source-option" data-source="kafka" onclick="selectDataSource('kafka')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-14.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83"/></svg>
+                    <span>Kafka Stream</span>
+                </div>
+                <div class="source-option" data-source="webhook" onclick="selectDataSource('webhook')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    <span>Webhook</span>
+                </div>
+                <div class="source-option" data-source="csv" onclick="selectDataSource('csv')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>CSV Upload</span>
+                </div>
+            </div>
+
+            <!-- Unsupported source message -->
+            <div id="import-unsupported" class="import-unsupported" style="display:none">
+                <div class="unsupported-icon">🚧</div>
+                <h3>Data source not supported yet</h3>
+                <p>This integration is on the roadmap. Currently, only GitHub Archive is available as a data source.</p>
+            </div>
+
+            <!-- GitHub Archive import panel -->
+            <div id="import-github" class="import-content">
+                <div class="import-cards">
+                    <!-- Load single file -->
+                    <div class="import-card">
+                        <div class="import-card-header">
+                            <div class="import-card-icon">📄</div>
+                            <div>
+                                <h4>Load File</h4>
+                                <p>Import a single .json or .json.gz file. Leave empty to use the default path.</p>
+                            </div>
+                        </div>
+                        <div class="import-card-body">
+                            <div class="import-path-input">
+                                <label for="import-file-path">File path</label>
+                                <input type="text" id="import-file-path" placeholder="Loading default…" spellcheck="false">
+                            </div>
+                            <button class="btn-action primary" id="btn-load-file" onclick="triggerLoadFile()">Load File</button>
+                        </div>
+                    </div>
+
+                    <!-- Load batch -->
+                    <div class="import-card">
+                        <div class="import-card-header">
+                            <div class="import-card-icon">📁</div>
+                            <div>
+                                <h4>Load Batch</h4>
+                                <p>Import all .json/.json.gz files from a directory. Leave empty for default.</p>
+                            </div>
+                        </div>
+                        <div class="import-card-body">
+                            <div class="import-path-input">
+                                <label for="import-dir-path">Directory path</label>
+                                <input type="text" id="import-dir-path" placeholder="Loading default…" spellcheck="false">
+                            </div>
+                            <button class="btn-action primary" id="btn-load-batch" onclick="triggerLoadBatch()">Load Batch</button>
+                        </div>
+                    </div>
+
+                    <!-- Import single event -->
+                    <div class="import-card import-card-wide">
+                        <div class="import-card-header">
+                            <div class="import-card-icon">⚡</div>
+                            <div>
+                                <h4>Import Single Event</h4>
+                                <p>Paste a GitHub Archive event JSON to import and process immediately</p>
+                            </div>
+                        </div>
+                        <div class="import-card-body">
+                            <textarea id="import-event-json" class="import-json-editor" placeholder='{
+  "id": "123456",
+  "type": "PushEvent",
+  "public": true,
+  "payload": "{}",
+  "repo": { "id": "1", "name": "user/repo", "url": "..." },
+  "actor": { "id": "1", "login": "user", ... },
+  "created_at": "2024-01-01 12:00:00 UTC"
+}'></textarea>
+                            <div class="import-event-actions">
+                                <button class="btn-action primary" id="btn-import-event" onclick="triggerImportEvent()">Import Event</button>
+                                <button class="btn-action ghost" onclick="clearEventJson()">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
 
     <!-- ========================================
          JavaScript — all logic below
          ======================================== -->
     <script>
+        // ==========================================
+        // Configuration
+        // ==========================================
+        const API_BASE = '/api';
+
         // ==========================================
         // Theme toggle
         // ==========================================
@@ -327,50 +1644,742 @@
         }
 
         // ==========================================
-        // Configuration — change API base path here
+        // Tab switching
         // ==========================================
-        const API_BASE = '/api';
+        let rulesLoaded = false;
 
-        // Reference to the Chart.js instance (we destroy + recreate on each load)
+        function switchTab(tabName) {
+            document.getElementById('tab-analytics').style.display = 'none';
+            document.getElementById('tab-rules').style.display = 'none';
+            document.getElementById('tab-import').style.display = 'none';
+            document.getElementById('tab-' + tabName).style.display = 'block';
+
+            const buttons = document.querySelectorAll('.tab-bar button');
+            buttons.forEach(btn => btn.classList.remove('tab-active'));
+            const tabKeywords = { analytics: 'analytics', rules: 'rule', import: 'import' };
+            const keyword = tabKeywords[tabName] || tabName;
+            const activeBtn = Array.from(buttons).find(btn =>
+                btn.textContent.toLowerCase().includes(keyword)
+            );
+            if (activeBtn) activeBtn.classList.add('tab-active');
+
+            if (tabName === 'rules' && !rulesLoaded) {
+                loadRules();
+            }
+            if (tabName === 'import') {
+                loadImportConfig();
+            }
+        }
+
+        // ==========================================
+        // Rule Management — state
+        // ==========================================
+        let currentRule = null;
+        let ruleFormEditMode = false;
+        let ruleFormEditId = null;
+        let rulesData = []; // cached list from API
+        let pendingMap = {}; // eventType -> count
+
+        // ==========================================
+        // Show/hide right pane sections
+        // ==========================================
+        function showRightPane(which) {
+            document.getElementById('right-placeholder').style.display = (which === 'placeholder') ? 'flex' : 'none';
+            const detailView = document.getElementById('rule-detail-view');
+            const formView = document.getElementById('rule-form-view');
+            detailView.classList.toggle('visible', which === 'detail');
+            formView.classList.toggle('visible', which === 'form');
+        }
+
+        // ==========================================
+        // Load rules
+        // ==========================================
+        async function loadRules() {
+            const loadingEl = document.getElementById('rules-loading');
+            const errorEl = document.getElementById('rules-error');
+            const emptyEl = document.getElementById('rules-empty');
+            const listItems = document.getElementById('rules-list-items');
+
+            loadingEl.style.display = 'flex';
+            errorEl.style.display = 'none';
+            emptyEl.style.display = 'none';
+            listItems.innerHTML = '';
+
+            try {
+                const [rulesResponse, pendingResponse] = await Promise.all([
+                    fetch(`${API_BASE}/rules`),
+                    fetch(`${API_BASE}/rules/pending-counts`)
+                ]);
+
+                if (!rulesResponse.ok) throw new Error(`Failed to load rules: ${rulesResponse.status}`);
+
+                rulesData = await rulesResponse.json();
+
+                pendingMap = {};
+                if (pendingResponse.ok) {
+                    const counts = await pendingResponse.json();
+                    counts.forEach(c => { pendingMap[c.eventType] = c.pendingCount; });
+                }
+
+                loadingEl.style.display = 'none';
+
+                if (rulesData.length === 0) {
+                    emptyEl.style.display = 'flex';
+                    return;
+                }
+
+                renderRuleList();
+                rulesLoaded = true;
+
+            } catch (err) {
+                loadingEl.style.display = 'none';
+                document.getElementById('rules-error-message').textContent = err.message || 'Failed to load rules.';
+                errorEl.style.display = 'flex';
+            }
+        }
+
+        // ==========================================
+        // Render rule list items (grouped by event type, latest version only)
+        // ==========================================
+        function renderRuleList() {
+            const listItems = document.getElementById('rules-list-items');
+            listItems.innerHTML = '';
+
+            // Group by event type — rulesData is already sorted by createdAt desc,
+            // so the first occurrence of each eventType is the latest version
+            const latestByType = new Map();
+            rulesData.forEach(rule => {
+                if (!latestByType.has(rule.eventType)) {
+                    latestByType.set(rule.eventType, rule);
+                }
+            });
+
+            // Split into regular and absence, sort each alphabetically
+            const regular = [];
+            const absence = [];
+            latestByType.forEach((rule, eventType) => {
+                if (eventType.startsWith('system.absence.')) absence.push({ rule, eventType });
+                else regular.push({ rule, eventType });
+            });
+            regular.sort((a, b) => a.eventType.localeCompare(b.eventType));
+            absence.sort((a, b) => a.eventType.localeCompare(b.eventType));
+
+            // Render regular events
+            if (regular.length > 0 && absence.length > 0) {
+                const label = document.createElement('div');
+                label.className = 'rule-list-group-label';
+                label.textContent = 'Events';
+                listItems.appendChild(label);
+            }
+            regular.forEach(({ rule, eventType }) => renderRuleItem(listItems, rule, eventType));
+
+            // Render absence events
+            if (absence.length > 0) {
+                const label = document.createElement('div');
+                label.className = 'rule-list-group-label';
+                label.textContent = 'Absence';
+                listItems.appendChild(label);
+            }
+            absence.forEach(({ rule, eventType }) => renderRuleItem(listItems, rule, eventType));
+        }
+
+        function renderRuleItem(container, rule, eventType) {
+                const item = document.createElement('div');
+                item.className = 'rule-item';
+                item.setAttribute('data-event-type', eventType);
+                if (currentRule && currentRule.eventType === eventType) {
+                    item.classList.add('active');
+                }
+
+                const isAbsence = eventType.startsWith('system.absence.');
+                const displayName = isAbsence ? formatAbsenceName(eventType) : eventType;
+                const absenceBadge = isAbsence ? '<span class="badge-absence">ABSENCE</span>' : '';
+
+                const pendingCount = rule.pendingEventCount || pendingMap[eventType] || 0;
+                const pendingBadge = pendingCount > 0
+                    ? `<span class="badge-pending-sm">⏳ ${pendingCount}</span>`
+                    : '';
+
+                const versionCount = rulesData.filter(r => r.eventType === eventType).length;
+                const versionLabel = versionCount > 1 ? `v${rule.version} (${versionCount} versions)` : `v${rule.version}`;
+
+                item.innerHTML = `
+                    <div class="rule-item-info">
+                        <span class="rule-item-name">${absenceBadge}${escapeHtml(displayName)}</span>
+                        <span class="rule-item-meta">
+                            ${versionLabel}
+                            ${pendingBadge}
+                        </span>
+                    </div>
+                    <div class="rule-item-actions">
+                        <button class="btn-row-action regenerate" title="Regenerate" onclick="event.stopPropagation(); regenerateForRule('${escapeHtml(eventType)}')">⟳</button>
+                    </div>
+                `;
+
+                item.addEventListener('click', () => loadRuleDetail(rule.id));
+                container.appendChild(item);
+        }
+
+        // ==========================================
+        // Load rule detail
+        // ==========================================
+        async function loadRuleDetail(id) {
+            try {
+                const response = await fetch(`${API_BASE}/rules/${id}`);
+                if (response.status === 404) {
+                    showToast('Rule not found — it may have been deleted.', 'error');
+                    loadRules();
+                    return;
+                }
+                if (!response.ok) throw new Error(`Failed to load rule: ${response.status}`);
+
+                const rule = await response.json();
+                currentRule = rule;
+
+                // Mark active in list by event type
+                document.querySelectorAll('.rule-item').forEach(el => {
+                    el.classList.toggle('active', el.getAttribute('data-event-type') === rule.eventType);
+                });
+
+                // Fill detail
+                const isAbsence = rule.eventType && rule.eventType.startsWith('system.absence.');
+                const displayName = isAbsence ? formatAbsenceName(rule.eventType) : rule.eventType;
+                const absenceBadge = isAbsence ? '<span class="badge-absence">ABSENCE</span> ' : '';
+                document.getElementById('detail-title').innerHTML = absenceBadge + escapeHtml(displayName);
+                document.getElementById('detail-version-badge').textContent = 'v' + (rule.version || 1);
+                document.getElementById('detail-rule-type').textContent = rule.ruleType || '—';
+                document.getElementById('detail-base-score').textContent = rule.baseScore != null ? rule.baseScore.toFixed(2) : '—';
+                document.getElementById('detail-created-at').textContent = rule.createdAt ? new Date(rule.createdAt).toLocaleDateString() : '—';
+                document.getElementById('detail-explanation').textContent = rule.explanation || 'No explanation provided.';
+
+                // Assigned count from cache
+                const cachedRule = rulesData.find(r => r.id === rule.id);
+                document.getElementById('detail-assigned').textContent = cachedRule ? cachedRule.assignedEventCount : '—';
+
+                // Pending
+                const pendingCount = pendingMap[rule.eventType] || 0;
+                const pendingItem = document.getElementById('detail-pending-item');
+                const reevalBtn = document.getElementById('btn-rule-reevaluate');
+                if (pendingCount > 0) {
+                    pendingItem.style.display = '';
+                    document.getElementById('detail-pending').textContent = pendingCount;
+                    reevalBtn.style.display = '';
+                    reevalBtn.textContent = `Re-evaluate (${pendingCount})`;
+                } else {
+                    pendingItem.style.display = 'none';
+                    reevalBtn.style.display = 'none';
+                }
+
+                // Pretty-print JSON
+                let formatted = '—';
+                if (rule.ruleDefinition) {
+                    try {
+                        formatted = JSON.stringify(JSON.parse(rule.ruleDefinition), null, 2);
+                    } catch (e) {
+                        formatted = rule.ruleDefinition;
+                    }
+                }
+                document.getElementById('detail-rule-definition').textContent = formatted;
+
+                // Render version history
+                renderVersionHistory(rule);
+
+                showRightPane('detail');
+
+            } catch (err) {
+                showToast(err.message || 'Failed to load rule.', 'error');
+            }
+        }
+
+        /**
+         * Render version history for the current rule's event type.
+         */
+        function renderVersionHistory(currentRuleDetail) {
+            const historyContainer = document.getElementById('version-history');
+            const historyList = document.getElementById('version-history-list');
+            
+            // Get all versions for this event type from cached data
+            const versions = rulesData
+                .filter(r => r.eventType === currentRuleDetail.eventType)
+                .sort((a, b) => (b.version || 0) - (a.version || 0));
+
+            if (versions.length <= 1) {
+                historyContainer.style.display = 'none';
+                return;
+            }
+
+            historyList.innerHTML = '';
+            versions.forEach(v => {
+                const item = document.createElement('div');
+                item.className = 'version-item' + (v.id === currentRuleDetail.id ? ' current' : '');
+                
+                const isCurrent = v.id === currentRuleDetail.id;
+                const dateStr = v.createdAt ? new Date(v.createdAt).toLocaleDateString() : '';
+                
+                item.innerHTML = `
+                    <div class="version-item-left">
+                        <span class="version-item-badge">v${v.version || 1}</span>
+                        <span class="version-item-date">${dateStr}</span>
+                        ${isCurrent ? '<span class="version-item-current-label">current</span>' : ''}
+                    </div>
+                    <span class="version-item-score">${v.baseScore != null ? v.baseScore.toFixed(2) : '—'}</span>
+                `;
+
+                if (!isCurrent) {
+                    item.addEventListener('click', () => loadRuleDetail(v.id));
+                }
+                historyList.appendChild(item);
+            });
+
+            historyContainer.style.display = 'block';
+        }
+
+        // ==========================================
+        // Delete rule
+        // ==========================================
+        async function deleteRule(id, eventType, version) {
+            const confirmed = window.confirm(`Delete rule for "${eventType}" (v${version})?`);
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/rules/${id}`, { method: 'DELETE' });
+                if (!response.ok && response.status !== 204) {
+                    throw new Error(`Delete failed: ${response.status}`);
+                }
+                showToast('Rule deleted.', 'success');
+                
+                await loadRules();
+
+                // If we deleted the currently viewed rule, try to show the latest version for that type
+                if (currentRule && currentRule.id === id) {
+                    const latestForType = rulesData.find(r => r.eventType === eventType);
+                    if (latestForType) {
+                        loadRuleDetail(latestForType.id);
+                    } else {
+                        currentRule = null;
+                        showRightPane('placeholder');
+                    }
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        function deleteCurrentRule() {
+            if (!currentRule) return;
+            deleteRule(currentRule.id, currentRule.eventType, currentRule.version);
+        }
+
+        // ==========================================
+        // Regenerate rule
+        // ==========================================
+        async function regenerateForRule(eventType) {
+            const confirmed = window.confirm(`Regenerate rule for "${eventType}"? This will create a new version using AI.`);
+            if (!confirmed) return;
+
+            showToast('Generating rule for ' + eventType + '…', 'success');
+
+            try {
+                const response = await fetch(`${API_BASE}/rules/regenerate/${encodeURIComponent(eventType)}`, {
+                    method: 'POST'
+                });
+
+                if (response.status === 404) {
+                    const data = await response.json().catch(() => ({}));
+                    showToast(data.error || 'Event type not recognized.', 'error');
+                    return;
+                }
+                if (response.status === 503) {
+                    const data = await response.json().catch(() => ({}));
+                    showToast(data.error || 'Rule generation failed. Try again later.', 'error');
+                    return;
+                }
+                if (!response.ok) throw new Error(`Unexpected error: ${response.status}`);
+
+                showToast('Rule regenerated successfully.', 'success');
+                await loadRules();
+
+            } catch (err) {
+                showToast(err.message || 'Generation failed.', 'error');
+            }
+        }
+
+        // ==========================================
+        // Re-evaluate pending
+        // ==========================================
+        async function reevaluatePending() {
+            if (!currentRule || !currentRule.eventType) return;
+
+            const btn = document.getElementById('btn-rule-reevaluate');
+            btn.disabled = true;
+            btn.textContent = 'Re-evaluating…';
+
+            try {
+                const response = await fetch(`${API_BASE}/rules/re-evaluate/${encodeURIComponent(currentRule.eventType)}`, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(text || `Failed: ${response.status}`);
+                }
+                const message = await response.text();
+                showToast(message, 'success');
+                await loadRules();
+                if (currentRule && currentRule.id) {
+                    await loadRuleDetail(currentRule.id);
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                const pc = pendingMap[currentRule?.eventType] || 0;
+                btn.textContent = pc > 0 ? `Re-evaluate (${pc})` : 'Re-evaluate';
+            }
+        }
+
+        // ==========================================
+        // Form — open/close/submit
+        // ==========================================
+        function openCreateForm() {
+            ruleFormEditMode = false;
+            ruleFormEditId = null;
+            document.getElementById('form-title').textContent = 'Create Rule';
+            document.getElementById('btn-form-submit').textContent = 'Create';
+            document.getElementById('rule-form').reset();
+            document.getElementById('form-rule-type').value = 'EVENT';
+            document.getElementById('form-base-score').value = '0';
+            document.getElementById('form-event-type').disabled = false;
+            hideFormError();
+            populateFormEventTypes();
+            showRightPane('form');
+        }
+
+        function openEditForm(rule) {
+            if (!rule) return;
+            ruleFormEditMode = true;
+            ruleFormEditId = rule.id;
+            document.getElementById('form-title').textContent = 'Edit Rule';
+            document.getElementById('btn-form-submit').textContent = 'Save Changes';
+            populateFormEventTypes().then(() => {
+                document.getElementById('form-event-type').value = rule.eventType || '';
+                document.getElementById('form-event-type').disabled = true;
+            });
+            document.getElementById('form-rule-type').value = rule.ruleType || 'EVENT';
+            document.getElementById('form-rule-definition').value = rule.ruleDefinition || '';
+            document.getElementById('form-base-score').value = rule.baseScore != null ? rule.baseScore : 0;
+            document.getElementById('form-explanation').value = rule.explanation || '';
+            hideFormError();
+            showRightPane('form');
+        }
+
+        function closeForm() {
+            showRightPane(currentRule ? 'detail' : 'placeholder');
+            ruleFormEditMode = false;
+            ruleFormEditId = null;
+        }
+
+        async function populateFormEventTypes() {
+            const select = document.getElementById('form-event-type');
+            select.innerHTML = '<option value="">Select event type…</option>';
+            try {
+                const response = await fetch(`${API_BASE}/event-types`);
+                if (!response.ok) throw new Error('Failed');
+                const types = await response.json();
+                types.forEach(t => {
+                    const option = document.createElement('option');
+                    option.value = t.name;
+                    option.textContent = t.name;
+                    select.appendChild(option);
+                });
+            } catch (e) { /* non-critical */ }
+        }
+
+        function showFormError(msg) {
+            const el = document.getElementById('form-error');
+            el.textContent = msg;
+            el.classList.add('visible');
+        }
+
+        function hideFormError() {
+            const el = document.getElementById('form-error');
+            el.textContent = '';
+            el.classList.remove('visible');
+        }
+
+        async function handleRuleFormSubmit(event) {
+            event.preventDefault();
+            hideFormError();
+
+            const eventType = document.getElementById('form-event-type').value.trim();
+            const ruleType = document.getElementById('form-rule-type').value.trim();
+            const ruleDefinition = document.getElementById('form-rule-definition').value.trim();
+            const baseScoreStr = document.getElementById('form-base-score').value.trim();
+            const explanation = document.getElementById('form-explanation').value.trim();
+
+            try { JSON.parse(ruleDefinition); } catch (e) {
+                showFormError('Rule Definition must be valid JSON.');
+                return false;
+            }
+
+            const baseScore = parseFloat(baseScoreStr);
+            if (isNaN(baseScore) || baseScore < -1.0 || baseScore > 1.0) {
+                showFormError('Base Score must be between -1.0 and 1.0.');
+                return false;
+            }
+
+            if (!ruleFormEditMode && !eventType) {
+                showFormError('Please select an event type.');
+                return false;
+            }
+
+            const body = { ruleType, ruleDefinition, baseScore, explanation };
+            if (!ruleFormEditMode) body.eventType = eventType;
+
+            const submitBtn = document.getElementById('btn-form-submit');
+            submitBtn.disabled = true;
+            submitBtn.textContent = ruleFormEditMode ? 'Saving…' : 'Creating…';
+
+            try {
+                const url = ruleFormEditMode ? `${API_BASE}/rules/${ruleFormEditId}` : `${API_BASE}/rules`;
+                const method = ruleFormEditMode ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    let msg = `Request failed: ${response.status}`;
+                    try { const d = await response.json(); if (d.error) msg = d.error; } catch (e) {}
+                    showFormError(msg);
+                    return false;
+                }
+
+                const savedRule = await response.json();
+                showToast(ruleFormEditMode ? 'Rule updated.' : 'Rule created.', 'success');
+                closeForm();
+                await loadRules();
+                loadRuleDetail(savedRule.id);
+
+            } catch (err) {
+                showFormError('Network error: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = ruleFormEditMode ? 'Save Changes' : 'Create';
+            }
+            return false;
+        }
+
+        // ==========================================
+        // Toast notifications
+        // ==========================================
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' visible';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3500);
+        }
+
+        // ==========================================
+        // Utilities
+        // ==========================================
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        /**
+         * Format absence event type names:
+         * system.absence.global -> "global"
+         * system.absence.type.PushEvent -> "PushEvent"
+         */
+        function formatAbsenceName(eventType) {
+            if (eventType === 'system.absence.global') return 'global';
+            if (eventType.startsWith('system.absence.type.')) return eventType.replace('system.absence.type.', '');
+            return eventType.replace('system.absence.', '');
+        }
+
+        /**
+         * Format event type for display in dropdowns/lists.
+         * Returns { label, isAbsence } 
+         */
+        function formatEventTypeDisplay(name) {
+            const isAbsence = name.startsWith('system.absence.');
+            const label = isAbsence ? formatAbsenceName(name) : name;
+            return { label, isAbsence };
+        }
+
+
+        // ==========================================
+        // Data Import tab
+        // ==========================================
+        let currentDataSource = 'github';
+        let importConfigLoaded = false;
+
+        async function loadImportConfig() {
+            if (importConfigLoaded) return;
+            try {
+                const response = await fetch(`${API_BASE}/loader/github-archive/config`);
+                if (!response.ok) return;
+                const config = await response.json();
+                document.getElementById('import-file-path').value = config.filePath || '';
+                document.getElementById('import-file-path').placeholder = 'e.g. /path/to/file.json.gz';
+                document.getElementById('import-dir-path').value = config.directoryPath || '';
+                document.getElementById('import-dir-path').placeholder = 'e.g. /path/to/directory';
+                importConfigLoaded = true;
+            } catch (e) {
+                // Non-critical — inputs will just be empty
+            }
+        }
+
+        function selectDataSource(source) {
+            currentDataSource = source;
+
+            // Update active state on source options
+            document.querySelectorAll('.source-option').forEach(el => {
+                el.classList.toggle('active', el.getAttribute('data-source') === source);
+            });
+
+            // Show/hide content
+            const githubPanel = document.getElementById('import-github');
+            const unsupportedPanel = document.getElementById('import-unsupported');
+
+            if (source === 'github') {
+                githubPanel.style.display = 'block';
+                unsupportedPanel.style.display = 'none';
+            } else {
+                githubPanel.style.display = 'none';
+                unsupportedPanel.style.display = 'flex';
+            }
+        }
+
+        async function triggerLoadFile() {
+            const btn = document.getElementById('btn-load-file');
+            btn.disabled = true;
+            btn.textContent = 'Loading…';
+
+            try {
+                const pathValue = document.getElementById('import-file-path').value.trim();
+                const params = pathValue ? '?path=' + encodeURIComponent(pathValue) : '';
+                const response = await fetch(`${API_BASE}/loader/github-archive${params}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    showToast(data.error || 'Load failed.', 'error');
+                } else {
+                    showToast(data.message || 'File loading started.', 'success');
+                }
+            } catch (err) {
+                showToast('Network error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Load File';
+            }
+        }
+
+        async function triggerLoadBatch() {
+            const btn = document.getElementById('btn-load-batch');
+            btn.disabled = true;
+            btn.textContent = 'Loading…';
+
+            try {
+                const pathValue = document.getElementById('import-dir-path').value.trim();
+                const params = pathValue ? '?path=' + encodeURIComponent(pathValue) : '';
+                const response = await fetch(`${API_BASE}/loader/github-archive/batch${params}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    showToast(data.error || 'Batch load failed.', 'error');
+                } else {
+                    showToast(data.message || 'Batch loading started.', 'success');
+                }
+            } catch (err) {
+                showToast('Network error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Load Batch';
+            }
+        }
+
+        async function triggerImportEvent() {
+            const textarea = document.getElementById('import-event-json');
+            const btn = document.getElementById('btn-import-event');
+            const jsonStr = textarea.value.trim();
+
+            if (!jsonStr) {
+                showToast('Paste an event JSON first.', 'error');
+                return;
+            }
+
+            // Validate JSON client-side
+            try {
+                JSON.parse(jsonStr);
+            } catch (e) {
+                showToast('Invalid JSON. Please check the format.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Importing…';
+
+            try {
+                const response = await fetch(`${API_BASE}/loader/github-archive/event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: jsonStr
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(text || `Import failed: ${response.status}`);
+                }
+
+                showToast('Event imported successfully.', 'success');
+                textarea.value = '';
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Import Event';
+            }
+        }
+
+        function clearEventJson() {
+            document.getElementById('import-event-json').value = '';
+        }
+
+        // ==========================================
+        // Analytics — chart logic (unchanged)
+        // ==========================================
         let chartInstance = null;
-
-        // Store the last loaded data so we can drill-down by index
         let lastTimeSeriesData = [];
         let lastResolution = 'HOUR';
         let lastEventType = '';
 
-        // ==========================================
-        // Initialization — runs on page load
-        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Apply saved theme
-            const savedTheme = localStorage.getItem('theme') || 'light';
+            const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
             document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
             setDefaultDateRange();
             loadEventTypes();
-
             document.getElementById('btn-load').addEventListener('click', loadTimeSeries);
             document.getElementById('btn-close-drilldown').addEventListener('click', closeDrillDown);
         });
 
-        // ==========================================
-        // Set default date range to last 7 days
-        // ==========================================
         function setDefaultDateRange() {
             const now = new Date();
             const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-
             document.getElementById('to-date').value = formatForDatetimeLocal(now);
             document.getElementById('from-date').value = formatForDatetimeLocal(sevenDaysAgo);
         }
 
-        // ==========================================
-        // Format a Date object for datetime-local input
-        // ==========================================
         function formatForDatetimeLocal(date) {
-            // datetime-local expects "YYYY-MM-DDTHH:mm"
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
@@ -379,50 +2388,128 @@
             return `${year}-${month}-${day}T${hours}:${minutes}`;
         }
 
-        // ==========================================
-        // Fetch event types and populate dropdown
-        // ==========================================
+        let allEventTypes = [];
+
         async function loadEventTypes() {
             try {
                 const response = await fetch(`${API_BASE}/event-types`);
-                if (!response.ok) throw new Error('Failed to load event types');
-
-                const types = await response.json();
-                const select = document.getElementById('event-type');
-
-                types.forEach(t => {
-                    const option = document.createElement('option');
-                    // Each event type object has a "name" field
-                    option.value = t.name;
-                    option.textContent = t.name;
-                    select.appendChild(option);
-                });
+                if (!response.ok) throw new Error('Failed');
+                allEventTypes = await response.json();
+                renderEventTypeOptions();
             } catch (err) {
-                // Non-blocking: if event types fail to load, user can still type or use "All"
                 console.warn('Could not load event types:', err.message);
             }
         }
 
-        // ==========================================
-        // Load time-series data and render chart
-        // ==========================================
+        function renderEventTypeOptions(filter = '') {
+            const container = document.getElementById('event-type-options');
+            container.innerHTML = '';
+            const currentValue = document.getElementById('event-type').value;
+            const lowerFilter = filter.toLowerCase();
+
+            // Split into regular and absence
+            const regular = [];
+            const absence = [];
+            allEventTypes.forEach(t => {
+                const { label, isAbsence } = formatEventTypeDisplay(t.name);
+                if (lowerFilter && !label.toLowerCase().includes(lowerFilter) && !t.name.toLowerCase().includes(lowerFilter)) return;
+                if (isAbsence) absence.push({ value: t.name, label, isAbsence: true });
+                else regular.push({ value: t.name, label, isAbsence: false });
+            });
+
+            // "All Types" option
+            const allOption = document.createElement('div');
+            allOption.className = 'custom-select-option' + (currentValue === '' ? ' selected' : '');
+            allOption.textContent = 'All Types';
+            allOption.addEventListener('click', () => selectEventType('', 'All Types'));
+            container.appendChild(allOption);
+
+            // Regular events
+            if (regular.length > 0) {
+                const groupLabel = document.createElement('div');
+                groupLabel.className = 'custom-select-group-label';
+                groupLabel.textContent = 'Events';
+                container.appendChild(groupLabel);
+                regular.forEach(item => {
+                    const opt = createEventTypeOption(item, currentValue);
+                    container.appendChild(opt);
+                });
+            }
+
+            // Absence events
+            if (absence.length > 0) {
+                const groupLabel = document.createElement('div');
+                groupLabel.className = 'custom-select-group-label';
+                groupLabel.textContent = 'Absence';
+                container.appendChild(groupLabel);
+                absence.forEach(item => {
+                    const opt = createEventTypeOption(item, currentValue);
+                    container.appendChild(opt);
+                });
+            }
+        }
+
+        function createEventTypeOption(item, currentValue) {
+            const opt = document.createElement('div');
+            opt.className = 'custom-select-option' + (currentValue === item.value ? ' selected' : '');
+            if (item.isAbsence) {
+                opt.innerHTML = '<span class="option-badge">ABS</span>' + escapeHtml(item.label);
+            } else {
+                opt.textContent = item.label;
+            }
+            opt.addEventListener('click', () => {
+                const displayLabel = item.isAbsence ? '⌁ ' + item.label : item.label;
+                selectEventType(item.value, displayLabel);
+            });
+            return opt;
+        }
+
+        function selectEventType(value, label) {
+            document.getElementById('event-type').value = value;
+            document.getElementById('event-type-label').textContent = label;
+            closeEventTypeDropdown();
+        }
+
+        function toggleEventTypeDropdown() {
+            const select = document.getElementById('event-type-select');
+            if (select.classList.contains('open')) {
+                closeEventTypeDropdown();
+            } else {
+                select.classList.add('open');
+                document.getElementById('event-type-search').value = '';
+                renderEventTypeOptions();
+                document.getElementById('event-type-search').focus();
+            }
+        }
+
+        function closeEventTypeDropdown() {
+            document.getElementById('event-type-select').classList.remove('open');
+        }
+
+        function filterEventTypeOptions() {
+            const query = document.getElementById('event-type-search').value;
+            renderEventTypeOptions(query);
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const select = document.getElementById('event-type-select');
+            if (select && !select.contains(e.target)) {
+                closeEventTypeDropdown();
+            }
+        });
+
         async function loadTimeSeries() {
             const eventType = document.getElementById('event-type').value;
             const resolution = document.getElementById('resolution').value;
             const fromDate = document.getElementById('from-date').value;
             const toDate = document.getElementById('to-date').value;
 
-            // Validate dates are filled
-            if (!fromDate || !toDate) {
-                alert('Please select both From and To dates.');
-                return;
-            }
+            if (!fromDate || !toDate) { alert('Please select both From and To dates.'); return; }
 
-            // Convert datetime-local values to ISO Instant strings
             const fromInstant = new Date(fromDate).toISOString();
             const toInstant = new Date(toDate).toISOString();
 
-            // Build query string
             const params = new URLSearchParams();
             if (eventType) params.set('eventType', eventType);
             params.set('from', fromInstant);
@@ -432,189 +2519,93 @@
             try {
                 const response = await fetch(`${API_BASE}/analytics/timeseries?${params}`);
                 if (!response.ok) throw new Error(`API error: ${response.status}`);
-
                 const data = await response.json();
-
-                // Store for drill-down use
                 lastTimeSeriesData = data;
                 lastResolution = resolution;
                 lastEventType = eventType;
-
                 renderChart(data, resolution);
-                closeDrillDown(); // Hide drill-down when loading new data
-
+                closeDrillDown();
             } catch (err) {
                 alert('Error loading time-series: ' + err.message);
             }
         }
 
-        // ==========================================
-        // Render the chart (destroys previous one)
-        // ==========================================
         function renderChart(data, resolution) {
-            // Destroy old chart to prevent memory leaks
-            if (chartInstance) {
-                chartInstance.destroy();
-                chartInstance = null;
-            }
-
+            if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
             const ctx = document.getElementById('chart').getContext('2d');
-
-            // Prepare labels and datasets
             const labels = data.map(d => formatTimestamp(d.bucketStart, resolution));
             const sentimentValues = data.map(d => d.avgSentiment);
             const countValues = data.map(d => d.eventCount);
 
             chartInstance = new Chart(ctx, {
-                type: 'bar', // base type for the mixed chart
+                type: 'bar',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [
                         {
-                            // Sentiment line on left Y axis
-                            type: 'line',
-                            label: 'Avg Sentiment',
-                            data: sentimentValues,
-                            borderColor: getComputedStyle(document.documentElement)
-                                .getPropertyValue('--color-sentiment').trim(),
-                            backgroundColor: 'transparent',
-                            borderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6,
-                            yAxisID: 'y-sentiment',
-                            tension: 0.3
+                            type: 'line', label: 'Avg Sentiment', data: sentimentValues,
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-sentiment').trim(),
+                            backgroundColor: 'transparent', borderWidth: 2, pointRadius: 4,
+                            pointHoverRadius: 6, yAxisID: 'y-sentiment', tension: 0.3
                         },
                         {
-                            // Event count bars on right Y axis
-                            type: 'bar',
-                            label: 'Event Count',
-                            data: countValues,
-                            backgroundColor: getComputedStyle(document.documentElement)
-                                .getPropertyValue('--color-count').trim(),
-                            borderColor: getComputedStyle(document.documentElement)
-                                .getPropertyValue('--color-count-border').trim(),
-                            borderWidth: 1,
-                            yAxisID: 'y-count'
+                            type: 'bar', label: 'Event Count', data: countValues,
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-count').trim(),
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-count-border').trim(),
+                            borderWidth: 1, yAxisID: 'y-count'
                         }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
                     onClick: handleChartClick,
                     scales: {
-                        'y-sentiment': {
-                            type: 'linear',
-                            position: 'left',
-                            min: -1.0,
-                            max: 1.0,
-                            title: {
-                                display: true,
-                                text: 'Avg Sentiment'
-                            },
-                            grid: {
-                                drawOnChartArea: true
-                            }
-                        },
-                        'y-count': {
-                            type: 'linear',
-                            position: 'right',
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Event Count'
-                            },
-                            grid: {
-                                drawOnChartArea: false
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        }
+                        'y-sentiment': { type: 'linear', position: 'left', min: -1.0, max: 1.0, title: { display: true, text: 'Avg Sentiment' }, grid: { drawOnChartArea: true } },
+                        'y-count': { type: 'linear', position: 'right', beginAtZero: true, title: { display: true, text: 'Event Count' }, grid: { drawOnChartArea: false } },
+                        x: { title: { display: true, text: 'Time' } }
                     },
                     plugins: {
-                        tooltip: {
-                            callbacks: {
-                                title: (items) => {
-                                    if (items.length === 0) return '';
-                                    const idx = items[0].dataIndex;
-                                    const bucket = lastTimeSeriesData[idx];
-                                    // Show full date/time in tooltip
-                                    return new Date(bucket.bucketStart).toLocaleString();
-                                }
-                            }
-                        }
+                        tooltip: { callbacks: { title: (items) => { if (items.length === 0) return ''; return new Date(lastTimeSeriesData[items[0].dataIndex].bucketStart).toLocaleString(); } } }
                     }
                 }
             });
         }
 
-        // ==========================================
-        // Handle click on a chart data point
-        // ==========================================
         function handleChartClick(event, elements) {
             if (!elements || elements.length === 0) return;
-
-            const index = elements[0].index;
-            const bucket = lastTimeSeriesData[index];
-
-            if (!bucket) return;
-
-            loadDrillDown(bucket.bucketStart);
+            const bucket = lastTimeSeriesData[elements[0].index];
+            if (bucket) loadDrillDown(bucket.bucketStart);
         }
 
-        // ==========================================
-        // Fetch drill-down data for a specific bucket
-        // ==========================================
         async function loadDrillDown(bucketStartMs) {
-            // Convert millis to ISO Instant for the API
             const bucketInstant = new Date(bucketStartMs).toISOString();
-
             const params = new URLSearchParams();
             if (lastEventType) params.set('eventType', lastEventType);
             params.set('bucket', bucketInstant);
             params.set('resolution', lastResolution);
-
             try {
                 const response = await fetch(`${API_BASE}/analytics/details?${params}`);
                 if (!response.ok) throw new Error(`API error: ${response.status}`);
-
                 const details = await response.json();
                 renderDrillDown(details, bucketStartMs);
-
             } catch (err) {
                 alert('Error loading drill-down: ' + err.message);
             }
         }
 
-        // ==========================================
-        // Render drill-down table
-        // ==========================================
         function renderDrillDown(details, bucketStartMs) {
             const container = document.getElementById('drilldown');
             const title = document.getElementById('drilldown-title');
             const tbody = document.getElementById('drilldown-body');
-
-            // Set title with bucket timestamp
             title.textContent = `Events in bucket: ${new Date(bucketStartMs).toLocaleString()}`;
-
-            // Clear previous rows
             tbody.innerHTML = '';
-
-            // Populate rows from the events array
             if (details.events && details.events.length > 0) {
                 details.events.forEach(ev => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${escapeHtml(ev.eventType || '-')}</td>
-                        <td>${formatEventTimestamp(ev.eventTimestamp)}</td>
+                        <td>${ev.eventTimestamp ? new Date(ev.eventTimestamp).toLocaleString() : '-'}</td>
                         <td>${ev.sentimentScore != null ? ev.sentimentScore.toFixed(3) : '-'}</td>
                         <td>${ev.confidence != null ? ev.confidence.toFixed(3) : '-'}</td>
                     `;
@@ -622,64 +2613,26 @@
                 });
             } else {
                 const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="4" style="text-align:center; color:var(--color-text-muted);">No events in this bucket</td>';
+                row.innerHTML = '<td colspan="4" style="text-align:center;color:var(--color-text-muted);">No events in this bucket</td>';
                 tbody.appendChild(row);
             }
-
-            // Show the drill-down section
             container.classList.add('visible');
         }
 
-        // ==========================================
-        // Close the drill-down table
-        // ==========================================
         function closeDrillDown() {
             document.getElementById('drilldown').classList.remove('visible');
         }
 
-        // ==========================================
-        // Format bucket timestamp based on resolution
-        // ==========================================
         function formatTimestamp(epochMs, resolution) {
             const date = new Date(epochMs);
-
             switch (resolution) {
-                case 'MINUTE':
-                    // Show time with hours:minutes
-                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                case 'HOUR':
-                    // Show date + hour
-                    return date.toLocaleDateString([], { month: 'short', day: 'numeric' })
-                         + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                case 'DAY':
-                    // Show date only
-                    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-                case 'WEEK':
-                    // Show week start date
-                    return 'W ' + date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-                case 'MONTH':
-                    // Show month and year
-                    return date.toLocaleDateString([], { year: 'numeric', month: 'short' });
-                default:
-                    return date.toLocaleString();
+                case 'MINUTE': return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                case 'HOUR': return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                case 'DAY': return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                case 'WEEK': return 'W ' + date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                case 'MONTH': return date.toLocaleDateString([], { year: 'numeric', month: 'short' });
+                default: return date.toLocaleString();
             }
-        }
-
-        // ==========================================
-        // Format event timestamp (millis to readable)
-        // ==========================================
-        function formatEventTimestamp(epochMs) {
-            if (!epochMs) return '-';
-            return new Date(epochMs).toLocaleString();
-        }
-
-        // ==========================================
-        // Simple HTML escaping to prevent XSS
-        // ==========================================
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
         }
     </script>
 </body>
