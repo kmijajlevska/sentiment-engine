@@ -67,9 +67,11 @@ public class GithubArchiveDataSource implements FileDataSource {
 					EventDTO eventDTO = DataSourceTransformer.generateEvent(eventType, timestamp, source, line);
 					bufferProducer.sendToBuffer(eventDTO);
 					count++;
-					logger.info("[DATA-IMPORT] Loaded {} events from {}..", count, SOURCE_NAME);
 				} catch (Exception e) {
 					logger.error("[DATA-IMPORT] An error occurred while processing line {} in {}", lineNumber, filePath, e);
+				}
+				if (count % 100 == 0) {
+					logger.info("[DATA-IMPORT] Loaded {} events from {}..", count, SOURCE_NAME);
 				}
 
 			}

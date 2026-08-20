@@ -23,6 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OpenAiClient implements GenAiClient {
 
+	private final ObjectMapper objectMapper;
 	@Value("${genai.openai.api-key}")
 	private String apiKey;
 	@Value("${genai.openai.model}")
@@ -31,9 +32,7 @@ public class OpenAiClient implements GenAiClient {
 	private String url;
 	@Value("${genai.openai.temperature}")
 	private double temperature;
-
 	private RestClient restClient;
-	private final ObjectMapper objectMapper;
 
 	@PostConstruct
 	void init() {

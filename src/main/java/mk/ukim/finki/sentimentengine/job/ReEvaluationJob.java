@@ -87,13 +87,12 @@ public class ReEvaluationJob {
 						totalReEvaluated++;
 					}
 				} catch (Exception e) {
-					logger.warn("[RE-EVALUATION][JOB] Failed to re-evaluate event {}: {}",
-						pendingEvent.getEventId(), e.getMessage());
+					logger.warn("[RE-EVALUATION][JOB] Failed to re-evaluate event {}: {}", pendingEvent.getEventId(), e.getMessage());
 				}
 			}
 		}
 
-		logger.info("[RE-EVALUATION][JOB] Finished job. Re-evaluated {} events in {} ms",
+		logger.info("[RE-EVALUATION][JOB] Finished job for {} events in {} ms",
 			totalReEvaluated, System.currentTimeMillis() - start);
 	}
 }
