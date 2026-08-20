@@ -1,5 +1,6 @@
 package mk.ukim.finki.sentimentengine.api;
 
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.BucketDetailsDTO;
 import mk.ukim.finki.sentimentengine.data.dto.BucketMetricsDTO;
 import mk.ukim.finki.sentimentengine.data.entity.TimeResolution;
@@ -18,13 +19,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("analytics")
+@RequiredArgsConstructor
 public class EventAnalyticsController {
 
 	private final AggregationService aggregationService;
-
-	public EventAnalyticsController(AggregationService aggregationService) {
-		this.aggregationService = aggregationService;
-	}
 
 
 	@GetMapping("/timeseries")

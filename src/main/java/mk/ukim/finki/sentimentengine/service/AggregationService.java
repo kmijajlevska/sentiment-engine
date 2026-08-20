@@ -1,6 +1,7 @@
 package mk.ukim.finki.sentimentengine.service;
 
 
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.BucketDetailsDTO;
 import mk.ukim.finki.sentimentengine.data.dto.BucketMetricsDTO;
 import mk.ukim.finki.sentimentengine.data.dto.ProcessedEventDTO;
@@ -20,14 +21,11 @@ import java.util.stream.Collectors;
  * @author kristina
  */
 @Service
+@RequiredArgsConstructor
 public class AggregationService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AggregationService.class);
 	private final ProcessedEventService processedEventService;
-
-	public AggregationService(ProcessedEventService processedEventService) {
-		this.processedEventService = processedEventService;
-	}
 
 	public List<BucketMetricsDTO> getMetricsPerTimeBucket(String eventType, long from, long to, TimeResolution resolution) {
 		logger.info("[AGGREGATION] Getting aggregated metrics for eventType:{} from:{} to:{} in resolution:{}",

@@ -1,6 +1,7 @@
 package mk.ukim.finki.sentimentengine.service;
 
 
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.entity.RawEvent;
 import mk.ukim.finki.sentimentengine.data.entity.SentimentResult;
 import mk.ukim.finki.sentimentengine.data.entity.SentimentRule;
@@ -20,14 +21,11 @@ import java.util.Map;
  * @author kristina
  */
 @Service
+@RequiredArgsConstructor
 public class SentimentEvaluationEngine {
 
 	private static final Logger logger = LoggerFactory.getLogger(SentimentEvaluationEngine.class);
 	private final ObjectMapper objectMapper;
-
-	public SentimentEvaluationEngine(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-	}
 
 
 	public SentimentResult evaluate(RawEvent event, SentimentRule rule) {
@@ -48,7 +46,8 @@ public class SentimentEvaluationEngine {
 				logger.warn("[SENTIMENT-EVALUATION] Rule definition is null for rule {}, returning base score: {}", rule.getId(), baseScore);
 				return new SentimentResult(Math.clamp(baseScore, -1.0, 1.0), rule.getId(), 0.0);
 			}
-			definition = objectMapper.readValue(ruleDefinition, new TypeReference<>() {});
+			definition = objectMapper.readValue(ruleDefinition, new TypeReference<>() {
+			});
 
 		} catch (Exception e) {
 			// error while parsing the rule definition, return base score

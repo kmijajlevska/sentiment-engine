@@ -1,6 +1,7 @@
 package mk.ukim.finki.sentimentengine.service;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
 import mk.ukim.finki.sentimentengine.data.dto.MetricsDTO;
 import mk.ukim.finki.sentimentengine.data.entity.EventType;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author kristina
  */
 @Service
+@RequiredArgsConstructor
 public class AbsenceDetectionService {
 
 	public static final String ABSENCE_EVENT_TYPE = "system.absence.";
@@ -44,16 +46,6 @@ public class AbsenceDetectionService {
 
 	@Value("${absence.threshold-ms.per-type:600000}")
 	private int absencePerTypeThresholdMs;
-
-	public AbsenceDetectionService(EventTypeRegistry eventTypeRegistry,
-	                               RawEventRepository rawEventRepository,
-	                               InternalBufferProducer bufferProducer, RawEventService rawEventService, ObjectMapper objectMapper) {
-		this.eventTypeRegistry = eventTypeRegistry;
-		this.rawEventRepository = rawEventRepository;
-		this.bufferProducer = bufferProducer;
-		this.rawEventService = rawEventService;
-		this.objectMapper = objectMapper;
-	}
 
 	@PostConstruct
 	public void init() {

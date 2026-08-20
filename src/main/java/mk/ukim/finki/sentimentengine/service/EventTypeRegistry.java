@@ -2,6 +2,7 @@ package mk.ukim.finki.sentimentengine.service;
 
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.entity.EventType;
 import mk.ukim.finki.sentimentengine.data.service.EventTypeService;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author kristina
  */
 @Service
+@RequiredArgsConstructor
 public class EventTypeRegistry {
 
 	private static final Logger logger = LoggerFactory.getLogger(EventTypeRegistry.class);
@@ -23,11 +25,6 @@ public class EventTypeRegistry {
 	private final EventTypeService eventTypeService;
 	private final ConcurrentHashMap<String, Boolean> knownTypes = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, Long> lastSeenPerType = new ConcurrentHashMap<>();
-
-
-	public EventTypeRegistry(EventTypeService eventTypeService) {
-		this.eventTypeService = eventTypeService;
-	}
 
 	@PostConstruct
 	void init() {
@@ -37,7 +34,8 @@ public class EventTypeRegistry {
 			knownTypes.put(et.getName(), Boolean.TRUE);
 			if (et.getLastSeenAt() > 0) {
 				lastSeenPerType.put(et.getName(), et.getLastSeenAt());
-			}});
+			}
+		});
 		logger.info("[TYPE-REGISTRY] EventTypeRegistry initialized with known types: {}", knownTypes.keySet());
 	}
 
@@ -76,6 +74,7 @@ public class EventTypeRegistry {
 		}
 	}
 
+	// this method is invoked after each event, should be optimized with cache writes and periodical flushes to db
 	public void recordOccurrence(String eventType, long timestamp) {
 		EventType eventTypeEntity = eventTypeService.findByName(eventType);
 		if (eventTypeEntity != null) {

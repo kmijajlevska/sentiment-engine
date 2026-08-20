@@ -1,6 +1,7 @@
 package mk.ukim.finki.sentimentengine.api;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
 import mk.ukim.finki.sentimentengine.data.dto.gharchive.GhArchiveEvent;
 import mk.ukim.finki.sentimentengine.importer.AsyncExecutor;
@@ -27,6 +28,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("loader")
+@RequiredArgsConstructor
 public class LoaderController {
 
 	private static final Logger log = LoggerFactory.getLogger(LoaderController.class);
@@ -38,16 +40,6 @@ public class LoaderController {
 	private String ghArchiveFilePath;
 	@Value("${events.datasource.gh-archive.directory.path}")
 	private String ghArchiveDirectoryPath;
-
-	public LoaderController(GithubArchiveDataSource githubArchiveDataSource,
-	                        AsyncExecutor asyncExecutor,
-	                        InternalBufferProducer bufferProducer,
-	                        ObjectMapper objectMapper) {
-		this.githubArchiveDataSource = githubArchiveDataSource;
-		this.asyncExecutor = asyncExecutor;
-		this.bufferProducer = bufferProducer;
-		this.objectMapper = objectMapper;
-	}
 
 	@GetMapping("/github-archive/config")
 	public ResponseEntity<Map<String, String>> getConfig() {

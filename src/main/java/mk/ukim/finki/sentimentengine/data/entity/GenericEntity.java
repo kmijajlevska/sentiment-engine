@@ -1,6 +1,8 @@
 package mk.ukim.finki.sentimentengine.data.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -11,6 +13,8 @@ import java.util.Date;
  * @author kristina
  */
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class GenericEntity {
 
 	@Id
@@ -22,20 +26,4 @@ public abstract class GenericEntity {
 	@Column(name = "created_at", nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
 }

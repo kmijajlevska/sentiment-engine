@@ -1,5 +1,8 @@
 package mk.ukim.finki.sentimentengine.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.PendingCountDTO;
 import mk.ukim.finki.sentimentengine.data.dto.RuleDetailDTO;
 import mk.ukim.finki.sentimentengine.data.dto.RuleListItemDTO;
@@ -11,8 +14,6 @@ import mk.ukim.finki.sentimentengine.data.service.RawEventService;
 import mk.ukim.finki.sentimentengine.data.service.SentimentRuleService;
 import mk.ukim.finki.sentimentengine.service.RuleGenerationService;
 import mk.ukim.finki.sentimentengine.service.SentimentEvaluationEngine;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/rules")
 @Tag(name = "Rules", description = "Sentiment rule management")
+@RequiredArgsConstructor
 public class RulesController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RulesController.class);
@@ -40,22 +42,6 @@ public class RulesController {
 	private final EventTypeService eventTypeService;
 	private final RuleGenerationService ruleGenerationService;
 	private final ObjectMapper objectMapper;
-
-	public RulesController(SentimentRuleService sentimentRuleService,
-	                       ProcessedEventService processedEventService,
-	                       RawEventService rawEventService,
-	                       SentimentEvaluationEngine evaluationEngine,
-	                       EventTypeService eventTypeService,
-	                       RuleGenerationService ruleGenerationService,
-	                       ObjectMapper objectMapper) {
-		this.sentimentRuleService = sentimentRuleService;
-		this.processedEventService = processedEventService;
-		this.rawEventService = rawEventService;
-		this.evaluationEngine = evaluationEngine;
-		this.eventTypeService = eventTypeService;
-		this.ruleGenerationService = ruleGenerationService;
-		this.objectMapper = objectMapper;
-	}
 
 	@GetMapping
 	@Operation(summary = "List all rules with assigned and pending counts")
@@ -285,7 +271,7 @@ public class RulesController {
 		return ResponseEntity.ok(dto);
 	}
 
-	@PostMapping("/re-evaluate/{eventType}")
+	@PostMapping("/reevaluate/{eventType}")
 	@Operation(summary = "Re-evaluate pending events for an event type")
 	public ResponseEntity<String> reEvaluateByEventType(@PathVariable String eventType) {
 		SentimentRule rule = sentimentRuleService.findTopByEventTypeOrderByVersionDesc(eventType);

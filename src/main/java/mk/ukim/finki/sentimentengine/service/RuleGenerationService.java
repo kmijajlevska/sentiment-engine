@@ -1,6 +1,7 @@
 package mk.ukim.finki.sentimentengine.service;
 
 
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.ai.GenAiClient;
 import mk.ukim.finki.sentimentengine.ai.GenAiException;
 import mk.ukim.finki.sentimentengine.data.dto.GenAiRuleResponse;
@@ -18,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static mk.ukim.finki.sentimentengine.util.RuleGenerationUtils.FALLBACK_JSON;
 import static mk.ukim.finki.sentimentengine.util.RuleGenerationUtils.PROMPT_TEMPLATE;
 
 /**
@@ -27,6 +27,7 @@ import static mk.ukim.finki.sentimentengine.util.RuleGenerationUtils.PROMPT_TEMP
  * @author kristina
  */
 @Service
+@RequiredArgsConstructor
 public class RuleGenerationService {
 
 	private static final Logger log = LoggerFactory.getLogger(RuleGenerationService.class);
@@ -40,14 +41,6 @@ public class RuleGenerationService {
 	private int maxRetries;
 	@Value("${rulegen.retry-delay-ms:1000}")
 	private long delayMs;
-
-	public RuleGenerationService(GenAiClient genAiClient, EventTypeService eventTypeService,
-	                             ObjectMapper objectMapper, SentimentRuleService sentimentRuleService) {
-		this.genAiClient = genAiClient;
-		this.sentimentRuleService = sentimentRuleService;
-		this.eventTypeService = eventTypeService;
-		this.objectMapper = objectMapper;
-	}
 
 	public SentimentRule generateRule(String eventType, String samplePayload) {
 		return generateRule(eventType, samplePayload, false);

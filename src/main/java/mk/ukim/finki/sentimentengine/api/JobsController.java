@@ -32,7 +32,7 @@ public class JobsController {
 		ruleGenerationJob.generateMissingRules();
 	}
 
-	@PostMapping("/re-evaluate")
+	@PostMapping("/reevaluate")
 	public void reEvaluatePendingEvents() {
 		if (reEvaluationJob == null) {
 			logger.warn("[API][JOB] Re-Evaluation job is not enabled");
@@ -41,8 +41,5 @@ public class JobsController {
 		logger.info("[API][JOB] Manually invoking the Re-Evaluation job..");
 		reEvaluationJob.reEvaluatePendingEvents();
 	}
-
-	//todo add endpoint to manually regenerate a new rule for event (new version)
-
 
 }

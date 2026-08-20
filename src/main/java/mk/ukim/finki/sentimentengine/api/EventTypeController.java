@@ -1,5 +1,6 @@
 package mk.ukim.finki.sentimentengine.api;
 
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.entity.EventType;
 import mk.ukim.finki.sentimentengine.service.EventTypeRegistry;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +14,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("event-types")
+@RequiredArgsConstructor
 public class EventTypeController {
 
 	private final EventTypeRegistry eventTypeRegistry;
-
-	public EventTypeController(EventTypeRegistry eventTypeRegistry) {
-		this.eventTypeRegistry = eventTypeRegistry;
-	}
 
 	@GetMapping
 	public List<EventType> getAllEventTypes() {

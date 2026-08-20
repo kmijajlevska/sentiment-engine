@@ -1,6 +1,7 @@
 package mk.ukim.finki.sentimentengine.service;
 
 
+import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
 import mk.ukim.finki.sentimentengine.data.entity.*;
 import mk.ukim.finki.sentimentengine.data.service.ProcessedEventService;
@@ -19,6 +20,7 @@ import java.util.Date;
  * @author kristina
  */
 @Service
+@RequiredArgsConstructor
 public class EventProcessor {
 
 	private static final Logger logger = LoggerFactory.getLogger(EventProcessor.class);
@@ -33,20 +35,6 @@ public class EventProcessor {
 
 	@Value("${rulegen.auto.enabled:true}")
 	private boolean autoRuleGenEnabled;
-
-	public EventProcessor(RawEventService rawEventService,
-	                      EventTypeRegistry eventTypeRegistry,
-	                      SentimentRuleService sentimentRuleService,
-	                      SentimentEvaluationEngine evaluationEngine,
-	                      ProcessedEventService processedEventService, RuleGenerationService ruleGenerationService, AbsenceDetectionService absenceDetectionService) {
-		this.rawEventService = rawEventService;
-		this.eventTypeRegistry = eventTypeRegistry;
-		this.sentimentRuleService = sentimentRuleService;
-		this.evaluationEngine = evaluationEngine;
-		this.processedEventService = processedEventService;
-		this.ruleGenerationService = ruleGenerationService;
-		this.absenceDetectionService = absenceDetectionService;
-	}
 
 	public void onEvent(EventDTO event) {
 		boolean isAbsenceEvent = event.getEventType().startsWith(AbsenceDetectionService.ABSENCE_EVENT_TYPE);

@@ -2,6 +2,7 @@ package mk.ukim.finki.sentimentengine.ai;
 
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
@@ -14,13 +15,12 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.logging.log4j.util.StringBuilders.escapeJson;
-
 /**
  * @author kristina
  */
 @Component
 @ConditionalOnProperty(name = "genai.provider", havingValue = "openai")
+@RequiredArgsConstructor
 public class OpenAiClient implements GenAiClient {
 
 	@Value("${genai.openai.api-key}")
@@ -34,10 +34,6 @@ public class OpenAiClient implements GenAiClient {
 
 	private RestClient restClient;
 	private final ObjectMapper objectMapper;
-
-	public OpenAiClient(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-	}
 
 	@PostConstruct
 	void init() {

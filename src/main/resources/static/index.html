@@ -72,7 +72,11 @@
         /* ========================================
            Base styles
            ======================================== */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: var(--font-family);
@@ -508,7 +512,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .btn-retry {
@@ -683,6 +689,7 @@
             background: var(--color-primary);
             color: white;
         }
+
         .btn-action.primary:hover:not(:disabled) {
             background: var(--color-primary-hover);
         }
@@ -691,6 +698,7 @@
             background: var(--color-danger);
             color: white;
         }
+
         .btn-action.danger:hover:not(:disabled) {
             background: var(--color-danger-hover);
         }
@@ -699,6 +707,7 @@
             background: var(--color-warning);
             color: white;
         }
+
         .btn-action.warning:hover:not(:disabled) {
             background: var(--color-warning-hover);
         }
@@ -708,6 +717,7 @@
             border: 1px solid var(--color-border);
             color: var(--color-text-muted);
         }
+
         .btn-action.ghost:hover:not(:disabled) {
             background: var(--color-surface);
             border-color: var(--color-text-muted);
@@ -985,8 +995,14 @@
         }
 
         @keyframes dropdown-enter {
-            from { opacity: 0; transform: translateY(-4px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .custom-select-search {
@@ -1152,8 +1168,14 @@
         }
 
         @keyframes fade-in {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .import-cards {
@@ -1311,38 +1333,43 @@
 </head>
 <body>
 
-    <!-- ========================================
-         Header
-         ======================================== -->
-    <div class="header">
-        <h1>Sentiment Engine Dashboard</h1>
-        <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-    </div>
+<!-- ========================================
+     Header
+     ======================================== -->
+<div class="header">
+    <h1>Sentiment Engine Dashboard</h1>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+</div>
 
-    <!-- ========================================
-         Tab Navigation
-         ======================================== -->
-    <div class="tab-bar">
-        <button class="tab-active" onclick="switchTab('analytics')">Analytics</button>
-        <button onclick="switchTab('rules')">Rule Management</button>
-        <button onclick="switchTab('import')">Data Import</button>
-    </div>
+<!-- ========================================
+     Tab Navigation
+     ======================================== -->
+<div class="tab-bar">
+    <button class="tab-active" onclick="switchTab('analytics')">Analytics</button>
+    <button onclick="switchTab('rules')">Rule Management</button>
+    <button onclick="switchTab('import')">Data Import</button>
+</div>
 
-    <!-- ========================================
-         Analytics Tab Content
-         ======================================== -->
-    <div id="tab-analytics">
+<!-- ========================================
+     Analytics Tab Content
+     ======================================== -->
+<div id="tab-analytics">
 
     <div class="controls">
         <div class="control-group">
             <label>Event Type</label>
             <div class="custom-select" id="event-type-select">
-                <button type="button" class="custom-select-trigger" id="event-type-trigger" onclick="toggleEventTypeDropdown()">
+                <button type="button" class="custom-select-trigger" id="event-type-trigger"
+                        onclick="toggleEventTypeDropdown()">
                     <span id="event-type-label">All Types</span>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                    </svg>
                 </button>
                 <div class="custom-select-dropdown" id="event-type-dropdown">
-                    <input type="text" class="custom-select-search" id="event-type-search" placeholder="Search…" oninput="filterEventTypeOptions()">
+                    <input type="text" class="custom-select-search" id="event-type-search" placeholder="Search…"
+                           oninput="filterEventTypeOptions()">
                     <div class="custom-select-options" id="event-type-options"></div>
                 </div>
             </div>
@@ -1384,221 +1411,242 @@
         </div>
         <table>
             <thead>
-                <tr>
-                    <th>Event Type</th>
-                    <th>Timestamp</th>
-                    <th>Sentiment Score</th>
-                    <th>Confidence</th>
-                </tr>
+            <tr>
+                <th>Event Type</th>
+                <th>Timestamp</th>
+                <th>Sentiment Score</th>
+                <th>Confidence</th>
+            </tr>
             </thead>
             <tbody id="drilldown-body"></tbody>
         </table>
     </div>
 
-    </div> <!-- end #tab-analytics -->
+</div> <!-- end #tab-analytics -->
 
-    <!-- ========================================
-         Rule Management Tab — Split Pane
-         ======================================== -->
-    <div id="tab-rules" style="display:none">
-        <div class="rules-split-pane">
+<!-- ========================================
+     Rule Management Tab — Split Pane
+     ======================================== -->
+<div id="tab-rules" style="display:none">
+    <div class="rules-split-pane">
 
-            <!-- Left pane: rule list -->
-            <div class="rules-left-pane">
-                <div class="rules-left-header">
-                    <h3>Rules</h3>
-                    <button class="btn-icon-create" onclick="openCreateForm()" title="Create new rule">+</button>
+        <!-- Left pane: rule list -->
+        <div class="rules-left-pane">
+            <div class="rules-left-header">
+                <h3>Rules</h3>
+                <button class="btn-icon-create" onclick="openCreateForm()" title="Create new rule">+</button>
+            </div>
+
+            <div class="rules-list-scroll" id="rules-list-scroll">
+                <!-- Loading state -->
+                <div id="rules-loading" class="rules-state" style="display:none">
+                    <div class="rules-spinner"></div>
+                    <span>Loading rules…</span>
                 </div>
+                <!-- Error state -->
+                <div id="rules-error" class="rules-state" style="display:none">
+                    <p id="rules-error-message">Failed to load rules.</p>
+                    <button class="btn-retry" onclick="loadRules()">Retry</button>
+                </div>
+                <!-- Empty state -->
+                <div id="rules-empty" class="rules-state" style="display:none">
+                    <p>No rules yet.<br>Create one to get started.</p>
+                </div>
+                <!-- Rule items rendered here -->
+                <div id="rules-list-items"></div>
+            </div>
+        </div>
 
-                <div class="rules-list-scroll" id="rules-list-scroll">
-                    <!-- Loading state -->
-                    <div id="rules-loading" class="rules-state" style="display:none">
-                        <div class="rules-spinner"></div>
-                        <span>Loading rules…</span>
+        <!-- Right pane: detail / form / placeholder -->
+        <div class="rules-right-pane">
+            <!-- Placeholder -->
+            <div id="right-placeholder" class="right-pane-placeholder">
+                Select a rule to view details, or create a new one.
+            </div>
+
+            <!-- Detail view -->
+            <div id="rule-detail-view" class="rule-detail-view">
+                <div class="detail-title-row">
+                    <span class="detail-title" id="detail-title">—</span>
+                    <span class="detail-version-badge" id="detail-version-badge">v1</span>
+                </div>
+                <div class="detail-meta">
+                    <div class="detail-meta-item">
+                        <span class="meta-label">Rule Type</span>
+                        <span class="meta-value" id="detail-rule-type">—</span>
                     </div>
-                    <!-- Error state -->
-                    <div id="rules-error" class="rules-state" style="display:none">
-                        <p id="rules-error-message">Failed to load rules.</p>
-                        <button class="btn-retry" onclick="loadRules()">Retry</button>
+                    <div class="detail-meta-item">
+                        <span class="meta-label">Base Score</span>
+                        <span class="meta-value" id="detail-base-score">—</span>
                     </div>
-                    <!-- Empty state -->
-                    <div id="rules-empty" class="rules-state" style="display:none">
-                        <p>No rules yet.<br>Create one to get started.</p>
+                    <div class="detail-meta-item">
+                        <span class="meta-label">Created</span>
+                        <span class="meta-value" id="detail-created-at">—</span>
                     </div>
-                    <!-- Rule items rendered here -->
-                    <div id="rules-list-items"></div>
+                    <div class="detail-meta-item">
+                        <span class="meta-label">Assigned</span>
+                        <span class="meta-value" id="detail-assigned">—</span>
+                    </div>
+                    <div class="detail-meta-item" id="detail-pending-item" style="display:none">
+                        <span class="meta-label">Pending</span>
+                        <span class="meta-value badge-pending-sm" id="detail-pending">0</span>
+                    </div>
+                </div>
+                <div class="detail-explanation" id="detail-explanation">—</div>
+                <div class="detail-definition-block">
+                    <pre id="detail-rule-definition">—</pre>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn-action primary" id="btn-rule-edit" onclick="openEditForm(currentRule)">Edit
+                    </button>
+                    <button class="btn-action warning" id="btn-rule-reevaluate" onclick="reevaluatePending()"
+                            style="display:none">Re-evaluate Pending
+                    </button>
+                    <button class="btn-action ghost" id="btn-rule-regenerate"
+                            onclick="regenerateForRule(currentRule.eventType)">⟳ Regenerate
+                    </button>
+                    <button class="btn-action danger" id="btn-rule-delete" onclick="deleteCurrentRule()">Delete</button>
+                </div>
+                <div class="version-history" id="version-history" style="display:none">
+                    <div class="version-history-title">Version History</div>
+                    <div class="version-history-list" id="version-history-list"></div>
                 </div>
             </div>
 
-            <!-- Right pane: detail / form / placeholder -->
-            <div class="rules-right-pane">
-                <!-- Placeholder -->
-                <div id="right-placeholder" class="right-pane-placeholder">
-                    Select a rule to view details, or create a new one.
-                </div>
-
-                <!-- Detail view -->
-                <div id="rule-detail-view" class="rule-detail-view">
-                    <div class="detail-title-row">
-                        <span class="detail-title" id="detail-title">—</span>
-                        <span class="detail-version-badge" id="detail-version-badge">v1</span>
+            <!-- Inline form view -->
+            <div id="rule-form-view" class="rule-form-view">
+                <h3 class="form-title" id="form-title">Create Rule</h3>
+                <div id="form-error" class="form-error"></div>
+                <form id="rule-form" onsubmit="return handleRuleFormSubmit(event)">
+                    <div class="form-group">
+                        <label for="form-event-type">Event Type</label>
+                        <select id="form-event-type" required>
+                            <option value="">Select event type…</option>
+                        </select>
                     </div>
-                    <div class="detail-meta">
-                        <div class="detail-meta-item">
-                            <span class="meta-label">Rule Type</span>
-                            <span class="meta-value" id="detail-rule-type">—</span>
-                        </div>
-                        <div class="detail-meta-item">
-                            <span class="meta-label">Base Score</span>
-                            <span class="meta-value" id="detail-base-score">—</span>
-                        </div>
-                        <div class="detail-meta-item">
-                            <span class="meta-label">Created</span>
-                            <span class="meta-value" id="detail-created-at">—</span>
-                        </div>
-                        <div class="detail-meta-item">
-                            <span class="meta-label">Assigned</span>
-                            <span class="meta-value" id="detail-assigned">—</span>
-                        </div>
-                        <div class="detail-meta-item" id="detail-pending-item" style="display:none">
-                            <span class="meta-label">Pending</span>
-                            <span class="meta-value badge-pending-sm" id="detail-pending">0</span>
-                        </div>
+                    <div class="form-group">
+                        <label for="form-rule-type">Rule Type</label>
+                        <input type="text" id="form-rule-type" value="EVENT" required>
                     </div>
-                    <div class="detail-explanation" id="detail-explanation">—</div>
-                    <div class="detail-definition-block">
-                        <pre id="detail-rule-definition">—</pre>
+                    <div class="form-group">
+                        <label for="form-rule-definition">Rule Definition (JSON)</label>
+                        <textarea id="form-rule-definition" class="mono" placeholder='{"factors": [], "baseScore": 0.0}'
+                                  required></textarea>
                     </div>
-                    <div class="detail-actions">
-                        <button class="btn-action primary" id="btn-rule-edit" onclick="openEditForm(currentRule)">Edit</button>
-                        <button class="btn-action warning" id="btn-rule-reevaluate" onclick="reevaluatePending()" style="display:none">Re-evaluate Pending</button>
-                        <button class="btn-action ghost" id="btn-rule-regenerate" onclick="regenerateForRule(currentRule.eventType)">⟳ Regenerate</button>
-                        <button class="btn-action danger" id="btn-rule-delete" onclick="deleteCurrentRule()">Delete</button>
+                    <div class="form-group">
+                        <label for="form-base-score">Base Score</label>
+                        <input type="number" id="form-base-score" min="-1" max="1" step="0.01" value="0" required>
                     </div>
-                    <div class="version-history" id="version-history" style="display:none">
-                        <div class="version-history-title">Version History</div>
-                        <div class="version-history-list" id="version-history-list"></div>
+                    <div class="form-group">
+                        <label for="form-explanation">Explanation</label>
+                        <textarea id="form-explanation" placeholder="Describe what this rule evaluates…"></textarea>
                     </div>
-                </div>
-
-                <!-- Inline form view -->
-                <div id="rule-form-view" class="rule-form-view">
-                    <h3 class="form-title" id="form-title">Create Rule</h3>
-                    <div id="form-error" class="form-error"></div>
-                    <form id="rule-form" onsubmit="return handleRuleFormSubmit(event)">
-                        <div class="form-group">
-                            <label for="form-event-type">Event Type</label>
-                            <select id="form-event-type" required>
-                                <option value="">Select event type…</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="form-rule-type">Rule Type</label>
-                            <input type="text" id="form-rule-type" value="EVENT" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="form-rule-definition">Rule Definition (JSON)</label>
-                            <textarea id="form-rule-definition" class="mono" placeholder='{"factors": [], "baseScore": 0.0}' required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="form-base-score">Base Score</label>
-                            <input type="number" id="form-base-score" min="-1" max="1" step="0.01" value="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="form-explanation">Explanation</label>
-                            <textarea id="form-explanation" placeholder="Describe what this rule evaluates…"></textarea>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn-action primary" id="btn-form-submit">Create</button>
-                            <button type="button" class="btn-action ghost" onclick="closeForm()">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-action primary" id="btn-form-submit">Create</button>
+                        <button type="button" class="btn-action ghost" onclick="closeForm()">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- ========================================
-         Data Import Tab
-         ======================================== -->
-    <div id="tab-import" style="display:none">
-        <div class="import-layout">
-            <!-- Data source selector -->
-            <div class="import-source-bar">
-                <div class="source-option active" data-source="github" onclick="selectDataSource('github')">
-                    <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                    <span>GitHub Archive</span>
-                </div>
-                <div class="source-option" data-source="kafka" onclick="selectDataSource('kafka')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-14.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83"/></svg>
-                    <span>Kafka Stream</span>
-                </div>
-                <div class="source-option" data-source="webhook" onclick="selectDataSource('webhook')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-                    <span>Webhook</span>
-                </div>
-                <div class="source-option" data-source="csv" onclick="selectDataSource('csv')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    <span>CSV Upload</span>
-                </div>
+<!-- ========================================
+     Data Import Tab
+     ======================================== -->
+<div id="tab-import" style="display:none">
+    <div class="import-layout">
+        <!-- Data source selector -->
+        <div class="import-source-bar">
+            <div class="source-option active" data-source="github" onclick="selectDataSource('github')">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span>GitHub Archive</span>
             </div>
-
-            <!-- Unsupported source message -->
-            <div id="import-unsupported" class="import-unsupported" style="display:none">
-                <div class="unsupported-icon">🚧</div>
-                <h3>Data source not supported yet</h3>
-                <p>This integration is on the roadmap. Currently, only GitHub Archive is available as a data source.</p>
+            <div class="source-option" data-source="kafka" onclick="selectDataSource('kafka')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4m0 12v4m-7.07-14.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83"/>
+                </svg>
+                <span>Kafka Stream</span>
             </div>
+            <div class="source-option" data-source="webhook" onclick="selectDataSource('webhook')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
+                </svg>
+                <span>Webhook</span>
+            </div>
+            <div class="source-option" data-source="csv" onclick="selectDataSource('csv')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+                <span>CSV Upload</span>
+            </div>
+        </div>
 
-            <!-- GitHub Archive import panel -->
-            <div id="import-github" class="import-content">
-                <div class="import-cards">
-                    <!-- Load single file -->
-                    <div class="import-card">
-                        <div class="import-card-header">
-                            <div class="import-card-icon">📄</div>
-                            <div>
-                                <h4>Load File</h4>
-                                <p>Import a single .json or .json.gz file. Leave empty to use the default path.</p>
-                            </div>
-                        </div>
-                        <div class="import-card-body">
-                            <div class="import-path-input">
-                                <label for="import-file-path">File path</label>
-                                <input type="text" id="import-file-path" placeholder="Loading default…" spellcheck="false">
-                            </div>
-                            <button class="btn-action primary" id="btn-load-file" onclick="triggerLoadFile()">Load File</button>
+        <!-- Unsupported source message -->
+        <div id="import-unsupported" class="import-unsupported" style="display:none">
+            <div class="unsupported-icon">🚧</div>
+            <h3>Data source not supported yet</h3>
+            <p>This integration is on the roadmap. Currently, only GitHub Archive is available as a data source.</p>
+        </div>
+
+        <!-- GitHub Archive import panel -->
+        <div id="import-github" class="import-content">
+            <div class="import-cards">
+                <!-- Load single file -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-card-icon">📄</div>
+                        <div>
+                            <h4>Load File</h4>
+                            <p>Import a single .json or .json.gz file. Leave empty to use the default path.</p>
                         </div>
                     </div>
-
-                    <!-- Load batch -->
-                    <div class="import-card">
-                        <div class="import-card-header">
-                            <div class="import-card-icon">📁</div>
-                            <div>
-                                <h4>Load Batch</h4>
-                                <p>Import all .json/.json.gz files from a directory. Leave empty for default.</p>
-                            </div>
+                    <div class="import-card-body">
+                        <div class="import-path-input">
+                            <label for="import-file-path">File path</label>
+                            <input type="text" id="import-file-path" placeholder="Loading default…" spellcheck="false">
                         </div>
-                        <div class="import-card-body">
-                            <div class="import-path-input">
-                                <label for="import-dir-path">Directory path</label>
-                                <input type="text" id="import-dir-path" placeholder="Loading default…" spellcheck="false">
-                            </div>
-                            <button class="btn-action primary" id="btn-load-batch" onclick="triggerLoadBatch()">Load Batch</button>
+                        <button class="btn-action primary" id="btn-load-file" onclick="triggerLoadFile()">Load File
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Load batch -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-card-icon">📁</div>
+                        <div>
+                            <h4>Load Batch</h4>
+                            <p>Import all .json/.json.gz files from a directory. Leave empty for default.</p>
                         </div>
                     </div>
-
-                    <!-- Import single event -->
-                    <div class="import-card import-card-wide">
-                        <div class="import-card-header">
-                            <div class="import-card-icon">⚡</div>
-                            <div>
-                                <h4>Import Single Event</h4>
-                                <p>Paste a GitHub Archive event JSON to import and process immediately</p>
-                            </div>
+                    <div class="import-card-body">
+                        <div class="import-path-input">
+                            <label for="import-dir-path">Directory path</label>
+                            <input type="text" id="import-dir-path" placeholder="Loading default…" spellcheck="false">
                         </div>
-                        <div class="import-card-body">
+                        <button class="btn-action primary" id="btn-load-batch" onclick="triggerLoadBatch()">Load Batch
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Import single event -->
+                <div class="import-card import-card-wide">
+                    <div class="import-card-header">
+                        <div class="import-card-icon">⚡</div>
+                        <div>
+                            <h4>Import Single Event</h4>
+                            <p>Paste a GitHub Archive event JSON to import and process immediately</p>
+                        </div>
+                    </div>
+                    <div class="import-card-body">
                             <textarea id="import-event-json" class="import-json-editor" placeholder='{
   "id": "123456",
   "type": "PushEvent",
@@ -1608,202 +1656,206 @@
   "actor": { "id": "1", "login": "user", ... },
   "created_at": "2024-01-01 12:00:00 UTC"
 }'></textarea>
-                            <div class="import-event-actions">
-                                <button class="btn-action primary" id="btn-import-event" onclick="triggerImportEvent()">Import Event</button>
-                                <button class="btn-action ghost" onclick="clearEventJson()">Clear</button>
-                            </div>
+                        <div class="import-event-actions">
+                            <button class="btn-action primary" id="btn-import-event" onclick="triggerImportEvent()">
+                                Import Event
+                            </button>
+                            <button class="btn-action ghost" onclick="clearEventJson()">Clear</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Toast notification -->
-    <div id="toast" class="toast"></div>
+<!-- Toast notification -->
+<div id="toast" class="toast"></div>
 
-    <!-- ========================================
-         JavaScript — all logic below
-         ======================================== -->
-    <script>
-        // ==========================================
-        // Configuration
-        // ==========================================
-        const API_BASE = '/api';
+<!-- ========================================
+     JavaScript — all logic below
+     ======================================== -->
+<script>
+    // ==========================================
+    // Configuration
+    // ==========================================
+    const API_BASE = '/api';
 
-        // ==========================================
-        // Theme toggle
-        // ==========================================
-        function toggleTheme() {
-            const html = document.documentElement;
-            const isDark = html.getAttribute('data-theme') === 'dark';
-            const newTheme = isDark ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    // ==========================================
+    // Theme toggle
+    // ==========================================
+    function toggleTheme() {
+        const html = document.documentElement;
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    // ==========================================
+    // Tab switching
+    // ==========================================
+    let rulesLoaded = false;
+
+    function switchTab(tabName) {
+        document.getElementById('tab-analytics').style.display = 'none';
+        document.getElementById('tab-rules').style.display = 'none';
+        document.getElementById('tab-import').style.display = 'none';
+        document.getElementById('tab-' + tabName).style.display = 'block';
+
+        const buttons = document.querySelectorAll('.tab-bar button');
+        buttons.forEach(btn => btn.classList.remove('tab-active'));
+        const tabKeywords = {analytics: 'analytics', rules: 'rule', import: 'import'};
+        const keyword = tabKeywords[tabName] || tabName;
+        const activeBtn = Array.from(buttons).find(btn =>
+            btn.textContent.toLowerCase().includes(keyword)
+        );
+        if (activeBtn) activeBtn.classList.add('tab-active');
+
+        if (tabName === 'rules' && !rulesLoaded) {
+            loadRules();
+        }
+        if (tabName === 'import') {
+            loadImportConfig();
+        }
+    }
+
+    // ==========================================
+    // Rule Management — state
+    // ==========================================
+    let currentRule = null;
+    let ruleFormEditMode = false;
+    let ruleFormEditId = null;
+    let rulesData = []; // cached list from API
+    let pendingMap = {}; // eventType -> count
+
+    // ==========================================
+    // Show/hide right pane sections
+    // ==========================================
+    function showRightPane(which) {
+        document.getElementById('right-placeholder').style.display = (which === 'placeholder') ? 'flex' : 'none';
+        const detailView = document.getElementById('rule-detail-view');
+        const formView = document.getElementById('rule-form-view');
+        detailView.classList.toggle('visible', which === 'detail');
+        formView.classList.toggle('visible', which === 'form');
+    }
+
+    // ==========================================
+    // Load rules
+    // ==========================================
+    async function loadRules() {
+        const loadingEl = document.getElementById('rules-loading');
+        const errorEl = document.getElementById('rules-error');
+        const emptyEl = document.getElementById('rules-empty');
+        const listItems = document.getElementById('rules-list-items');
+
+        loadingEl.style.display = 'flex';
+        errorEl.style.display = 'none';
+        emptyEl.style.display = 'none';
+        listItems.innerHTML = '';
+
+        try {
+            const [rulesResponse, pendingResponse] = await Promise.all([
+                fetch(`${API_BASE}/rules`),
+                fetch(`${API_BASE}/rules/pending-counts`)
+            ]);
+
+            if (!rulesResponse.ok) throw new Error(`Failed to load rules: ${rulesResponse.status}`);
+
+            rulesData = await rulesResponse.json();
+
+            pendingMap = {};
+            if (pendingResponse.ok) {
+                const counts = await pendingResponse.json();
+                counts.forEach(c => {
+                    pendingMap[c.eventType] = c.pendingCount;
+                });
+            }
+
+            loadingEl.style.display = 'none';
+
+            if (rulesData.length === 0) {
+                emptyEl.style.display = 'flex';
+                return;
+            }
+
+            renderRuleList();
+            rulesLoaded = true;
+
+        } catch (err) {
+            loadingEl.style.display = 'none';
+            document.getElementById('rules-error-message').textContent = err.message || 'Failed to load rules.';
+            errorEl.style.display = 'flex';
+        }
+    }
+
+    // ==========================================
+    // Render rule list items (grouped by event type, latest version only)
+    // ==========================================
+    function renderRuleList() {
+        const listItems = document.getElementById('rules-list-items');
+        listItems.innerHTML = '';
+
+        // Group by event type — rulesData is already sorted by createdAt desc,
+        // so the first occurrence of each eventType is the latest version
+        const latestByType = new Map();
+        rulesData.forEach(rule => {
+            if (!latestByType.has(rule.eventType)) {
+                latestByType.set(rule.eventType, rule);
+            }
+        });
+
+        // Split into regular and absence, sort each alphabetically
+        const regular = [];
+        const absence = [];
+        latestByType.forEach((rule, eventType) => {
+            if (eventType.startsWith('system.absence.')) absence.push({rule, eventType});
+            else regular.push({rule, eventType});
+        });
+        regular.sort((a, b) => a.eventType.localeCompare(b.eventType));
+        absence.sort((a, b) => a.eventType.localeCompare(b.eventType));
+
+        // Render regular events
+        if (regular.length > 0 && absence.length > 0) {
+            const label = document.createElement('div');
+            label.className = 'rule-list-group-label';
+            label.textContent = 'Events';
+            listItems.appendChild(label);
+        }
+        regular.forEach(({rule, eventType}) => renderRuleItem(listItems, rule, eventType));
+
+        // Render absence events
+        if (absence.length > 0) {
+            const label = document.createElement('div');
+            label.className = 'rule-list-group-label';
+            label.textContent = 'Absence';
+            listItems.appendChild(label);
+        }
+        absence.forEach(({rule, eventType}) => renderRuleItem(listItems, rule, eventType));
+    }
+
+    function renderRuleItem(container, rule, eventType) {
+        const item = document.createElement('div');
+        item.className = 'rule-item';
+        item.setAttribute('data-event-type', eventType);
+        if (currentRule && currentRule.eventType === eventType) {
+            item.classList.add('active');
         }
 
-        // ==========================================
-        // Tab switching
-        // ==========================================
-        let rulesLoaded = false;
+        const isAbsence = eventType.startsWith('system.absence.');
+        const displayName = isAbsence ? formatAbsenceName(eventType) : eventType;
+        const absenceBadge = isAbsence ? '<span class="badge-absence">ABSENCE</span>' : '';
 
-        function switchTab(tabName) {
-            document.getElementById('tab-analytics').style.display = 'none';
-            document.getElementById('tab-rules').style.display = 'none';
-            document.getElementById('tab-import').style.display = 'none';
-            document.getElementById('tab-' + tabName).style.display = 'block';
+        const pendingCount = rule.pendingEventCount || pendingMap[eventType] || 0;
+        const pendingBadge = pendingCount > 0
+            ? `<span class="badge-pending-sm">⏳ ${pendingCount}</span>`
+            : '';
 
-            const buttons = document.querySelectorAll('.tab-bar button');
-            buttons.forEach(btn => btn.classList.remove('tab-active'));
-            const tabKeywords = { analytics: 'analytics', rules: 'rule', import: 'import' };
-            const keyword = tabKeywords[tabName] || tabName;
-            const activeBtn = Array.from(buttons).find(btn =>
-                btn.textContent.toLowerCase().includes(keyword)
-            );
-            if (activeBtn) activeBtn.classList.add('tab-active');
+        const versionCount = rulesData.filter(r => r.eventType === eventType).length;
+        const versionLabel = versionCount > 1 ? `v${rule.version} (${versionCount} versions)` : `v${rule.version}`;
 
-            if (tabName === 'rules' && !rulesLoaded) {
-                loadRules();
-            }
-            if (tabName === 'import') {
-                loadImportConfig();
-            }
-        }
-
-        // ==========================================
-        // Rule Management — state
-        // ==========================================
-        let currentRule = null;
-        let ruleFormEditMode = false;
-        let ruleFormEditId = null;
-        let rulesData = []; // cached list from API
-        let pendingMap = {}; // eventType -> count
-
-        // ==========================================
-        // Show/hide right pane sections
-        // ==========================================
-        function showRightPane(which) {
-            document.getElementById('right-placeholder').style.display = (which === 'placeholder') ? 'flex' : 'none';
-            const detailView = document.getElementById('rule-detail-view');
-            const formView = document.getElementById('rule-form-view');
-            detailView.classList.toggle('visible', which === 'detail');
-            formView.classList.toggle('visible', which === 'form');
-        }
-
-        // ==========================================
-        // Load rules
-        // ==========================================
-        async function loadRules() {
-            const loadingEl = document.getElementById('rules-loading');
-            const errorEl = document.getElementById('rules-error');
-            const emptyEl = document.getElementById('rules-empty');
-            const listItems = document.getElementById('rules-list-items');
-
-            loadingEl.style.display = 'flex';
-            errorEl.style.display = 'none';
-            emptyEl.style.display = 'none';
-            listItems.innerHTML = '';
-
-            try {
-                const [rulesResponse, pendingResponse] = await Promise.all([
-                    fetch(`${API_BASE}/rules`),
-                    fetch(`${API_BASE}/rules/pending-counts`)
-                ]);
-
-                if (!rulesResponse.ok) throw new Error(`Failed to load rules: ${rulesResponse.status}`);
-
-                rulesData = await rulesResponse.json();
-
-                pendingMap = {};
-                if (pendingResponse.ok) {
-                    const counts = await pendingResponse.json();
-                    counts.forEach(c => { pendingMap[c.eventType] = c.pendingCount; });
-                }
-
-                loadingEl.style.display = 'none';
-
-                if (rulesData.length === 0) {
-                    emptyEl.style.display = 'flex';
-                    return;
-                }
-
-                renderRuleList();
-                rulesLoaded = true;
-
-            } catch (err) {
-                loadingEl.style.display = 'none';
-                document.getElementById('rules-error-message').textContent = err.message || 'Failed to load rules.';
-                errorEl.style.display = 'flex';
-            }
-        }
-
-        // ==========================================
-        // Render rule list items (grouped by event type, latest version only)
-        // ==========================================
-        function renderRuleList() {
-            const listItems = document.getElementById('rules-list-items');
-            listItems.innerHTML = '';
-
-            // Group by event type — rulesData is already sorted by createdAt desc,
-            // so the first occurrence of each eventType is the latest version
-            const latestByType = new Map();
-            rulesData.forEach(rule => {
-                if (!latestByType.has(rule.eventType)) {
-                    latestByType.set(rule.eventType, rule);
-                }
-            });
-
-            // Split into regular and absence, sort each alphabetically
-            const regular = [];
-            const absence = [];
-            latestByType.forEach((rule, eventType) => {
-                if (eventType.startsWith('system.absence.')) absence.push({ rule, eventType });
-                else regular.push({ rule, eventType });
-            });
-            regular.sort((a, b) => a.eventType.localeCompare(b.eventType));
-            absence.sort((a, b) => a.eventType.localeCompare(b.eventType));
-
-            // Render regular events
-            if (regular.length > 0 && absence.length > 0) {
-                const label = document.createElement('div');
-                label.className = 'rule-list-group-label';
-                label.textContent = 'Events';
-                listItems.appendChild(label);
-            }
-            regular.forEach(({ rule, eventType }) => renderRuleItem(listItems, rule, eventType));
-
-            // Render absence events
-            if (absence.length > 0) {
-                const label = document.createElement('div');
-                label.className = 'rule-list-group-label';
-                label.textContent = 'Absence';
-                listItems.appendChild(label);
-            }
-            absence.forEach(({ rule, eventType }) => renderRuleItem(listItems, rule, eventType));
-        }
-
-        function renderRuleItem(container, rule, eventType) {
-                const item = document.createElement('div');
-                item.className = 'rule-item';
-                item.setAttribute('data-event-type', eventType);
-                if (currentRule && currentRule.eventType === eventType) {
-                    item.classList.add('active');
-                }
-
-                const isAbsence = eventType.startsWith('system.absence.');
-                const displayName = isAbsence ? formatAbsenceName(eventType) : eventType;
-                const absenceBadge = isAbsence ? '<span class="badge-absence">ABSENCE</span>' : '';
-
-                const pendingCount = rule.pendingEventCount || pendingMap[eventType] || 0;
-                const pendingBadge = pendingCount > 0
-                    ? `<span class="badge-pending-sm">⏳ ${pendingCount}</span>`
-                    : '';
-
-                const versionCount = rulesData.filter(r => r.eventType === eventType).length;
-                const versionLabel = versionCount > 1 ? `v${rule.version} (${versionCount} versions)` : `v${rule.version}`;
-
-                item.innerHTML = `
+        item.innerHTML = `
                     <div class="rule-item-info">
                         <span class="rule-item-name">${absenceBadge}${escapeHtml(displayName)}</span>
                         <span class="rule-item-meta">
@@ -1816,107 +1868,107 @@
                     </div>
                 `;
 
-                item.addEventListener('click', () => loadRuleDetail(rule.id));
-                container.appendChild(item);
-        }
+        item.addEventListener('click', () => loadRuleDetail(rule.id));
+        container.appendChild(item);
+    }
 
-        // ==========================================
-        // Load rule detail
-        // ==========================================
-        async function loadRuleDetail(id) {
-            try {
-                const response = await fetch(`${API_BASE}/rules/${id}`);
-                if (response.status === 404) {
-                    showToast('Rule not found — it may have been deleted.', 'error');
-                    loadRules();
-                    return;
-                }
-                if (!response.ok) throw new Error(`Failed to load rule: ${response.status}`);
-
-                const rule = await response.json();
-                currentRule = rule;
-
-                // Mark active in list by event type
-                document.querySelectorAll('.rule-item').forEach(el => {
-                    el.classList.toggle('active', el.getAttribute('data-event-type') === rule.eventType);
-                });
-
-                // Fill detail
-                const isAbsence = rule.eventType && rule.eventType.startsWith('system.absence.');
-                const displayName = isAbsence ? formatAbsenceName(rule.eventType) : rule.eventType;
-                const absenceBadge = isAbsence ? '<span class="badge-absence">ABSENCE</span> ' : '';
-                document.getElementById('detail-title').innerHTML = absenceBadge + escapeHtml(displayName);
-                document.getElementById('detail-version-badge').textContent = 'v' + (rule.version || 1);
-                document.getElementById('detail-rule-type').textContent = rule.ruleType || '—';
-                document.getElementById('detail-base-score').textContent = rule.baseScore != null ? rule.baseScore.toFixed(2) : '—';
-                document.getElementById('detail-created-at').textContent = rule.createdAt ? new Date(rule.createdAt).toLocaleDateString() : '—';
-                document.getElementById('detail-explanation').textContent = rule.explanation || 'No explanation provided.';
-
-                // Assigned count from cache
-                const cachedRule = rulesData.find(r => r.id === rule.id);
-                document.getElementById('detail-assigned').textContent = cachedRule ? cachedRule.assignedEventCount : '—';
-
-                // Pending
-                const pendingCount = pendingMap[rule.eventType] || 0;
-                const pendingItem = document.getElementById('detail-pending-item');
-                const reevalBtn = document.getElementById('btn-rule-reevaluate');
-                if (pendingCount > 0) {
-                    pendingItem.style.display = '';
-                    document.getElementById('detail-pending').textContent = pendingCount;
-                    reevalBtn.style.display = '';
-                    reevalBtn.textContent = `Re-evaluate (${pendingCount})`;
-                } else {
-                    pendingItem.style.display = 'none';
-                    reevalBtn.style.display = 'none';
-                }
-
-                // Pretty-print JSON
-                let formatted = '—';
-                if (rule.ruleDefinition) {
-                    try {
-                        formatted = JSON.stringify(JSON.parse(rule.ruleDefinition), null, 2);
-                    } catch (e) {
-                        formatted = rule.ruleDefinition;
-                    }
-                }
-                document.getElementById('detail-rule-definition').textContent = formatted;
-
-                // Render version history
-                renderVersionHistory(rule);
-
-                showRightPane('detail');
-
-            } catch (err) {
-                showToast(err.message || 'Failed to load rule.', 'error');
-            }
-        }
-
-        /**
-         * Render version history for the current rule's event type.
-         */
-        function renderVersionHistory(currentRuleDetail) {
-            const historyContainer = document.getElementById('version-history');
-            const historyList = document.getElementById('version-history-list');
-            
-            // Get all versions for this event type from cached data
-            const versions = rulesData
-                .filter(r => r.eventType === currentRuleDetail.eventType)
-                .sort((a, b) => (b.version || 0) - (a.version || 0));
-
-            if (versions.length <= 1) {
-                historyContainer.style.display = 'none';
+    // ==========================================
+    // Load rule detail
+    // ==========================================
+    async function loadRuleDetail(id) {
+        try {
+            const response = await fetch(`${API_BASE}/rules/${id}`);
+            if (response.status === 404) {
+                showToast('Rule not found — it may have been deleted.', 'error');
+                loadRules();
                 return;
             }
+            if (!response.ok) throw new Error(`Failed to load rule: ${response.status}`);
 
-            historyList.innerHTML = '';
-            versions.forEach(v => {
-                const item = document.createElement('div');
-                item.className = 'version-item' + (v.id === currentRuleDetail.id ? ' current' : '');
-                
-                const isCurrent = v.id === currentRuleDetail.id;
-                const dateStr = v.createdAt ? new Date(v.createdAt).toLocaleDateString() : '';
-                
-                item.innerHTML = `
+            const rule = await response.json();
+            currentRule = rule;
+
+            // Mark active in list by event type
+            document.querySelectorAll('.rule-item').forEach(el => {
+                el.classList.toggle('active', el.getAttribute('data-event-type') === rule.eventType);
+            });
+
+            // Fill detail
+            const isAbsence = rule.eventType && rule.eventType.startsWith('system.absence.');
+            const displayName = isAbsence ? formatAbsenceName(rule.eventType) : rule.eventType;
+            const absenceBadge = isAbsence ? '<span class="badge-absence">ABSENCE</span> ' : '';
+            document.getElementById('detail-title').innerHTML = absenceBadge + escapeHtml(displayName);
+            document.getElementById('detail-version-badge').textContent = 'v' + (rule.version || 1);
+            document.getElementById('detail-rule-type').textContent = rule.ruleType || '—';
+            document.getElementById('detail-base-score').textContent = rule.baseScore != null ? rule.baseScore.toFixed(2) : '—';
+            document.getElementById('detail-created-at').textContent = rule.createdAt ? new Date(rule.createdAt).toLocaleDateString() : '—';
+            document.getElementById('detail-explanation').textContent = rule.explanation || 'No explanation provided.';
+
+            // Assigned count from cache
+            const cachedRule = rulesData.find(r => r.id === rule.id);
+            document.getElementById('detail-assigned').textContent = cachedRule ? cachedRule.assignedEventCount : '—';
+
+            // Pending
+            const pendingCount = pendingMap[rule.eventType] || 0;
+            const pendingItem = document.getElementById('detail-pending-item');
+            const reevalBtn = document.getElementById('btn-rule-reevaluate');
+            if (pendingCount > 0) {
+                pendingItem.style.display = '';
+                document.getElementById('detail-pending').textContent = pendingCount;
+                reevalBtn.style.display = '';
+                reevalBtn.textContent = `Re-evaluate (${pendingCount})`;
+            } else {
+                pendingItem.style.display = 'none';
+                reevalBtn.style.display = 'none';
+            }
+
+            // Pretty-print JSON
+            let formatted = '—';
+            if (rule.ruleDefinition) {
+                try {
+                    formatted = JSON.stringify(JSON.parse(rule.ruleDefinition), null, 2);
+                } catch (e) {
+                    formatted = rule.ruleDefinition;
+                }
+            }
+            document.getElementById('detail-rule-definition').textContent = formatted;
+
+            // Render version history
+            renderVersionHistory(rule);
+
+            showRightPane('detail');
+
+        } catch (err) {
+            showToast(err.message || 'Failed to load rule.', 'error');
+        }
+    }
+
+    /**
+     * Render version history for the current rule's event type.
+     */
+    function renderVersionHistory(currentRuleDetail) {
+        const historyContainer = document.getElementById('version-history');
+        const historyList = document.getElementById('version-history-list');
+
+        // Get all versions for this event type from cached data
+        const versions = rulesData
+            .filter(r => r.eventType === currentRuleDetail.eventType)
+            .sort((a, b) => (b.version || 0) - (a.version || 0));
+
+        if (versions.length <= 1) {
+            historyContainer.style.display = 'none';
+            return;
+        }
+
+        historyList.innerHTML = '';
+        versions.forEach(v => {
+            const item = document.createElement('div');
+            item.className = 'version-item' + (v.id === currentRuleDetail.id ? ' current' : '');
+
+            const isCurrent = v.id === currentRuleDetail.id;
+            const dateStr = v.createdAt ? new Date(v.createdAt).toLocaleDateString() : '';
+
+            item.innerHTML = `
                     <div class="version-item-left">
                         <span class="version-item-badge">v${v.version || 1}</span>
                         <span class="version-item-date">${dateStr}</span>
@@ -1925,715 +1977,757 @@
                     <span class="version-item-score">${v.baseScore != null ? v.baseScore.toFixed(2) : '—'}</span>
                 `;
 
-                if (!isCurrent) {
-                    item.addEventListener('click', () => loadRuleDetail(v.id));
+            if (!isCurrent) {
+                item.addEventListener('click', () => loadRuleDetail(v.id));
+            }
+            historyList.appendChild(item);
+        });
+
+        historyContainer.style.display = 'block';
+    }
+
+    // ==========================================
+    // Delete rule
+    // ==========================================
+    async function deleteRule(id, eventType, version) {
+        const confirmed = window.confirm(`Delete rule for "${eventType}" (v${version})?`);
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/rules/${id}`, {method: 'DELETE'});
+            if (!response.ok && response.status !== 204) {
+                throw new Error(`Delete failed: ${response.status}`);
+            }
+            showToast('Rule deleted.', 'success');
+
+            await loadRules();
+
+            // If we deleted the currently viewed rule, try to show the latest version for that type
+            if (currentRule && currentRule.id === id) {
+                const latestForType = rulesData.find(r => r.eventType === eventType);
+                if (latestForType) {
+                    loadRuleDetail(latestForType.id);
+                } else {
+                    currentRule = null;
+                    showRightPane('placeholder');
                 }
-                historyList.appendChild(item);
+            }
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+        }
+    }
+
+    function deleteCurrentRule() {
+        if (!currentRule) return;
+        deleteRule(currentRule.id, currentRule.eventType, currentRule.version);
+    }
+
+    // ==========================================
+    // Regenerate rule
+    // ==========================================
+    async function regenerateForRule(eventType) {
+        const confirmed = window.confirm(`Regenerate rule for "${eventType}"? This will create a new version using AI.`);
+        if (!confirmed) return;
+
+        showToast('Generating rule for ' + eventType + '…', 'success');
+
+        try {
+            const response = await fetch(`${API_BASE}/rules/regenerate/${encodeURIComponent(eventType)}`, {
+                method: 'POST'
             });
 
-            historyContainer.style.display = 'block';
-        }
-
-        // ==========================================
-        // Delete rule
-        // ==========================================
-        async function deleteRule(id, eventType, version) {
-            const confirmed = window.confirm(`Delete rule for "${eventType}" (v${version})?`);
-            if (!confirmed) return;
-
-            try {
-                const response = await fetch(`${API_BASE}/rules/${id}`, { method: 'DELETE' });
-                if (!response.ok && response.status !== 204) {
-                    throw new Error(`Delete failed: ${response.status}`);
-                }
-                showToast('Rule deleted.', 'success');
-                
-                await loadRules();
-
-                // If we deleted the currently viewed rule, try to show the latest version for that type
-                if (currentRule && currentRule.id === id) {
-                    const latestForType = rulesData.find(r => r.eventType === eventType);
-                    if (latestForType) {
-                        loadRuleDetail(latestForType.id);
-                    } else {
-                        currentRule = null;
-                        showRightPane('placeholder');
-                    }
-                }
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
+            if (response.status === 404) {
+                const data = await response.json().catch(() => ({}));
+                showToast(data.error || 'Event type not recognized.', 'error');
+                return;
             }
-        }
-
-        function deleteCurrentRule() {
-            if (!currentRule) return;
-            deleteRule(currentRule.id, currentRule.eventType, currentRule.version);
-        }
-
-        // ==========================================
-        // Regenerate rule
-        // ==========================================
-        async function regenerateForRule(eventType) {
-            const confirmed = window.confirm(`Regenerate rule for "${eventType}"? This will create a new version using AI.`);
-            if (!confirmed) return;
-
-            showToast('Generating rule for ' + eventType + '…', 'success');
-
-            try {
-                const response = await fetch(`${API_BASE}/rules/regenerate/${encodeURIComponent(eventType)}`, {
-                    method: 'POST'
-                });
-
-                if (response.status === 404) {
-                    const data = await response.json().catch(() => ({}));
-                    showToast(data.error || 'Event type not recognized.', 'error');
-                    return;
-                }
-                if (response.status === 503) {
-                    const data = await response.json().catch(() => ({}));
-                    showToast(data.error || 'Rule generation failed. Try again later.', 'error');
-                    return;
-                }
-                if (!response.ok) throw new Error(`Unexpected error: ${response.status}`);
-
-                showToast('Rule regenerated successfully.', 'success');
-                await loadRules();
-
-            } catch (err) {
-                showToast(err.message || 'Generation failed.', 'error');
+            if (response.status === 503) {
+                const data = await response.json().catch(() => ({}));
+                showToast(data.error || 'Rule generation failed. Try again later.', 'error');
+                return;
             }
+            if (!response.ok) throw new Error(`Unexpected error: ${response.status}`);
+
+            showToast('Rule regenerated successfully.', 'success');
+            await loadRules();
+
+        } catch (err) {
+            showToast(err.message || 'Generation failed.', 'error');
         }
+    }
 
-        // ==========================================
-        // Re-evaluate pending
-        // ==========================================
-        async function reevaluatePending() {
-            if (!currentRule || !currentRule.eventType) return;
+    // ==========================================
+    // Re-evaluate pending
+    // ==========================================
+    async function reevaluatePending() {
+        if (!currentRule || !currentRule.eventType) return;
 
-            const btn = document.getElementById('btn-rule-reevaluate');
-            btn.disabled = true;
-            btn.textContent = 'Re-evaluating…';
+        const btn = document.getElementById('btn-rule-reevaluate');
+        btn.disabled = true;
+        btn.textContent = 'Re-evaluating…';
 
-            try {
-                const response = await fetch(`${API_BASE}/rules/re-evaluate/${encodeURIComponent(currentRule.eventType)}`, {
-                    method: 'POST'
-                });
-                if (!response.ok) {
-                    const text = await response.text();
-                    throw new Error(text || `Failed: ${response.status}`);
-                }
-                const message = await response.text();
-                showToast(message, 'success');
-                await loadRules();
-                if (currentRule && currentRule.id) {
-                    await loadRuleDetail(currentRule.id);
-                }
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
-            } finally {
-                btn.disabled = false;
-                const pc = pendingMap[currentRule?.eventType] || 0;
-                btn.textContent = pc > 0 ? `Re-evaluate (${pc})` : 'Re-evaluate';
-            }
-        }
-
-        // ==========================================
-        // Form — open/close/submit
-        // ==========================================
-        function openCreateForm() {
-            ruleFormEditMode = false;
-            ruleFormEditId = null;
-            document.getElementById('form-title').textContent = 'Create Rule';
-            document.getElementById('btn-form-submit').textContent = 'Create';
-            document.getElementById('rule-form').reset();
-            document.getElementById('form-rule-type').value = 'EVENT';
-            document.getElementById('form-base-score').value = '0';
-            document.getElementById('form-event-type').disabled = false;
-            hideFormError();
-            populateFormEventTypes();
-            showRightPane('form');
-        }
-
-        function openEditForm(rule) {
-            if (!rule) return;
-            ruleFormEditMode = true;
-            ruleFormEditId = rule.id;
-            document.getElementById('form-title').textContent = 'Edit Rule';
-            document.getElementById('btn-form-submit').textContent = 'Save Changes';
-            populateFormEventTypes().then(() => {
-                document.getElementById('form-event-type').value = rule.eventType || '';
-                document.getElementById('form-event-type').disabled = true;
+        try {
+            const response = await fetch(`${API_BASE}/rules/reevaluate/${encodeURIComponent(currentRule.eventType)}`, {
+                method: 'POST'
             });
-            document.getElementById('form-rule-type').value = rule.ruleType || 'EVENT';
-            document.getElementById('form-rule-definition').value = rule.ruleDefinition || '';
-            document.getElementById('form-base-score').value = rule.baseScore != null ? rule.baseScore : 0;
-            document.getElementById('form-explanation').value = rule.explanation || '';
-            hideFormError();
-            showRightPane('form');
-        }
-
-        function closeForm() {
-            showRightPane(currentRule ? 'detail' : 'placeholder');
-            ruleFormEditMode = false;
-            ruleFormEditId = null;
-        }
-
-        async function populateFormEventTypes() {
-            const select = document.getElementById('form-event-type');
-            select.innerHTML = '<option value="">Select event type…</option>';
-            try {
-                const response = await fetch(`${API_BASE}/event-types`);
-                if (!response.ok) throw new Error('Failed');
-                const types = await response.json();
-                types.forEach(t => {
-                    const option = document.createElement('option');
-                    option.value = t.name;
-                    option.textContent = t.name;
-                    select.appendChild(option);
-                });
-            } catch (e) { /* non-critical */ }
-        }
-
-        function showFormError(msg) {
-            const el = document.getElementById('form-error');
-            el.textContent = msg;
-            el.classList.add('visible');
-        }
-
-        function hideFormError() {
-            const el = document.getElementById('form-error');
-            el.textContent = '';
-            el.classList.remove('visible');
-        }
-
-        async function handleRuleFormSubmit(event) {
-            event.preventDefault();
-            hideFormError();
-
-            const eventType = document.getElementById('form-event-type').value.trim();
-            const ruleType = document.getElementById('form-rule-type').value.trim();
-            const ruleDefinition = document.getElementById('form-rule-definition').value.trim();
-            const baseScoreStr = document.getElementById('form-base-score').value.trim();
-            const explanation = document.getElementById('form-explanation').value.trim();
-
-            try { JSON.parse(ruleDefinition); } catch (e) {
-                showFormError('Rule Definition must be valid JSON.');
-                return false;
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text || `Failed: ${response.status}`);
             }
-
-            const baseScore = parseFloat(baseScoreStr);
-            if (isNaN(baseScore) || baseScore < -1.0 || baseScore > 1.0) {
-                showFormError('Base Score must be between -1.0 and 1.0.');
-                return false;
+            const message = await response.text();
+            showToast(message, 'success');
+            await loadRules();
+            if (currentRule && currentRule.id) {
+                await loadRuleDetail(currentRule.id);
             }
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            const pc = pendingMap[currentRule?.eventType] || 0;
+            btn.textContent = pc > 0 ? `Re-evaluate (${pc})` : 'Re-evaluate';
+        }
+    }
 
-            if (!ruleFormEditMode && !eventType) {
-                showFormError('Please select an event type.');
-                return false;
-            }
+    // ==========================================
+    // Form — open/close/submit
+    // ==========================================
+    function openCreateForm() {
+        ruleFormEditMode = false;
+        ruleFormEditId = null;
+        document.getElementById('form-title').textContent = 'Create Rule';
+        document.getElementById('btn-form-submit').textContent = 'Create';
+        document.getElementById('rule-form').reset();
+        document.getElementById('form-rule-type').value = 'EVENT';
+        document.getElementById('form-base-score').value = '0';
+        document.getElementById('form-event-type').disabled = false;
+        hideFormError();
+        populateFormEventTypes();
+        showRightPane('form');
+    }
 
-            const body = { ruleType, ruleDefinition, baseScore, explanation };
-            if (!ruleFormEditMode) body.eventType = eventType;
+    function openEditForm(rule) {
+        if (!rule) return;
+        ruleFormEditMode = true;
+        ruleFormEditId = rule.id;
+        document.getElementById('form-title').textContent = 'Edit Rule';
+        document.getElementById('btn-form-submit').textContent = 'Save Changes';
+        populateFormEventTypes().then(() => {
+            document.getElementById('form-event-type').value = rule.eventType || '';
+            document.getElementById('form-event-type').disabled = true;
+        });
+        document.getElementById('form-rule-type').value = rule.ruleType || 'EVENT';
+        document.getElementById('form-rule-definition').value = rule.ruleDefinition || '';
+        document.getElementById('form-base-score').value = rule.baseScore != null ? rule.baseScore : 0;
+        document.getElementById('form-explanation').value = rule.explanation || '';
+        hideFormError();
+        showRightPane('form');
+    }
 
-            const submitBtn = document.getElementById('btn-form-submit');
-            submitBtn.disabled = true;
-            submitBtn.textContent = ruleFormEditMode ? 'Saving…' : 'Creating…';
+    function closeForm() {
+        showRightPane(currentRule ? 'detail' : 'placeholder');
+        ruleFormEditMode = false;
+        ruleFormEditId = null;
+    }
 
-            try {
-                const url = ruleFormEditMode ? `${API_BASE}/rules/${ruleFormEditId}` : `${API_BASE}/rules`;
-                const method = ruleFormEditMode ? 'PUT' : 'POST';
-                const response = await fetch(url, {
-                    method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
+    async function populateFormEventTypes() {
+        const select = document.getElementById('form-event-type');
+        select.innerHTML = '<option value="">Select event type…</option>';
+        try {
+            const response = await fetch(`${API_BASE}/event-types`);
+            if (!response.ok) throw new Error('Failed');
+            const types = await response.json();
+            types.forEach(t => {
+                const option = document.createElement('option');
+                option.value = t.name;
+                option.textContent = t.name;
+                select.appendChild(option);
+            });
+        } catch (e) { /* non-critical */
+        }
+    }
 
-                if (!response.ok) {
-                    let msg = `Request failed: ${response.status}`;
-                    try { const d = await response.json(); if (d.error) msg = d.error; } catch (e) {}
-                    showFormError(msg);
-                    return false;
-                }
+    function showFormError(msg) {
+        const el = document.getElementById('form-error');
+        el.textContent = msg;
+        el.classList.add('visible');
+    }
 
-                const savedRule = await response.json();
-                showToast(ruleFormEditMode ? 'Rule updated.' : 'Rule created.', 'success');
-                closeForm();
-                await loadRules();
-                loadRuleDetail(savedRule.id);
+    function hideFormError() {
+        const el = document.getElementById('form-error');
+        el.textContent = '';
+        el.classList.remove('visible');
+    }
 
-            } catch (err) {
-                showFormError('Network error: ' + err.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = ruleFormEditMode ? 'Save Changes' : 'Create';
-            }
+    async function handleRuleFormSubmit(event) {
+        event.preventDefault();
+        hideFormError();
+
+        const eventType = document.getElementById('form-event-type').value.trim();
+        const ruleType = document.getElementById('form-rule-type').value.trim();
+        const ruleDefinition = document.getElementById('form-rule-definition').value.trim();
+        const baseScoreStr = document.getElementById('form-base-score').value.trim();
+        const explanation = document.getElementById('form-explanation').value.trim();
+
+        try {
+            JSON.parse(ruleDefinition);
+        } catch (e) {
+            showFormError('Rule Definition must be valid JSON.');
             return false;
         }
 
-        // ==========================================
-        // Toast notifications
-        // ==========================================
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast ' + type + ' visible';
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => {
-                toast.classList.remove('visible');
-            }, 3500);
+        const baseScore = parseFloat(baseScoreStr);
+        if (isNaN(baseScore) || baseScore < -1.0 || baseScore > 1.0) {
+            showFormError('Base Score must be between -1.0 and 1.0.');
+            return false;
         }
 
-        // ==========================================
-        // Utilities
-        // ==========================================
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        if (!ruleFormEditMode && !eventType) {
+            showFormError('Please select an event type.');
+            return false;
         }
 
-        /**
-         * Format absence event type names:
-         * system.absence.global -> "global"
-         * system.absence.type.PushEvent -> "PushEvent"
-         */
-        function formatAbsenceName(eventType) {
-            if (eventType === 'system.absence.global') return 'global';
-            if (eventType.startsWith('system.absence.type.')) return eventType.replace('system.absence.type.', '');
-            return eventType.replace('system.absence.', '');
-        }
+        const body = {ruleType, ruleDefinition, baseScore, explanation};
+        if (!ruleFormEditMode) body.eventType = eventType;
 
-        /**
-         * Format event type for display in dropdowns/lists.
-         * Returns { label, isAbsence } 
-         */
-        function formatEventTypeDisplay(name) {
-            const isAbsence = name.startsWith('system.absence.');
-            const label = isAbsence ? formatAbsenceName(name) : name;
-            return { label, isAbsence };
-        }
+        const submitBtn = document.getElementById('btn-form-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = ruleFormEditMode ? 'Saving…' : 'Creating…';
 
-
-        // ==========================================
-        // Data Import tab
-        // ==========================================
-        let currentDataSource = 'github';
-        let importConfigLoaded = false;
-
-        async function loadImportConfig() {
-            if (importConfigLoaded) return;
-            try {
-                const response = await fetch(`${API_BASE}/loader/github-archive/config`);
-                if (!response.ok) return;
-                const config = await response.json();
-                document.getElementById('import-file-path').value = config.filePath || '';
-                document.getElementById('import-file-path').placeholder = 'e.g. /path/to/file.json.gz';
-                document.getElementById('import-dir-path').value = config.directoryPath || '';
-                document.getElementById('import-dir-path').placeholder = 'e.g. /path/to/directory';
-                importConfigLoaded = true;
-            } catch (e) {
-                // Non-critical — inputs will just be empty
-            }
-        }
-
-        function selectDataSource(source) {
-            currentDataSource = source;
-
-            // Update active state on source options
-            document.querySelectorAll('.source-option').forEach(el => {
-                el.classList.toggle('active', el.getAttribute('data-source') === source);
+        try {
+            const url = ruleFormEditMode ? `${API_BASE}/rules/${ruleFormEditId}` : `${API_BASE}/rules`;
+            const method = ruleFormEditMode ? 'PUT' : 'POST';
+            const response = await fetch(url, {
+                method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
             });
 
-            // Show/hide content
-            const githubPanel = document.getElementById('import-github');
-            const unsupportedPanel = document.getElementById('import-unsupported');
-
-            if (source === 'github') {
-                githubPanel.style.display = 'block';
-                unsupportedPanel.style.display = 'none';
-            } else {
-                githubPanel.style.display = 'none';
-                unsupportedPanel.style.display = 'flex';
-            }
-        }
-
-        async function triggerLoadFile() {
-            const btn = document.getElementById('btn-load-file');
-            btn.disabled = true;
-            btn.textContent = 'Loading…';
-
-            try {
-                const pathValue = document.getElementById('import-file-path').value.trim();
-                const params = pathValue ? '?path=' + encodeURIComponent(pathValue) : '';
-                const response = await fetch(`${API_BASE}/loader/github-archive${params}`, {
-                    method: 'POST'
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    showToast(data.error || 'Load failed.', 'error');
-                } else {
-                    showToast(data.message || 'File loading started.', 'success');
+            if (!response.ok) {
+                let msg = `Request failed: ${response.status}`;
+                try {
+                    const d = await response.json();
+                    if (d.error) msg = d.error;
+                } catch (e) {
                 }
-            } catch (err) {
-                showToast('Network error: ' + err.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Load File';
+                showFormError(msg);
+                return false;
             }
+
+            const savedRule = await response.json();
+            showToast(ruleFormEditMode ? 'Rule updated.' : 'Rule created.', 'success');
+            closeForm();
+            await loadRules();
+            loadRuleDetail(savedRule.id);
+
+        } catch (err) {
+            showFormError('Network error: ' + err.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = ruleFormEditMode ? 'Save Changes' : 'Create';
         }
+        return false;
+    }
 
-        async function triggerLoadBatch() {
-            const btn = document.getElementById('btn-load-batch');
-            btn.disabled = true;
-            btn.textContent = 'Loading…';
+    // ==========================================
+    // Toast notifications
+    // ==========================================
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'toast ' + type + ' visible';
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => {
+            toast.classList.remove('visible');
+        }, 3500);
+    }
 
-            try {
-                const pathValue = document.getElementById('import-dir-path').value.trim();
-                const params = pathValue ? '?path=' + encodeURIComponent(pathValue) : '';
-                const response = await fetch(`${API_BASE}/loader/github-archive/batch${params}`, {
-                    method: 'POST'
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    showToast(data.error || 'Batch load failed.', 'error');
-                } else {
-                    showToast(data.message || 'Batch loading started.', 'success');
-                }
-            } catch (err) {
-                showToast('Network error: ' + err.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Load Batch';
-            }
+    // ==========================================
+    // Utilities
+    // ==========================================
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    /**
+     * Format absence event type names:
+     * system.absence.global -> "global"
+     * system.absence.type.PushEvent -> "PushEvent"
+     */
+    function formatAbsenceName(eventType) {
+        if (eventType === 'system.absence.global') return 'global';
+        if (eventType.startsWith('system.absence.type.')) return eventType.replace('system.absence.type.', '');
+        return eventType.replace('system.absence.', '');
+    }
+
+    /**
+     * Format event type for display in dropdowns/lists.
+     * Returns { label, isAbsence }
+     */
+    function formatEventTypeDisplay(name) {
+        const isAbsence = name.startsWith('system.absence.');
+        const label = isAbsence ? formatAbsenceName(name) : name;
+        return {label, isAbsence};
+    }
+
+
+    // ==========================================
+    // Data Import tab
+    // ==========================================
+    let currentDataSource = 'github';
+    let importConfigLoaded = false;
+
+    async function loadImportConfig() {
+        if (importConfigLoaded) return;
+        try {
+            const response = await fetch(`${API_BASE}/loader/github-archive/config`);
+            if (!response.ok) return;
+            const config = await response.json();
+            document.getElementById('import-file-path').value = config.filePath || '';
+            document.getElementById('import-file-path').placeholder = 'e.g. /path/to/file.json.gz';
+            document.getElementById('import-dir-path').value = config.directoryPath || '';
+            document.getElementById('import-dir-path').placeholder = 'e.g. /path/to/directory';
+            importConfigLoaded = true;
+        } catch (e) {
+            // Non-critical — inputs will just be empty
         }
+    }
 
-        async function triggerImportEvent() {
-            const textarea = document.getElementById('import-event-json');
-            const btn = document.getElementById('btn-import-event');
-            const jsonStr = textarea.value.trim();
+    function selectDataSource(source) {
+        currentDataSource = source;
 
-            if (!jsonStr) {
-                showToast('Paste an event JSON first.', 'error');
-                return;
-            }
-
-            // Validate JSON client-side
-            try {
-                JSON.parse(jsonStr);
-            } catch (e) {
-                showToast('Invalid JSON. Please check the format.', 'error');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.textContent = 'Importing…';
-
-            try {
-                const response = await fetch(`${API_BASE}/loader/github-archive/event`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: jsonStr
-                });
-
-                if (!response.ok) {
-                    const text = await response.text();
-                    throw new Error(text || `Import failed: ${response.status}`);
-                }
-
-                showToast('Event imported successfully.', 'success');
-                textarea.value = '';
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Import Event';
-            }
-        }
-
-        function clearEventJson() {
-            document.getElementById('import-event-json').value = '';
-        }
-
-        // ==========================================
-        // Analytics — chart logic (unchanged)
-        // ==========================================
-        let chartInstance = null;
-        let lastTimeSeriesData = [];
-        let lastResolution = 'HOUR';
-        let lastEventType = '';
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-            setDefaultDateRange();
-            loadEventTypes();
-            document.getElementById('btn-load').addEventListener('click', loadTimeSeries);
-            document.getElementById('btn-close-drilldown').addEventListener('click', closeDrillDown);
+        // Update active state on source options
+        document.querySelectorAll('.source-option').forEach(el => {
+            el.classList.toggle('active', el.getAttribute('data-source') === source);
         });
 
-        function setDefaultDateRange() {
-            const now = new Date();
-            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            document.getElementById('to-date').value = formatForDatetimeLocal(now);
-            document.getElementById('from-date').value = formatForDatetimeLocal(sevenDaysAgo);
+        // Show/hide content
+        const githubPanel = document.getElementById('import-github');
+        const unsupportedPanel = document.getElementById('import-unsupported');
+
+        if (source === 'github') {
+            githubPanel.style.display = 'block';
+            unsupportedPanel.style.display = 'none';
+        } else {
+            githubPanel.style.display = 'none';
+            unsupportedPanel.style.display = 'flex';
         }
+    }
 
-        function formatForDatetimeLocal(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${year}-${month}-${day}T${hours}:${minutes}`;
-        }
+    async function triggerLoadFile() {
+        const btn = document.getElementById('btn-load-file');
+        btn.disabled = true;
+        btn.textContent = 'Loading…';
 
-        let allEventTypes = [];
-
-        async function loadEventTypes() {
-            try {
-                const response = await fetch(`${API_BASE}/event-types`);
-                if (!response.ok) throw new Error('Failed');
-                allEventTypes = await response.json();
-                renderEventTypeOptions();
-            } catch (err) {
-                console.warn('Could not load event types:', err.message);
-            }
-        }
-
-        function renderEventTypeOptions(filter = '') {
-            const container = document.getElementById('event-type-options');
-            container.innerHTML = '';
-            const currentValue = document.getElementById('event-type').value;
-            const lowerFilter = filter.toLowerCase();
-
-            // Split into regular and absence
-            const regular = [];
-            const absence = [];
-            allEventTypes.forEach(t => {
-                const { label, isAbsence } = formatEventTypeDisplay(t.name);
-                if (lowerFilter && !label.toLowerCase().includes(lowerFilter) && !t.name.toLowerCase().includes(lowerFilter)) return;
-                if (isAbsence) absence.push({ value: t.name, label, isAbsence: true });
-                else regular.push({ value: t.name, label, isAbsence: false });
+        try {
+            const pathValue = document.getElementById('import-file-path').value.trim();
+            const params = pathValue ? '?path=' + encodeURIComponent(pathValue) : '';
+            const response = await fetch(`${API_BASE}/loader/github-archive${params}`, {
+                method: 'POST'
             });
-
-            // "All Types" option
-            const allOption = document.createElement('div');
-            allOption.className = 'custom-select-option' + (currentValue === '' ? ' selected' : '');
-            allOption.textContent = 'All Types';
-            allOption.addEventListener('click', () => selectEventType('', 'All Types'));
-            container.appendChild(allOption);
-
-            // Regular events
-            if (regular.length > 0) {
-                const groupLabel = document.createElement('div');
-                groupLabel.className = 'custom-select-group-label';
-                groupLabel.textContent = 'Events';
-                container.appendChild(groupLabel);
-                regular.forEach(item => {
-                    const opt = createEventTypeOption(item, currentValue);
-                    container.appendChild(opt);
-                });
-            }
-
-            // Absence events
-            if (absence.length > 0) {
-                const groupLabel = document.createElement('div');
-                groupLabel.className = 'custom-select-group-label';
-                groupLabel.textContent = 'Absence';
-                container.appendChild(groupLabel);
-                absence.forEach(item => {
-                    const opt = createEventTypeOption(item, currentValue);
-                    container.appendChild(opt);
-                });
-            }
-        }
-
-        function createEventTypeOption(item, currentValue) {
-            const opt = document.createElement('div');
-            opt.className = 'custom-select-option' + (currentValue === item.value ? ' selected' : '');
-            if (item.isAbsence) {
-                opt.innerHTML = '<span class="option-badge">ABS</span>' + escapeHtml(item.label);
+            const data = await response.json();
+            if (!response.ok) {
+                showToast(data.error || 'Load failed.', 'error');
             } else {
-                opt.textContent = item.label;
+                showToast(data.message || 'File loading started.', 'success');
             }
-            opt.addEventListener('click', () => {
-                const displayLabel = item.isAbsence ? '⌁ ' + item.label : item.label;
-                selectEventType(item.value, displayLabel);
+        } catch (err) {
+            showToast('Network error: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Load File';
+        }
+    }
+
+    async function triggerLoadBatch() {
+        const btn = document.getElementById('btn-load-batch');
+        btn.disabled = true;
+        btn.textContent = 'Loading…';
+
+        try {
+            const pathValue = document.getElementById('import-dir-path').value.trim();
+            const params = pathValue ? '?path=' + encodeURIComponent(pathValue) : '';
+            const response = await fetch(`${API_BASE}/loader/github-archive/batch${params}`, {
+                method: 'POST'
             });
-            return opt;
+            const data = await response.json();
+            if (!response.ok) {
+                showToast(data.error || 'Batch load failed.', 'error');
+            } else {
+                showToast(data.message || 'Batch loading started.', 'success');
+            }
+        } catch (err) {
+            showToast('Network error: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Load Batch';
+        }
+    }
+
+    async function triggerImportEvent() {
+        const textarea = document.getElementById('import-event-json');
+        const btn = document.getElementById('btn-import-event');
+        const jsonStr = textarea.value.trim();
+
+        if (!jsonStr) {
+            showToast('Paste an event JSON first.', 'error');
+            return;
         }
 
-        function selectEventType(value, label) {
-            document.getElementById('event-type').value = value;
-            document.getElementById('event-type-label').textContent = label;
+        // Validate JSON client-side
+        try {
+            JSON.parse(jsonStr);
+        } catch (e) {
+            showToast('Invalid JSON. Please check the format.', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Importing…';
+
+        try {
+            const response = await fetch(`${API_BASE}/loader/github-archive/event`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: jsonStr
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text || `Import failed: ${response.status}`);
+            }
+
+            showToast('Event imported successfully.', 'success');
+            textarea.value = '';
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Import Event';
+        }
+    }
+
+    function clearEventJson() {
+        document.getElementById('import-event-json').value = '';
+    }
+
+    // ==========================================
+    // Analytics — chart logic (unchanged)
+    // ==========================================
+    let chartInstance = null;
+    let lastTimeSeriesData = [];
+    let lastResolution = 'HOUR';
+    let lastEventType = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        setDefaultDateRange();
+        loadEventTypes();
+        document.getElementById('btn-load').addEventListener('click', loadTimeSeries);
+        document.getElementById('btn-close-drilldown').addEventListener('click', closeDrillDown);
+    });
+
+    function setDefaultDateRange() {
+        const now = new Date();
+        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        document.getElementById('to-date').value = formatForDatetimeLocal(now);
+        document.getElementById('from-date').value = formatForDatetimeLocal(sevenDaysAgo);
+    }
+
+    function formatForDatetimeLocal(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    let allEventTypes = [];
+
+    async function loadEventTypes() {
+        try {
+            const response = await fetch(`${API_BASE}/event-types`);
+            if (!response.ok) throw new Error('Failed');
+            allEventTypes = await response.json();
+            renderEventTypeOptions();
+        } catch (err) {
+            console.warn('Could not load event types:', err.message);
+        }
+    }
+
+    function renderEventTypeOptions(filter = '') {
+        const container = document.getElementById('event-type-options');
+        container.innerHTML = '';
+        const currentValue = document.getElementById('event-type').value;
+        const lowerFilter = filter.toLowerCase();
+
+        // Split into regular and absence
+        const regular = [];
+        const absence = [];
+        allEventTypes.forEach(t => {
+            const {label, isAbsence} = formatEventTypeDisplay(t.name);
+            if (lowerFilter && !label.toLowerCase().includes(lowerFilter) && !t.name.toLowerCase().includes(lowerFilter)) return;
+            if (isAbsence) absence.push({value: t.name, label, isAbsence: true});
+            else regular.push({value: t.name, label, isAbsence: false});
+        });
+
+        // "All Types" option
+        const allOption = document.createElement('div');
+        allOption.className = 'custom-select-option' + (currentValue === '' ? ' selected' : '');
+        allOption.textContent = 'All Types';
+        allOption.addEventListener('click', () => selectEventType('', 'All Types'));
+        container.appendChild(allOption);
+
+        // Regular events
+        if (regular.length > 0) {
+            const groupLabel = document.createElement('div');
+            groupLabel.className = 'custom-select-group-label';
+            groupLabel.textContent = 'Events';
+            container.appendChild(groupLabel);
+            regular.forEach(item => {
+                const opt = createEventTypeOption(item, currentValue);
+                container.appendChild(opt);
+            });
+        }
+
+        // Absence events
+        if (absence.length > 0) {
+            const groupLabel = document.createElement('div');
+            groupLabel.className = 'custom-select-group-label';
+            groupLabel.textContent = 'Absence';
+            container.appendChild(groupLabel);
+            absence.forEach(item => {
+                const opt = createEventTypeOption(item, currentValue);
+                container.appendChild(opt);
+            });
+        }
+    }
+
+    function createEventTypeOption(item, currentValue) {
+        const opt = document.createElement('div');
+        opt.className = 'custom-select-option' + (currentValue === item.value ? ' selected' : '');
+        if (item.isAbsence) {
+            opt.innerHTML = '<span class="option-badge">ABS</span>' + escapeHtml(item.label);
+        } else {
+            opt.textContent = item.label;
+        }
+        opt.addEventListener('click', () => {
+            const displayLabel = item.isAbsence ? '⌁ ' + item.label : item.label;
+            selectEventType(item.value, displayLabel);
+        });
+        return opt;
+    }
+
+    function selectEventType(value, label) {
+        document.getElementById('event-type').value = value;
+        document.getElementById('event-type-label').textContent = label;
+        closeEventTypeDropdown();
+    }
+
+    function toggleEventTypeDropdown() {
+        const select = document.getElementById('event-type-select');
+        if (select.classList.contains('open')) {
+            closeEventTypeDropdown();
+        } else {
+            select.classList.add('open');
+            document.getElementById('event-type-search').value = '';
+            renderEventTypeOptions();
+            document.getElementById('event-type-search').focus();
+        }
+    }
+
+    function closeEventTypeDropdown() {
+        document.getElementById('event-type-select').classList.remove('open');
+    }
+
+    function filterEventTypeOptions() {
+        const query = document.getElementById('event-type-search').value;
+        renderEventTypeOptions(query);
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const select = document.getElementById('event-type-select');
+        if (select && !select.contains(e.target)) {
             closeEventTypeDropdown();
         }
+    });
 
-        function toggleEventTypeDropdown() {
-            const select = document.getElementById('event-type-select');
-            if (select.classList.contains('open')) {
-                closeEventTypeDropdown();
-            } else {
-                select.classList.add('open');
-                document.getElementById('event-type-search').value = '';
-                renderEventTypeOptions();
-                document.getElementById('event-type-search').focus();
-            }
+    async function loadTimeSeries() {
+        const eventType = document.getElementById('event-type').value;
+        const resolution = document.getElementById('resolution').value;
+        const fromDate = document.getElementById('from-date').value;
+        const toDate = document.getElementById('to-date').value;
+
+        if (!fromDate || !toDate) {
+            alert('Please select both From and To dates.');
+            return;
         }
 
-        function closeEventTypeDropdown() {
-            document.getElementById('event-type-select').classList.remove('open');
+        const fromInstant = new Date(fromDate).toISOString();
+        const toInstant = new Date(toDate).toISOString();
+
+        const params = new URLSearchParams();
+        if (eventType) params.set('eventType', eventType);
+        params.set('from', fromInstant);
+        params.set('to', toInstant);
+        params.set('resolution', resolution);
+
+        try {
+            const response = await fetch(`${API_BASE}/analytics/timeseries?${params}`);
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            const data = await response.json();
+            lastTimeSeriesData = data;
+            lastResolution = resolution;
+            lastEventType = eventType;
+            renderChart(data, resolution);
+            closeDrillDown();
+        } catch (err) {
+            alert('Error loading time-series: ' + err.message);
         }
+    }
 
-        function filterEventTypeOptions() {
-            const query = document.getElementById('event-type-search').value;
-            renderEventTypeOptions(query);
+    function renderChart(data, resolution) {
+        if (chartInstance) {
+            chartInstance.destroy();
+            chartInstance = null;
         }
+        const ctx = document.getElementById('chart').getContext('2d');
+        const labels = data.map(d => formatTimestamp(d.bucketStart, resolution));
+        const sentimentValues = data.map(d => d.avgSentiment);
+        const countValues = data.map(d => d.eventCount);
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            const select = document.getElementById('event-type-select');
-            if (select && !select.contains(e.target)) {
-                closeEventTypeDropdown();
-            }
-        });
-
-        async function loadTimeSeries() {
-            const eventType = document.getElementById('event-type').value;
-            const resolution = document.getElementById('resolution').value;
-            const fromDate = document.getElementById('from-date').value;
-            const toDate = document.getElementById('to-date').value;
-
-            if (!fromDate || !toDate) { alert('Please select both From and To dates.'); return; }
-
-            const fromInstant = new Date(fromDate).toISOString();
-            const toInstant = new Date(toDate).toISOString();
-
-            const params = new URLSearchParams();
-            if (eventType) params.set('eventType', eventType);
-            params.set('from', fromInstant);
-            params.set('to', toInstant);
-            params.set('resolution', resolution);
-
-            try {
-                const response = await fetch(`${API_BASE}/analytics/timeseries?${params}`);
-                if (!response.ok) throw new Error(`API error: ${response.status}`);
-                const data = await response.json();
-                lastTimeSeriesData = data;
-                lastResolution = resolution;
-                lastEventType = eventType;
-                renderChart(data, resolution);
-                closeDrillDown();
-            } catch (err) {
-                alert('Error loading time-series: ' + err.message);
-            }
-        }
-
-        function renderChart(data, resolution) {
-            if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-            const ctx = document.getElementById('chart').getContext('2d');
-            const labels = data.map(d => formatTimestamp(d.bucketStart, resolution));
-            const sentimentValues = data.map(d => d.avgSentiment);
-            const countValues = data.map(d => d.eventCount);
-
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [
-                        {
-                            type: 'line', label: 'Avg Sentiment', data: sentimentValues,
-                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-sentiment').trim(),
-                            backgroundColor: 'transparent', borderWidth: 2, pointRadius: 4,
-                            pointHoverRadius: 6, yAxisID: 'y-sentiment', tension: 0.3
-                        },
-                        {
-                            type: 'bar', label: 'Event Count', data: countValues,
-                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-count').trim(),
-                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-count-border').trim(),
-                            borderWidth: 1, yAxisID: 'y-count'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    onClick: handleChartClick,
-                    scales: {
-                        'y-sentiment': { type: 'linear', position: 'left', min: -1.0, max: 1.0, title: { display: true, text: 'Avg Sentiment' }, grid: { drawOnChartArea: true } },
-                        'y-count': { type: 'linear', position: 'right', beginAtZero: true, title: { display: true, text: 'Event Count' }, grid: { drawOnChartArea: false } },
-                        x: { title: { display: true, text: 'Time' } }
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        type: 'line', label: 'Avg Sentiment', data: sentimentValues,
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-sentiment').trim(),
+                        backgroundColor: 'transparent', borderWidth: 2, pointRadius: 4,
+                        pointHoverRadius: 6, yAxisID: 'y-sentiment', tension: 0.3
                     },
-                    plugins: {
-                        tooltip: { callbacks: { title: (items) => { if (items.length === 0) return ''; return new Date(lastTimeSeriesData[items[0].dataIndex].bucketStart).toLocaleString(); } } }
+                    {
+                        type: 'bar', label: 'Event Count', data: countValues,
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-count').trim(),
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-count-border').trim(),
+                        borderWidth: 1, yAxisID: 'y-count'
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                interaction: {mode: 'index', intersect: false},
+                onClick: handleChartClick,
+                scales: {
+                    'y-sentiment': {
+                        type: 'linear',
+                        position: 'left',
+                        min: -1.0,
+                        max: 1.0,
+                        title: {display: true, text: 'Avg Sentiment'},
+                        grid: {drawOnChartArea: true}
+                    },
+                    'y-count': {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
+                        title: {display: true, text: 'Event Count'},
+                        grid: {drawOnChartArea: false}
+                    },
+                    x: {title: {display: true, text: 'Time'}}
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: (items) => {
+                                if (items.length === 0) return '';
+                                return new Date(lastTimeSeriesData[items[0].dataIndex].bucketStart).toLocaleString();
+                            }
+                        }
                     }
                 }
-            });
-        }
-
-        function handleChartClick(event, elements) {
-            if (!elements || elements.length === 0) return;
-            const bucket = lastTimeSeriesData[elements[0].index];
-            if (bucket) loadDrillDown(bucket.bucketStart);
-        }
-
-        async function loadDrillDown(bucketStartMs) {
-            const bucketInstant = new Date(bucketStartMs).toISOString();
-            const params = new URLSearchParams();
-            if (lastEventType) params.set('eventType', lastEventType);
-            params.set('bucket', bucketInstant);
-            params.set('resolution', lastResolution);
-            try {
-                const response = await fetch(`${API_BASE}/analytics/details?${params}`);
-                if (!response.ok) throw new Error(`API error: ${response.status}`);
-                const details = await response.json();
-                renderDrillDown(details, bucketStartMs);
-            } catch (err) {
-                alert('Error loading drill-down: ' + err.message);
             }
-        }
+        });
+    }
 
-        function renderDrillDown(details, bucketStartMs) {
-            const container = document.getElementById('drilldown');
-            const title = document.getElementById('drilldown-title');
-            const tbody = document.getElementById('drilldown-body');
-            title.textContent = `Events in bucket: ${new Date(bucketStartMs).toLocaleString()}`;
-            tbody.innerHTML = '';
-            if (details.events && details.events.length > 0) {
-                details.events.forEach(ev => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
+    function handleChartClick(event, elements) {
+        if (!elements || elements.length === 0) return;
+        const bucket = lastTimeSeriesData[elements[0].index];
+        if (bucket) loadDrillDown(bucket.bucketStart);
+    }
+
+    async function loadDrillDown(bucketStartMs) {
+        const bucketInstant = new Date(bucketStartMs).toISOString();
+        const params = new URLSearchParams();
+        if (lastEventType) params.set('eventType', lastEventType);
+        params.set('bucket', bucketInstant);
+        params.set('resolution', lastResolution);
+        try {
+            const response = await fetch(`${API_BASE}/analytics/details?${params}`);
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            const details = await response.json();
+            renderDrillDown(details, bucketStartMs);
+        } catch (err) {
+            alert('Error loading drill-down: ' + err.message);
+        }
+    }
+
+    function renderDrillDown(details, bucketStartMs) {
+        const container = document.getElementById('drilldown');
+        const title = document.getElementById('drilldown-title');
+        const tbody = document.getElementById('drilldown-body');
+        title.textContent = `Events in bucket: ${new Date(bucketStartMs).toLocaleString()}`;
+        tbody.innerHTML = '';
+        if (details.events && details.events.length > 0) {
+            details.events.forEach(ev => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
                         <td>${escapeHtml(ev.eventType || '-')}</td>
                         <td>${ev.eventTimestamp ? new Date(ev.eventTimestamp).toLocaleString() : '-'}</td>
                         <td>${ev.sentimentScore != null ? ev.sentimentScore.toFixed(3) : '-'}</td>
                         <td>${ev.confidence != null ? ev.confidence.toFixed(3) : '-'}</td>
                     `;
-                    tbody.appendChild(row);
-                });
-            } else {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="4" style="text-align:center;color:var(--color-text-muted);">No events in this bucket</td>';
                 tbody.appendChild(row);
-            }
-            container.classList.add('visible');
+            });
+        } else {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="4" style="text-align:center;color:var(--color-text-muted);">No events in this bucket</td>';
+            tbody.appendChild(row);
         }
+        container.classList.add('visible');
+    }
 
-        function closeDrillDown() {
-            document.getElementById('drilldown').classList.remove('visible');
-        }
+    function closeDrillDown() {
+        document.getElementById('drilldown').classList.remove('visible');
+    }
 
-        function formatTimestamp(epochMs, resolution) {
-            const date = new Date(epochMs);
-            switch (resolution) {
-                case 'MINUTE': return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                case 'HOUR': return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                case 'DAY': return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-                case 'WEEK': return 'W ' + date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-                case 'MONTH': return date.toLocaleDateString([], { year: 'numeric', month: 'short' });
-                default: return date.toLocaleString();
-            }
+    function formatTimestamp(epochMs, resolution) {
+        const date = new Date(epochMs);
+        switch (resolution) {
+            case 'MINUTE':
+                return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            case 'HOUR':
+                return date.toLocaleDateString([], {
+                    month: 'short',
+                    day: 'numeric'
+                }) + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            case 'DAY':
+                return date.toLocaleDateString([], {month: 'short', day: 'numeric'});
+            case 'WEEK':
+                return 'W ' + date.toLocaleDateString([], {month: 'short', day: 'numeric'});
+            case 'MONTH':
+                return date.toLocaleDateString([], {year: 'numeric', month: 'short'});
+            default:
+                return date.toLocaleString();
         }
-    </script>
+    }
+</script>
 </body>
 </html>
