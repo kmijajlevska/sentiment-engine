@@ -68,4 +68,16 @@ public class ProcessedEventService extends GenericEntityService<ProcessedEvent, 
 	public List<ProcessedEvent> findPendingByEventType(String eventType) {
 		return getRepository().findByEvaluationStatusAndEventType(EvaluationStatus.PENDING, eventType);
 	}
+
+	public List<Object[]> countPendingByEventType() {
+		return getRepository().countPendingByEventType();
+	}
+
+	public long countPendingByEventType(String eventType) {
+		return getRepository().countPendingByEventType(eventType);
+	}
+
+	public List<Object[]> countAssignedByRuleIdGrouped() {
+		return getRepository().countAssignedByRuleIdGrouped();
+	}
 }

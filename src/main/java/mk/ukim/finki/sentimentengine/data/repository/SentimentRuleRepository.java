@@ -14,4 +14,7 @@ public interface SentimentRuleRepository extends GenericRepository<SentimentRule
 	SentimentRule findTopByEventTypeOrderByVersionDesc(String eventType);
 
 	List<SentimentRule> findByEventType(String eventType);
+
+	List<SentimentRule> findAllByOrderByCreatedAtDesc();
+
 }

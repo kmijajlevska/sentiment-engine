@@ -30,4 +30,12 @@ public abstract class GenericEntity {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
 }

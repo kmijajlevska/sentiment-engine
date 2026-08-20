@@ -50,6 +50,10 @@ public class RuleGenerationService {
 	}
 
 	public SentimentRule generateRule(String eventType, String samplePayload) {
+		return generateRule(eventType, samplePayload, false);
+	}
+
+	public SentimentRule generateRule(String eventType, String samplePayload, boolean force) {
 		ReentrantLock lock = eventTypeLocks.computeIfAbsent(eventType, k -> new ReentrantLock());
 		try {
 			if (!lock.tryLock(30, TimeUnit.SECONDS)) {
@@ -63,12 +67,14 @@ public class RuleGenerationService {
 		}
 
 		try {
-			// check if another thread generated the rule while waiting
-			SentimentRule existing = sentimentRuleService.findTopByEventTypeOrderByVersionDesc(eventType);
-			if (existing != null) {
-				log.info("[RULE-GEN] Rule already exists for eventType: {}, version: {}. Skipping generation.",
-					eventType, existing.getVersion());
-				return existing;
+			// check if another thread generated the rule while waiting (skip check if forced)
+			if (!force) {
+				SentimentRule existing = sentimentRuleService.findTopByEventTypeOrderByVersionDesc(eventType);
+				if (existing != null) {
+					log.info("[RULE-GEN] Rule already exists for eventType: {}, version: {}. Skipping generation.",
+						eventType, existing.getVersion());
+					return existing;
+				}
 			}
 
 			log.info("[RULE-GEN] Generating rule for event type: {}", eventType);

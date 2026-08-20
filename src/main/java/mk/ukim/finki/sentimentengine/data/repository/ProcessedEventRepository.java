@@ -92,4 +92,18 @@ public interface ProcessedEventRepository extends GenericRepository<ProcessedEve
 	// ─── Re-evaluation queries ──────────────────────────────────────────────────
 
 	List<ProcessedEvent> findByEvaluationStatusAndEventType(EvaluationStatus evaluationStatus, String eventType);
+
+	// ─── Rule management queries ────────────────────────────────────────────────
+
+	@Query("SELECT pe.eventType, COUNT(pe) FROM ProcessedEvent pe " +
+		"WHERE pe.evaluationStatus = mk.ukim.finki.sentimentengine.data.entity.EvaluationStatus.PENDING GROUP BY pe.eventType")
+	List<Object[]> countPendingByEventType();
+
+	@Query("SELECT COUNT(pe) FROM ProcessedEvent pe " +
+		"WHERE pe.evaluationStatus = mk.ukim.finki.sentimentengine.data.entity.EvaluationStatus.PENDING AND pe.eventType = :eventType")
+	long countPendingByEventType(@Param("eventType") String eventType);
+
+	@Query("SELECT pe.appliedRuleId, COUNT(pe) FROM ProcessedEvent pe " +
+		"WHERE pe.appliedRuleId IS NOT NULL GROUP BY pe.appliedRuleId")
+	List<Object[]> countAssignedByRuleIdGrouped();
 }
