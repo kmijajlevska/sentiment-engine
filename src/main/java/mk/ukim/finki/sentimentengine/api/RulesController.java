@@ -220,7 +220,7 @@ public class RulesController {
 		try {
 			sentimentRuleService.deleteById(id);
 
-			List<SentimentRule> remainingRules = sentimentRuleService.getRepository().findByEventType(eventType);
+			List<SentimentRule> remainingRules = sentimentRuleService.findByEventType(eventType);
 			if (remainingRules.isEmpty()) {
 				EventType et = eventTypeService.findByName(eventType);
 				if (et != null) {

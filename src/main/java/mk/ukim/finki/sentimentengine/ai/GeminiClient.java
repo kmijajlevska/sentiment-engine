@@ -20,8 +20,8 @@ import java.util.Map;
 @ConditionalOnProperty(name = "genai.provider", havingValue = "gemini")
 public class GeminiClient implements GenAiClient {
 
+	private final ObjectMapper objectMapper;
 	private RestClient restClient;
-	private ObjectMapper objectMapper;
 
 	@Value("${genai.gemini.api-key}")
 	private String apiKey;
@@ -30,6 +30,10 @@ public class GeminiClient implements GenAiClient {
 	@Value("${genai.gemini.url}")
 	private String url;
 
+	public GeminiClient(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
+
 
 	//	Go to aistudio.google.com/apikey
 //	Click "Create API Key" — it's free, no credit card needed
@@ -37,7 +41,6 @@ public class GeminiClient implements GenAiClient {
 //
 	@PostConstruct
 	public void init() {
-		this.objectMapper = new ObjectMapper();
 		this.restClient = RestClient.builder()
 		                            .baseUrl(url)
 		                            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

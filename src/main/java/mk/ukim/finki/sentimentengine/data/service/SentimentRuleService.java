@@ -33,4 +33,8 @@ public class SentimentRuleService extends GenericEntityService<SentimentRule, Se
 	public void deleteById(Long id) {
 		getRepository().deleteById(id);
 	}
+
+	public List<SentimentRule> findByEventType(String eventType) {
+		return getRepository().findByEventType(eventType);
+	}
 }
