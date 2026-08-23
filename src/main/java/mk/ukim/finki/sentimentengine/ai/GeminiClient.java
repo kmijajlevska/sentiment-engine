@@ -1,6 +1,8 @@
 package mk.ukim.finki.sentimentengine.ai;
 
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +22,7 @@ import java.util.Map;
 @ConditionalOnProperty(name = "genai.provider", havingValue = "gemini")
 public class GeminiClient implements GenAiClient {
 
+	private static final Logger log = LoggerFactory.getLogger(GeminiClient.class);
 	private final ObjectMapper objectMapper;
 	private RestClient restClient;
 
@@ -50,6 +53,8 @@ public class GeminiClient implements GenAiClient {
 	@Override
 	public String generateCompletion(String prompt) throws GenAiException {
 		try {
+			log.debug("[GEN-AI][GEMINI] Sending request to model: {}, prompt length: {}", model, prompt.length());
+
 			Map<String, Object> requestBody = Map.of(
 				"contents", List.of(
 					Map.of("parts", List.of(Map.of("text", prompt)))
@@ -63,6 +68,7 @@ public class GeminiClient implements GenAiClient {
 			                            .retrieve()
 			                            .body(String.class);
 
+			log.debug("[GEN-AI][GEMINI] Received response, length: {}", response != null ? response.length() : 0);
 			return extractGeminiContent(response);
 
 		} catch (GenAiException e) {

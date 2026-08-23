@@ -35,7 +35,7 @@ public class InternalBufferConsumer {
 			if (event.getMetrics() != null) {
 				event.getMetrics().setReceivedAt(System.currentTimeMillis());
 			}
-			logger.info("[INTERNAL-BUFFER-PROCESSING][CONSUMER] Event {} received on buffer. Passing for further processing", event.getId());
+			logger.info("[INTERNAL-BUFFER-PROCESSING][CONSUMER] Event {} of type: {} received on buffer. Passing for further processing", event.getId(), event.getEventType());
 			eventProcessor.onEvent(event);
 		} catch (Exception e) {
 			logger.error("[INTERNAL-BUFFER-PROCESSING][CONSUMER] Failed to process JMS message: {}", e.getMessage(), e);

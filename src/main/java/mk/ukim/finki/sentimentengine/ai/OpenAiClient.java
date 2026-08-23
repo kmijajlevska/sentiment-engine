@@ -3,6 +3,8 @@ package mk.ukim.finki.sentimentengine.ai;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OpenAiClient implements GenAiClient {
 
+	private static final Logger log = LoggerFactory.getLogger(OpenAiClient.class);
 	private final ObjectMapper objectMapper;
 	@Value("${genai.openai.api-key}")
 	private String apiKey;
@@ -53,6 +56,8 @@ public class OpenAiClient implements GenAiClient {
 	@Override
 	public String generateCompletion(String prompt) throws GenAiException {
 		try {
+			log.debug("[GEN-AI][OPENAI] Sending request to model: {}, prompt length: {}", model, prompt.length());
+
 			Map<String, Object> requestBody = Map.of(
 				"model", model,
 				"messages", List.of(Map.of("role", "user", "content", prompt)),
@@ -66,6 +71,7 @@ public class OpenAiClient implements GenAiClient {
 			                            .retrieve()
 			                            .body(String.class);
 
+			log.debug("[GEN-AI][OPENAI] Received response, length: {}", response != null ? response.length() : 0);
 			return extractOpenAiContent(response);
 
 		} catch (GenAiException e) {

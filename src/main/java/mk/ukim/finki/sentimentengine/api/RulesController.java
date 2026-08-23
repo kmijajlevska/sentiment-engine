@@ -131,6 +131,7 @@ public class RulesController {
 		eventType.setHasRule(true);
 		eventTypeService.save(eventType);
 
+		logger.info("[API][RULES] Created rule for eventType: {}, version: {}, baseScore: {}", saved.getEventType(), saved.getVersion(), saved.getBaseScore());
 		return ResponseEntity.status(201).body(DtoTransformer.toRuleDetailDTO(saved));
 	}
 
@@ -170,6 +171,7 @@ public class RulesController {
 
 		SentimentRule saved = sentimentRuleService.save(rule);
 
+		logger.info("[API][RULES] Updated rule id: {}, eventType: {}, baseScore: {}", saved.getId(), saved.getEventType(), saved.getBaseScore());
 		return ResponseEntity.ok(DtoTransformer.toRuleDetailDTO(saved));
 	}
 
