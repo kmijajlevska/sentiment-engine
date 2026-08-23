@@ -1,6 +1,7 @@
 package mk.ukim.finki.sentimentengine.service;
 
 
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.ai.GenAiClient;
 import mk.ukim.finki.sentimentengine.ai.GenAiException;
@@ -42,10 +43,12 @@ public class RuleGenerationService {
 	@Value("${rulegen.retry-delay-ms:1000}")
 	private long delayMs;
 
+	@Timed(value = "sentiment.rules.generation.duration", description = "AI rule generation duration")
 	public SentimentRule generateRule(String eventType, String samplePayload) {
 		return generateRule(eventType, samplePayload, false);
 	}
 
+	@Timed(value = "sentiment.rules.generation.duration", description = "AI rule generation duration")
 	public SentimentRule generateRule(String eventType, String samplePayload, boolean force) {
 		ReentrantLock lock = eventTypeLocks.computeIfAbsent(eventType, k -> new ReentrantLock());
 		try {
@@ -76,6 +79,10 @@ public class RuleGenerationService {
 				.replace("{samplePayload}", samplePayload != null ? samplePayload : "{}");
 
 			String aiResponse = callWithRetry(prompt);
+			if (aiResponse == null) {
+				return null;
+			}
+
 			GenAiRuleResponse ruleResponse = objectMapper.readValue(aiResponse, GenAiRuleResponse.class);
 
 			SentimentRule sentimentRule = sentimentRuleService.findTopByEventTypeOrderByVersionDesc(eventType);
@@ -132,7 +139,6 @@ public class RuleGenerationService {
 		}
 
 		log.warn("[GEN-AI] All {} GenAI retries exhausted, returning null", maxRetries);
-		// return FALLBACK_JSON;
 		return null;
 	}
 }

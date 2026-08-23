@@ -1,6 +1,7 @@
 package mk.ukim.finki.sentimentengine.service;
 
 
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
 import mk.ukim.finki.sentimentengine.data.entity.*;
@@ -36,6 +37,7 @@ public class EventProcessor {
 	@Value("${rulegen.auto.enabled:true}")
 	private boolean autoRuleGenEnabled;
 
+	@Timed(value = "sentiment.events.processing.duration", description = "Event processing duration")
 	public void onEvent(EventDTO event) {
 		boolean isAbsenceEvent = event.getEventType().startsWith(AbsenceDetectionService.ABSENCE_EVENT_TYPE);
 

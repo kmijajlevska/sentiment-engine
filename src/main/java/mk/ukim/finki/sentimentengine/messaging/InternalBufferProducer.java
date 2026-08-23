@@ -1,5 +1,6 @@
 package mk.ukim.finki.sentimentengine.messaging;
 
+import io.micrometer.core.annotation.Timed;
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class InternalBufferProducer {
 		this.jmsTemplate = jmsTemplate;
 	}
 
+	@Timed(value = "sentiment.buffer.send.duration", description = "JMS buffer send duration")
 	public void sendToBuffer(EventDTO eventDTO) {
 		if(eventDTO == null){
 			logger.debug("[INTERNAL-BUFFER-PROCESSING][PRODUCER] Skipping null event..");
@@ -35,7 +37,6 @@ public class InternalBufferProducer {
 			logger.info("[INTERNAL-BUFFER-PROCESSING][PRODUCER] Event {} sent to buffer", eventDTO.getId());
 		} catch (Exception e) {
 			logger.error("[INTERNAL-BUFFER-PROCESSING][PRODUCER] Failed to send event {} to buffer", eventDTO.getId(), e);
-
 		}
 	}
 

@@ -1,5 +1,6 @@
 package mk.ukim.finki.sentimentengine.service;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
@@ -59,7 +60,7 @@ public class AbsenceDetectionService {
 		lastTimestampReceived.updateAndGet(current -> Math.max(current, timestamp));
 	}
 
-
+	@Timed(value = "sentiment.absence.check.duration", description = "Global absence check duration")
 	public void checkGlobalAbsence(long now) {
 		long lastTimestamp = lastTimestampReceived.get();
 
@@ -117,6 +118,7 @@ public class AbsenceDetectionService {
 	}
 
 
+	@Timed(value = "sentiment.absence.check.duration", description = "Absence detection check duration")
 	public void checkForAbsenceOnArrival(Long eventTimestamp, String eventType) {
 		if (!checkAbsenceOnArrivalEnabled) {
 			return;

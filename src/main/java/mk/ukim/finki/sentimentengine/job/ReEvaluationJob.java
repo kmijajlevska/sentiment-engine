@@ -1,5 +1,6 @@
 package mk.ukim.finki.sentimentengine.job;
 
+import io.micrometer.core.annotation.Timed;
 import mk.ukim.finki.sentimentengine.data.entity.*;
 import mk.ukim.finki.sentimentengine.data.service.ProcessedEventService;
 import mk.ukim.finki.sentimentengine.data.service.RawEventService;
@@ -45,6 +46,7 @@ public class ReEvaluationJob {
 		this.eventTypeRegistry = eventTypeRegistry;
 	}
 
+	@Timed(value = "sentiment.reevaluation.duration", description = "Reevaluation job duration")
 	@Scheduled(fixedDelayString = "${reevaluation.job.interval-ms:300000}", initialDelay = 120000L)
 	public void reEvaluatePendingEvents() {
 		long start = System.currentTimeMillis();
