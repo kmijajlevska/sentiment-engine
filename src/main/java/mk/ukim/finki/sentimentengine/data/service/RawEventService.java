@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * @author kristina
  */
@@ -25,13 +23,5 @@ public class RawEventService extends GenericEntityService<RawEvent, RawEventRepo
 
 	public Long findLastTimestamp() {
 		return getRepository().findLatestTimestamp().orElse(null);
-	}
-
-	public List<RawEvent> findByTypeAndTimeRange(String eventType, long from, long to) {
-		return getRepository().findByTypeAndTimeRange(eventType, from, to);
-	}
-
-	public List<Object[]> countByTypeInRange(long from, long to) {
-		return getRepository().countByTypeInRange(from, to);
 	}
 }

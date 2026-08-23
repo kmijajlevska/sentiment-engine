@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
 import mk.ukim.finki.sentimentengine.data.dto.MetricsDTO;
 import mk.ukim.finki.sentimentengine.data.entity.EventType;
-import mk.ukim.finki.sentimentengine.data.repository.RawEventRepository;
 import mk.ukim.finki.sentimentengine.data.service.RawEventService;
 import mk.ukim.finki.sentimentengine.messaging.InternalBufferProducer;
 import org.slf4j.Logger;
@@ -31,7 +30,6 @@ public class AbsenceDetectionService {
 	public static final String TYPE_ABSENCE_EVENT_TYPE = ABSENCE_EVENT_TYPE + "type";
 	private static final Logger log = LoggerFactory.getLogger(AbsenceDetectionService.class);
 	private final EventTypeRegistry eventTypeRegistry;
-	private final RawEventRepository rawEventRepository;
 	private final InternalBufferProducer bufferProducer;
 	private final RawEventService rawEventService;
 	private final ObjectMapper objectMapper;

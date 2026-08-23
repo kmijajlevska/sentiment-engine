@@ -14,6 +14,4 @@ public interface EventTypeRepository extends GenericRepository<EventType> {
 	List<EventType> findByHasRuleFalse();
 
 	EventType findByName(String name);
-
-	List<EventType> findByLastSeenAtBefore(long cutoff);
 }

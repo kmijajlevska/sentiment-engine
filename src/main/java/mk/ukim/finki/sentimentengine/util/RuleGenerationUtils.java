@@ -27,7 +27,5 @@ public final class RuleGenerationUtils {
 		  "explanation": "<one paragraph explanation>"
 		}
 		""";
-	public static final String FALLBACK_JSON = """
-		{"baseScore":0.0,"keywords":[],"explanation":"Fallback - AI unavailable"}""";
 
 }
