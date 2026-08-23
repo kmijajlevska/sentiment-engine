@@ -7,7 +7,7 @@ import mk.ukim.finki.sentimentengine.data.dto.gharchive.GhArchiveEvent;
 import mk.ukim.finki.sentimentengine.importer.AsyncExecutor;
 import mk.ukim.finki.sentimentengine.importer.GithubArchiveDataSource;
 import mk.ukim.finki.sentimentengine.messaging.InternalBufferProducer;
-import mk.ukim.finki.sentimentengine.util.DataSourceTransformer;
+import mk.ukim.finki.sentimentengine.util.DtoTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -100,7 +100,7 @@ public class LoaderController {
 			Long timestamp = ghArchiveEvent.createdAt().toEpochMilli();
 			String source = ghArchiveEvent.repo().name();
 			String payload = objectMapper.writeValueAsString(ghArchiveEvent);
-			EventDTO eventDTO = DataSourceTransformer.generateEvent(eventType, timestamp, source, payload);
+			EventDTO eventDTO = DtoTransformer.toEventDTO(eventType, timestamp, source, payload);
 			bufferProducer.sendToBuffer(eventDTO);
 			return ResponseEntity.accepted().body(Map.of("message", "Event imported successfully"));
 		} catch (Exception e) {

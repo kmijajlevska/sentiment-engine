@@ -14,6 +14,7 @@ import mk.ukim.finki.sentimentengine.data.service.RawEventService;
 import mk.ukim.finki.sentimentengine.data.service.SentimentRuleService;
 import mk.ukim.finki.sentimentengine.service.RuleGenerationService;
 import mk.ukim.finki.sentimentengine.service.SentimentEvaluationEngine;
+import mk.ukim.finki.sentimentengine.util.DtoTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -66,14 +67,8 @@ public class RulesController {
 
 		// map results
 		List<RuleListItemDTO> result = rules.stream()
-		                                    .map(rule -> new RuleListItemDTO(
-												rule.getId(),
-												rule.getEventType(),
-												rule.getRuleType(),
-												rule.getBaseScore(),
-												rule.getVersion(),
-												rule.getExplanation(),
-												rule.getCreatedAt(),
+		                                    .map(rule -> DtoTransformer.toRuleListItemDTO(
+												rule,
 												assignedCountMap.getOrDefault(rule.getId(), 0L),
 												pendingCountMap.getOrDefault(rule.getEventType(), 0L)
 											))
@@ -89,16 +84,7 @@ public class RulesController {
 		if (rule == null) {
 			return ResponseEntity.status(404).body(Map.of("error", "No rule found with id: " + id));
 		}
-		RuleDetailDTO dto = new RuleDetailDTO(
-			rule.getId(),
-			rule.getEventType(),
-			rule.getRuleType(),
-			rule.getRuleDefinition(),
-			rule.getBaseScore(),
-			rule.getExplanation(),
-			rule.getVersion(),
-			rule.getCreatedAt()
-		);
+		RuleDetailDTO dto = DtoTransformer.toRuleDetailDTO(rule);
 		return ResponseEntity.ok(dto);
 	}
 
@@ -145,17 +131,7 @@ public class RulesController {
 		eventType.setHasRule(true);
 		eventTypeService.save(eventType);
 
-		RuleDetailDTO dto = new RuleDetailDTO(
-			saved.getId(),
-			saved.getEventType(),
-			saved.getRuleType(),
-			saved.getRuleDefinition(),
-			saved.getBaseScore(),
-			saved.getExplanation(),
-			saved.getVersion(),
-			saved.getCreatedAt()
-		);
-		return ResponseEntity.status(201).body(dto);
+		return ResponseEntity.status(201).body(DtoTransformer.toRuleDetailDTO(saved));
 	}
 
 	@PutMapping("/{id}")
@@ -194,17 +170,7 @@ public class RulesController {
 
 		SentimentRule saved = sentimentRuleService.save(rule);
 
-		RuleDetailDTO dto = new RuleDetailDTO(
-			saved.getId(),
-			saved.getEventType(),
-			saved.getRuleType(),
-			saved.getRuleDefinition(),
-			saved.getBaseScore(),
-			saved.getExplanation(),
-			saved.getVersion(),
-			saved.getCreatedAt()
-		);
-		return ResponseEntity.ok(dto);
+		return ResponseEntity.ok(DtoTransformer.toRuleDetailDTO(saved));
 	}
 
 	@DeleteMapping("/{id}")
@@ -240,7 +206,7 @@ public class RulesController {
 	@Operation(summary = "Get pending event counts grouped by event type")
 	public ResponseEntity<List<PendingCountDTO>> getPendingCounts() {
 		List<PendingCountDTO> result = processedEventService.countPendingByEventType().stream()
-		                                                    .map(row -> new PendingCountDTO((String) row[0], (Long) row[1]))
+		                                                    .map(DtoTransformer::toPendingCountDTO)
 		                                                    .toList();
 		return ResponseEntity.ok(result);
 	}
@@ -258,17 +224,7 @@ public class RulesController {
 			return ResponseEntity.status(503).body(Map.of("error", "Rule generation failed after retries"));
 		}
 
-		RuleDetailDTO dto = new RuleDetailDTO(
-			generated.getId(),
-			generated.getEventType(),
-			generated.getRuleType(),
-			generated.getRuleDefinition(),
-			generated.getBaseScore(),
-			generated.getExplanation(),
-			generated.getVersion(),
-			generated.getCreatedAt()
-		);
-		return ResponseEntity.ok(dto);
+		return ResponseEntity.ok(DtoTransformer.toRuleDetailDTO(generated));
 	}
 
 	@PostMapping("/reevaluate/{eventType}")

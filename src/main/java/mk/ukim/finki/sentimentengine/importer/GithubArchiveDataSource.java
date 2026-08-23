@@ -3,7 +3,7 @@ package mk.ukim.finki.sentimentengine.importer;
 import mk.ukim.finki.sentimentengine.data.dto.EventDTO;
 import mk.ukim.finki.sentimentengine.data.dto.gharchive.GhArchiveEvent;
 import mk.ukim.finki.sentimentengine.messaging.InternalBufferProducer;
-import mk.ukim.finki.sentimentengine.util.DataSourceTransformer;
+import mk.ukim.finki.sentimentengine.util.DtoTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -64,7 +64,7 @@ public class GithubArchiveDataSource implements FileDataSource {
 						continue;
 					}
 
-					EventDTO eventDTO = DataSourceTransformer.generateEvent(eventType, timestamp, source, line);
+					EventDTO eventDTO = DtoTransformer.toEventDTO(eventType, timestamp, source, line);
 					bufferProducer.sendToBuffer(eventDTO);
 					count++;
 				} catch (Exception e) {
