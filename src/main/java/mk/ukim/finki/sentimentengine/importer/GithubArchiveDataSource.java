@@ -42,7 +42,7 @@ public class GithubArchiveDataSource implements FileDataSource {
 			this.start();
 		}
 		long importStartTime = System.currentTimeMillis();
-		logger.info("[DATA-IMPORT] Loading from file: {}", filePath);
+		logger.info("[DATA-IMPORT][GH-ARCHIVE] Loading from file: {}", filePath);
 		int count = 0;
 		int lineNumber = 0;
 
@@ -60,7 +60,7 @@ public class GithubArchiveDataSource implements FileDataSource {
 					String source = ghEvent.repo() != null ? ghEvent.repo().name() : null;
 
 					if (timestamp == null) {
-						logger.warn("[DATA-IMPORT] Failed to parse timestamp, skipping event on line {}", lineNumber);
+						logger.warn("[DATA-IMPORT][GH-ARCHIVE] Failed to parse timestamp, skipping event on line {}", lineNumber);
 						continue;
 					}
 
@@ -68,18 +68,18 @@ public class GithubArchiveDataSource implements FileDataSource {
 					bufferProducer.sendToBuffer(eventDTO);
 					count++;
 				} catch (Exception e) {
-					logger.error("[DATA-IMPORT] An error occurred while processing line {} in {}", lineNumber, filePath, e);
+					logger.error("[DATA-IMPORT][GH-ARCHIVE] An error occurred while processing line {} in {}", lineNumber, filePath, e);
 				}
 				if (count % 100 == 0) {
-					logger.info("[DATA-IMPORT] Loaded {} events from {}..", count, SOURCE_NAME);
+					logger.info("[DATA-IMPORT][GH-ARCHIVE] Loaded {} events from {}..", count, SOURCE_NAME);
 				}
 
 			}
 
 		} catch (IOException e) {
-			logger.error("[DATA-IMPORT] Failed to read file: {}", filePath, e);
+			logger.error("[DATA-IMPORT][GH-ARCHIVE] Failed to read file: {}", filePath, e);
 		}
-		logger.info("[DATA-IMPORT] Finished loading {} events from {} in {} ms", count, filePath, System.currentTimeMillis() - importStartTime);
+		logger.info("[DATA-IMPORT][GH-ARCHIVE] Finished loading {} events from {} in {} ms", count, filePath, System.currentTimeMillis() - importStartTime);
 		return count;
 	}
 
@@ -90,14 +90,14 @@ public class GithubArchiveDataSource implements FileDataSource {
 			start();
 		}
 		long batchImportStart = System.currentTimeMillis();
-		logger.info("[DATA-IMPORT] Starting batch loading of {} files ", filePaths.size());
+		logger.info("[DATA-IMPORT][GH-ARCHIVE] Starting batch loading of {} files ", filePaths.size());
 		int totalCount = 0;
 
 		for (Path filePath : filePaths) {
 			totalCount += loadFile(filePath);
 		}
 
-		logger.info("[DATA-IMPORT] Finished loading {} events from {} files in {} ms", totalCount,
+		logger.info("[DATA-IMPORT][GH-ARCHIVE] Finished loading {} events from {} files in {} ms", totalCount,
 			filePaths.size(), System.currentTimeMillis() - batchImportStart);
 		return totalCount;
 	}
@@ -114,7 +114,8 @@ public class GithubArchiveDataSource implements FileDataSource {
 	@Override
 	public void start() {
 		this.running = true;
-		logger.info("[DATA-IMPORT] Starting {} ..", getName());
+		logger.info("[DATA-IMPORT][] Starting {} ..", getName());
+		// add importing here if you want automatic import and add it to UI
 	}
 
 	@Override
