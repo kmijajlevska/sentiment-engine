@@ -101,6 +101,18 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- In-memory database for the context-load smoke test (no external MySQL required). -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Embedded Artemis broker so the JMS layer boots in-VM during tests. -->
+		<dependency>
+			<groupId>org.apache.artemis</groupId>
+			<artifactId>artemis-jakarta-server</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
