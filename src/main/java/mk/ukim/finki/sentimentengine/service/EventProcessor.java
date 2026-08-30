@@ -29,7 +29,7 @@ public class EventProcessor {
 	private final RawEventService rawEventService;
 	private final EventTypeRegistry eventTypeRegistry;
 	private final SentimentRuleService sentimentRuleService;
-	private final SentimentEvaluationEngine evaluationEngine;
+	private final SentimentEvaluationService evaluationEngine;
 	private final ProcessedEventService processedEventService;
 	private final RuleGenerationService ruleGenerationService;
 	private final AbsenceDetectionService absenceDetectionService;

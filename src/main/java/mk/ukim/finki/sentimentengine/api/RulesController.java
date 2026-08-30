@@ -13,7 +13,7 @@ import mk.ukim.finki.sentimentengine.data.service.ProcessedEventService;
 import mk.ukim.finki.sentimentengine.data.service.RawEventService;
 import mk.ukim.finki.sentimentengine.data.service.SentimentRuleService;
 import mk.ukim.finki.sentimentengine.service.RuleGenerationService;
-import mk.ukim.finki.sentimentengine.service.SentimentEvaluationEngine;
+import mk.ukim.finki.sentimentengine.service.SentimentEvaluationService;
 import mk.ukim.finki.sentimentengine.util.DtoTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class RulesController {
 	private final SentimentRuleService sentimentRuleService;
 	private final ProcessedEventService processedEventService;
 	private final RawEventService rawEventService;
-	private final SentimentEvaluationEngine evaluationEngine;
+	private final SentimentEvaluationService evaluationEngine;
 	private final EventTypeService eventTypeService;
 	private final RuleGenerationService ruleGenerationService;
 	private final ObjectMapper objectMapper;

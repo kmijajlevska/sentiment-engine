@@ -12,20 +12,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
 /**
- * Unit tests for {@link SentimentEvaluationEngine}.
+ * Unit tests for {@link SentimentEvaluationService}.
  *
  * <p>Maps to user scenario 4.2 (Rule Management) / 4.3 (Analytics): once a rule exists for an
  * event type, each event is scored by adjusting the rule's base impact according to the keywords
  * present in the event payload. When no usable rule exists the event cannot be scored and must be
  * flagged for later (PENDING) evaluation.
  */
-class SentimentEvaluationEngineTest {
+class SentimentEvaluationServiceTest {
 
-	private SentimentEvaluationEngine engine;
+	private SentimentEvaluationService engine;
 
 	@BeforeEach
 	void setUp() {
-		engine = new SentimentEvaluationEngine(new ObjectMapper());
+		engine = new SentimentEvaluationService(new ObjectMapper());
 	}
 
 	private RawEvent event(String payload) {

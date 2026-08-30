@@ -11,7 +11,7 @@ import mk.ukim.finki.sentimentengine.data.service.ProcessedEventService;
 import mk.ukim.finki.sentimentengine.data.service.RawEventService;
 import mk.ukim.finki.sentimentengine.data.service.SentimentRuleService;
 import mk.ukim.finki.sentimentengine.service.RuleGenerationService;
-import mk.ukim.finki.sentimentengine.service.SentimentEvaluationEngine;
+import mk.ukim.finki.sentimentengine.service.SentimentEvaluationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ class RulesControllerTest {
 	@MockitoBean
 	private RawEventService rawEventService;
 	@MockitoBean
-	private SentimentEvaluationEngine evaluationEngine;
+	private SentimentEvaluationService evaluationEngine;
 	@MockitoBean
 	private EventTypeService eventTypeService;
 	@MockitoBean

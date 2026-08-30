@@ -22,9 +22,9 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
-public class SentimentEvaluationEngine {
+public class SentimentEvaluationService {
 
-	private static final Logger logger = LoggerFactory.getLogger(SentimentEvaluationEngine.class);
+	private static final Logger logger = LoggerFactory.getLogger(SentimentEvaluationService.class);
 	private final ObjectMapper objectMapper;
 
 

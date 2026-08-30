@@ -6,7 +6,7 @@ import mk.ukim.finki.sentimentengine.data.service.ProcessedEventService;
 import mk.ukim.finki.sentimentengine.data.service.RawEventService;
 import mk.ukim.finki.sentimentengine.data.service.SentimentRuleService;
 import mk.ukim.finki.sentimentengine.service.EventTypeRegistry;
-import mk.ukim.finki.sentimentengine.service.SentimentEvaluationEngine;
+import mk.ukim.finki.sentimentengine.service.SentimentEvaluationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,13 +31,13 @@ public class ReEvaluationJob {
 	private final ProcessedEventService processedEventService;
 	private final RawEventService rawEventService;
 	private final SentimentRuleService sentimentRuleService;
-	private final SentimentEvaluationEngine evaluationEngine;
+	private final SentimentEvaluationService evaluationEngine;
 	private final EventTypeRegistry eventTypeRegistry;
 
 	public ReEvaluationJob(ProcessedEventService processedEventService,
 	                       RawEventService rawEventService,
 	                       SentimentRuleService sentimentRuleService,
-	                       SentimentEvaluationEngine evaluationEngine,
+	                       SentimentEvaluationService evaluationEngine,
 	                       EventTypeRegistry eventTypeRegistry) {
 		this.processedEventService = processedEventService;
 		this.rawEventService = rawEventService;

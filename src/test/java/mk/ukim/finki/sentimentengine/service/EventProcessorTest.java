@@ -45,7 +45,7 @@ class EventProcessorTest {
 	@Mock
 	private SentimentRuleService sentimentRuleService;
 	@Mock
-	private SentimentEvaluationEngine evaluationEngine;
+	private SentimentEvaluationService evaluationEngine;
 	@Mock
 	private ProcessedEventService processedEventService;
 	@Mock
