@@ -48,7 +48,7 @@ class RulesControllerTest {
 	@MockitoBean
 	private RawEventService rawEventService;
 	@MockitoBean
-	private SentimentEvaluationService evaluationEngine;
+	private SentimentEvaluationService sentimentEvaluationService;
 	@MockitoBean
 	private EventTypeService eventTypeService;
 	@MockitoBean
@@ -249,7 +249,7 @@ class RulesControllerTest {
 		RawEvent raw = RawEvent.builder().eventType("PushEvent").timestamp(1L).payload("{}").build();
 		raw.setId(50L);
 		when(rawEventService.findById(50L)).thenReturn(raw);
-		when(evaluationEngine.evaluate(any(RawEvent.class), eq(rule)))
+		when(sentimentEvaluationService.evaluate(any(RawEvent.class), eq(rule)))
 			.thenReturn(new SentimentResult(0.4, 1L, 0.5));
 
 		mockMvc.perform(post("/rules/reevaluate/PushEvent"))

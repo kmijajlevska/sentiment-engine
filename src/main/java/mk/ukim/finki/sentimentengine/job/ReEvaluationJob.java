@@ -31,18 +31,18 @@ public class ReEvaluationJob {
 	private final ProcessedEventService processedEventService;
 	private final RawEventService rawEventService;
 	private final SentimentRuleService sentimentRuleService;
-	private final SentimentEvaluationService evaluationEngine;
+	private final SentimentEvaluationService sentimentEvaluationService;
 	private final EventTypeRegistry eventTypeRegistry;
 
 	public ReEvaluationJob(ProcessedEventService processedEventService,
 	                       RawEventService rawEventService,
 	                       SentimentRuleService sentimentRuleService,
-	                       SentimentEvaluationService evaluationEngine,
+	                       SentimentEvaluationService sentimentEvaluationService,
 	                       EventTypeRegistry eventTypeRegistry) {
 		this.processedEventService = processedEventService;
 		this.rawEventService = rawEventService;
 		this.sentimentRuleService = sentimentRuleService;
-		this.evaluationEngine = evaluationEngine;
+		this.sentimentEvaluationService = sentimentEvaluationService;
 		this.eventTypeRegistry = eventTypeRegistry;
 	}
 
@@ -79,7 +79,7 @@ public class ReEvaluationJob {
 						continue;
 					}
 
-					SentimentResult result = evaluationEngine.evaluate(rawEvent, rule);
+					SentimentResult result = sentimentEvaluationService.evaluate(rawEvent, rule);
 					if (result != null) {
 						pendingEvent.setSentimentScore(BigDecimal.valueOf(result.score()));
 						pendingEvent.setConfidence(BigDecimal.valueOf(result.confidence()));

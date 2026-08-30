@@ -21,11 +21,11 @@ import static org.assertj.core.api.Assertions.within;
  */
 class SentimentEvaluationServiceTest {
 
-	private SentimentEvaluationService engine;
+	private SentimentEvaluationService sentimentEvaluationService;
 
 	@BeforeEach
 	void setUp() {
-		engine = new SentimentEvaluationService(new ObjectMapper());
+		sentimentEvaluationService = new SentimentEvaluationService(new ObjectMapper());
 	}
 
 	private RawEvent event(String payload) {
@@ -52,7 +52,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Returns null when no rule is available so the event stays PENDING")
 	void returnsNullWhenNoRule() {
-		SentimentResult result = engine.evaluate(event("{\"msg\":\"anything\"}"), null);
+		SentimentResult result = sentimentEvaluationService.evaluate(event("{\"msg\":\"anything\"}"), null);
 
 		assertThat(result).isNull();
 	}
@@ -60,7 +60,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Uses the plain base score when the rule has no keywords")
 	void usesBaseScoreWhenNoKeywords() {
-		SentimentResult result = engine.evaluate(
+		SentimentResult result = sentimentEvaluationService.evaluate(
 			event("{\"msg\":\"neutral text\"}"),
 			rule(0.3, "{\"keywords\":[]}"));
 
@@ -73,7 +73,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Positive keyword hits raise the score by 0.1 each")
 	void positiveKeywordsIncreaseScore() {
-		SentimentResult result = engine.evaluate(
+		SentimentResult result = sentimentEvaluationService.evaluate(
 			event("{\"action\":\"merged and fixed\"}"),
 			rule(0.2, "{\"keywords\":[\"+merged\",\"+fixed\"]}"));
 
@@ -86,7 +86,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Negative keyword hits lower the score by 0.1 each")
 	void negativeKeywordsDecreaseScore() {
-		SentimentResult result = engine.evaluate(
+		SentimentResult result = sentimentEvaluationService.evaluate(
 			event("{\"action\":\"build failed with error\"}"),
 			rule(0.0, "{\"keywords\":[\"-failed\",\"-error\"]}"));
 
@@ -97,7 +97,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Keyword matching is case-insensitive")
 	void keywordMatchingIsCaseInsensitive() {
-		SentimentResult result = engine.evaluate(
+		SentimentResult result = sentimentEvaluationService.evaluate(
 			event("{\"action\":\"MERGED\"}"),
 			rule(0.0, "{\"keywords\":[\"+merged\"]}"));
 
@@ -107,7 +107,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Score is clamped to the [-1.0, 1.0] range")
 	void scoreIsClampedToUpperBound() {
-		SentimentResult result = engine.evaluate(
+		SentimentResult result = sentimentEvaluationService.evaluate(
 			event("{\"action\":\"good great nice ok fine super\"}"),
 			rule(0.9, "{\"keywords\":[\"+good\",\"+great\",\"+nice\",\"+ok\",\"+fine\",\"+super\"]}"));
 
@@ -118,7 +118,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Score is clamped to the lower bound of -1.0")
 	void scoreIsClampedToLowerBound() {
-		SentimentResult result = engine.evaluate(
+		SentimentResult result = sentimentEvaluationService.evaluate(
 			event("{\"action\":\"bad worse terrible awful nasty horrible\"}"),
 			rule(-0.9, "{\"keywords\":[\"-bad\",\"-worse\",\"-terrible\",\"-awful\",\"-nasty\",\"-horrible\"]}"));
 
@@ -129,7 +129,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Falls back to the base score when the rule definition is null")
 	void fallsBackToBaseScoreWhenDefinitionNull() {
-		SentimentResult result = engine.evaluate(event("{\"msg\":\"x\"}"), rule(0.5, null));
+		SentimentResult result = sentimentEvaluationService.evaluate(event("{\"msg\":\"x\"}"), rule(0.5, null));
 
 		assertThat(result.score()).isCloseTo(0.5, within(1e-9));
 		assertThat(result.confidence()).isEqualTo(0.0);
@@ -138,7 +138,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Falls back to the base score when the rule definition is not valid JSON")
 	void fallsBackToBaseScoreWhenDefinitionMalformed() {
-		SentimentResult result = engine.evaluate(event("{\"msg\":\"x\"}"), rule(-0.4, "not-json"));
+		SentimentResult result = sentimentEvaluationService.evaluate(event("{\"msg\":\"x\"}"), rule(-0.4, "not-json"));
 
 		assertThat(result.score()).isCloseTo(-0.4, within(1e-9));
 	}
@@ -146,7 +146,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Falls back to the base score when the event payload is empty")
 	void fallsBackToBaseScoreWhenPayloadBlank() {
-		SentimentResult result = engine.evaluate(event("  "), rule(0.25, "{\"keywords\":[\"+merged\"]}"));
+		SentimentResult result = sentimentEvaluationService.evaluate(event("  "), rule(0.25, "{\"keywords\":[\"+merged\"]}"));
 
 		assertThat(result.score()).isCloseTo(0.25, within(1e-9));
 	}
@@ -154,7 +154,7 @@ class SentimentEvaluationServiceTest {
 	@Test
 	@DisplayName("Only matched keywords count toward confidence")
 	void confidenceReflectsFractionOfMatchedKeywords() {
-		SentimentResult result = engine.evaluate(
+		SentimentResult result = sentimentEvaluationService.evaluate(
 			event("{\"action\":\"merged\"}"),
 			rule(0.0, "{\"keywords\":[\"+merged\",\"-failed\",\"-error\",\"+released\"]}"));
 

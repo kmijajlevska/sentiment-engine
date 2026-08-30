@@ -39,7 +39,7 @@ public class RulesController {
 	private final SentimentRuleService sentimentRuleService;
 	private final ProcessedEventService processedEventService;
 	private final RawEventService rawEventService;
-	private final SentimentEvaluationService evaluationEngine;
+	private final SentimentEvaluationService sentimentEvaluationService;
 	private final EventTypeService eventTypeService;
 	private final RuleGenerationService ruleGenerationService;
 	private final ObjectMapper objectMapper;
@@ -252,7 +252,7 @@ public class RulesController {
 					continue;
 				}
 
-				SentimentResult result = evaluationEngine.evaluate(rawEvent, rule);
+				SentimentResult result = sentimentEvaluationService.evaluate(rawEvent, rule);
 				if (result != null) {
 					pendingEvent.setSentimentScore(java.math.BigDecimal.valueOf(result.score()));
 					pendingEvent.setConfidence(java.math.BigDecimal.valueOf(result.confidence()));

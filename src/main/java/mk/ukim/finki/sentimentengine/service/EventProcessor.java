@@ -29,7 +29,7 @@ public class EventProcessor {
 	private final RawEventService rawEventService;
 	private final EventTypeRegistry eventTypeRegistry;
 	private final SentimentRuleService sentimentRuleService;
-	private final SentimentEvaluationService evaluationEngine;
+	private final SentimentEvaluationService sentimentEvaluationService;
 	private final ProcessedEventService processedEventService;
 	private final RuleGenerationService ruleGenerationService;
 	private final AbsenceDetectionService absenceDetectionService;
@@ -73,7 +73,7 @@ public class EventProcessor {
 				sentimentRule = ruleGenerationService.generateRule(rawEventEntity.getEventType(), rawEventEntity.getPayload());
 			}
 
-			SentimentResult result = evaluationEngine.evaluate(rawEventEntity, sentimentRule);
+			SentimentResult result = sentimentEvaluationService.evaluate(rawEventEntity, sentimentRule);
 
 			// -----
 			// Compute time buckets and assign them to processed event

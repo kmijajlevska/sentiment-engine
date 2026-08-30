@@ -45,7 +45,7 @@ class EventProcessorTest {
 	@Mock
 	private SentimentRuleService sentimentRuleService;
 	@Mock
-	private SentimentEvaluationService evaluationEngine;
+	private SentimentEvaluationService sentimentEvaluationService;
 	@Mock
 	private ProcessedEventService processedEventService;
 	@Mock
@@ -58,7 +58,7 @@ class EventProcessorTest {
 	@BeforeEach
 	void setUp() {
 		processor = new EventProcessor(rawEventService, eventTypeRegistry, sentimentRuleService,
-			evaluationEngine, processedEventService, ruleGenerationService, absenceDetectionService);
+			sentimentEvaluationService, processedEventService, ruleGenerationService, absenceDetectionService);
 		ReflectionTestUtils.setField(processor, "autoRuleGenEnabled", true);
 	}
 
@@ -91,7 +91,7 @@ class EventProcessorTest {
 		SentimentRule rule = SentimentRule.builder().eventType("PushEvent").version(1).build();
 		rule.setId(7L);
 		when(sentimentRuleService.findTopByEventTypeOrderByVersionDesc("PushEvent")).thenReturn(rule);
-		when(evaluationEngine.evaluate(any(RawEvent.class), eq(rule)))
+		when(sentimentEvaluationService.evaluate(any(RawEvent.class), eq(rule)))
 			.thenReturn(new SentimentResult(0.5, 7L, 0.8));
 
 		processor.onEvent(dto);
@@ -116,7 +116,7 @@ class EventProcessorTest {
 		SentimentRule generated = SentimentRule.builder().eventType("BrandNewEvent").version(1).build();
 		generated.setId(11L);
 		when(ruleGenerationService.generateRule(eq("BrandNewEvent"), anyString())).thenReturn(generated);
-		when(evaluationEngine.evaluate(any(RawEvent.class), eq(generated)))
+		when(sentimentEvaluationService.evaluate(any(RawEvent.class), eq(generated)))
 			.thenReturn(new SentimentResult(0.1, 11L, 0.0));
 
 		processor.onEvent(dto);
@@ -134,7 +134,7 @@ class EventProcessorTest {
 		when(rawEventService.save(any(RawEvent.class))).thenReturn(savedRawEvent("PushEvent"));
 		when(sentimentRuleService.findTopByEventTypeOrderByVersionDesc("PushEvent")).thenReturn(null);
 		when(ruleGenerationService.generateRule(eq("PushEvent"), anyString())).thenReturn(null);
-		when(evaluationEngine.evaluate(any(RawEvent.class), isNull())).thenReturn(null);
+		when(sentimentEvaluationService.evaluate(any(RawEvent.class), isNull())).thenReturn(null);
 
 		processor.onEvent(dto);
 
