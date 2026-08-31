@@ -1,4 +1,16 @@
 services:
+  artemis:
+    image: apache/activemq-artemis:latest
+    container_name: artemis
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    environment:
+      - ARTEMIS_USER=admin
+      - ARTEMIS_PASSWORD=admin
+    volumes:
+      - artemis-data:/var/lib/artemis-instance
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -24,3 +36,4 @@ services:
 
 volumes:
   grafana-data:
+  artemis-data:
