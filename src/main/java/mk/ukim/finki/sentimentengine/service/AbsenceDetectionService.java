@@ -35,6 +35,8 @@ public class AbsenceDetectionService {
 	private final ObjectMapper objectMapper;
 
 	private final Set<String> perTypeAbsenceFired = ConcurrentHashMap.newKeySet();
+	// De-dup keys for gaps already reported by the scheduled per-type job: "<type>@<gapStartTs>".
+	private final Set<String> reportedGapKeys = ConcurrentHashMap.newKeySet();
 	private final AtomicLong lastTimestampReceived = new AtomicLong(0);
 	private volatile boolean globalAbsenceFired = false;
 	@Value("${absence.check.on.arrival.enabled:true}")
@@ -53,7 +55,8 @@ public class AbsenceDetectionService {
 	public void init() {
 		Long lastTimestamp = rawEventService.findLastTimestamp();
 		lastTimestampReceived.set(lastTimestamp != null ? lastTimestamp : 0L);
-		log.info("AbsenceDetectionService initialized: lastTimestampReceived={}", lastTimestampReceived.get());
+		log.info("AbsenceDetectionService initialized: lastTimestampReceived={}, globalAbsenceThreshold={}," +
+			" perTypeAbsenceThreshold={}", lastTimestampReceived.get(), absenceGlobalThresholdMs, absencePerTypeThresholdMs);
 	}
 
 
@@ -93,38 +96,67 @@ public class AbsenceDetectionService {
 		}
 	}
 
+	/**
+	 * Scheduled per-type absence detection.
+	 * <p>For each known (non-absence) event type this scans the type's event timestamps in ascending
+	 * order (sorted in the DB, so it is independent of the order in which events were imported) and
+	 * fires one absence event for every internal gap between consecutive events that exceeds the
+	 * per-type threshold. This is what catches gaps for out-of-order / bulk-imported data, which the
+	 * on-arrival path cannot (there, an out-of-order older event yields a negative gap and is ignored).
+	 * <p>In addition to internal gaps, a trailing gap between the type's last event and "now" is
+	 * checked. "now" is governed by the clock mode ({@code EVENT_TIME} = data frontier,
+	 * {@code REAL_TIME} = wall clock) via {@link #resolveNow(long)}.
+	 * <p>Each reported gap is de-duplicated by (type, gap-start timestamp) so repeated job runs do
+	 * not re-emit the same gap.
+	 */
 	public void checkPerTypeAbsence(long currentTime) {
 		long now = resolveNow(currentTime);
 		List<EventType> allTypes = eventTypeRegistry.getAllEventTypes();
 
 		// skip absence event types — they are outputs, not inputs for detection
 		for (EventType type : allTypes) {
-			if (type.getName().contains(ABSENCE_EVENT_TYPE))
+			String typeName = type.getName();
+			if (typeName.contains(ABSENCE_EVENT_TYPE))
 				continue;
-			long lastSeenAt = type.getLastSeenAt();
-			if (lastSeenAt == 0) {
+
+			List<Long> timestamps = rawEventService.findTimestampsByEventTypeOrdered(typeName);
+			if (timestamps.isEmpty()) {
 				continue;
 			}
 
-			long gap = now - lastSeenAt;
-			if (gap > absencePerTypeThresholdMs) {
-				String typeName = type.getName();
-
-				if (!perTypeAbsenceFired.contains(typeName)) {
-					String messageType = TYPE_ABSENCE_EVENT_TYPE + "." + typeName;
-					EventDTO absenceEventDto = this.createAbsenceEventDto(messageType, lastSeenAt, gap, now, false);
-					bufferProducer.sendToBuffer(absenceEventDto);
-					perTypeAbsenceFired.add(typeName);
-
-					log.info("[ABSENCE-DETECTION][TYPE] Detected absence for event type:{}, lastSeenAt={}, gapDurationMs={}",
-						typeName, lastSeenAt, gap);
+			// Internal gaps between consecutive events (order-independent thanks to DB sort).
+			for (int i = 1; i < timestamps.size(); i++) {
+				long prev = timestamps.get(i - 1);
+				long next = timestamps.get(i);
+				long gap = next - prev;
+				if (gap > absencePerTypeThresholdMs) {
+					firePerTypeAbsenceGap(typeName, prev, gap, prev + absencePerTypeThresholdMs);
 				}
-			} else {
-				perTypeAbsenceFired.remove(type.getName());
-				log.info("[ABSENCE-DETECTION][TYPE] No absence detected for event type: {}", type.getName());
+			}
 
+			// Trailing gap: type may have gone quiet after its last event (governed by clock mode).
+			long lastSeen = timestamps.get(timestamps.size() - 1);
+			long trailingGap = now - lastSeen;
+			if (trailingGap > absencePerTypeThresholdMs) {
+				firePerTypeAbsenceGap(typeName, lastSeen, trailingGap, now);
 			}
 		}
+	}
+
+	/**
+	 * Emits a per-type absence event for a detected gap, de-duplicated by (type, gap-start) so the
+	 * same gap is not re-reported on subsequent job runs.
+	 */
+	private void firePerTypeAbsenceGap(String typeName, long gapStart, long gap, long eventTimestamp) {
+		String gapKey = typeName + "@" + gapStart;
+		if (!reportedGapKeys.add(gapKey)) {
+			return; // already reported this gap
+		}
+		String messageType = TYPE_ABSENCE_EVENT_TYPE + "." + typeName;
+		EventDTO absenceEventDto = this.createAbsenceEventDto(messageType, gapStart, gap, eventTimestamp, false);
+		bufferProducer.sendToBuffer(absenceEventDto);
+		log.info("[ABSENCE-DETECTION][TYPE] Detected absence for event type:{}, gapStart={}, gapDurationMs={}",
+			typeName, gapStart, gap);
 	}
 
 

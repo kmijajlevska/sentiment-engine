@@ -96,14 +96,14 @@ class AbsenceDetectionServiceTest {
 	}
 
 	@Test
-	@DisplayName("checkPerTypeAbsence fires per-type absence for a stale type")
+	@DisplayName("checkPerTypeAbsence fires a trailing per-type absence when a type went quiet before now (REAL_TIME)")
 	void perTypeAbsenceFiresForStaleType() {
 		long now = 10000000L;
-		EventType staleType = EventType.builder()
-		                               .name("PushEvent")
-		                               .lastSeenAt(now - PER_TYPE_THRESHOLD_MS - 1)
-		                               .build();
+		long lastSeen = now - PER_TYPE_THRESHOLD_MS - 1;
+		EventType staleType = EventType.builder().name("PushEvent").lastSeenAt(lastSeen).build();
 		when(eventTypeRegistry.getAllEventTypes()).thenReturn(List.of(staleType));
+		// Single event for this type -> no internal gap, only a trailing gap vs now.
+		when(rawEventService.findTimestampsByEventTypeOrdered("PushEvent")).thenReturn(List.of(lastSeen));
 
 		service.checkPerTypeAbsence(now);
 
@@ -111,6 +111,42 @@ class AbsenceDetectionServiceTest {
 		verify(bufferProducer).sendToBuffer(captor.capture());
 		assertThat(captor.getValue().getEventType())
 			.isEqualTo(AbsenceDetectionService.TYPE_ABSENCE_EVENT_TYPE + ".PushEvent");
+	}
+
+	@Test
+	@DisplayName("checkPerTypeAbsence detects internal gaps regardless of import order")
+	void perTypeAbsenceDetectsInternalGapsOutOfOrder() {
+		// Two events far apart in time. The DB query returns them sorted, so the gap is found even
+		// though they may have been imported out of order.
+		long t1 = 1_000_000L;
+		long t2 = t1 + PER_TYPE_THRESHOLD_MS + 1;
+		EventType type = EventType.builder().name("PushEvent").lastSeenAt(t2).build();
+		when(eventTypeRegistry.getAllEventTypes()).thenReturn(List.of(type));
+		when(rawEventService.findTimestampsByEventTypeOrdered("PushEvent")).thenReturn(List.of(t1, t2));
+
+		// now == frontier == t2 so there is no trailing gap; only the internal t1->t2 gap fires.
+		service.checkPerTypeAbsence(t2);
+
+		ArgumentCaptor<EventDTO> captor = ArgumentCaptor.forClass(EventDTO.class);
+		verify(bufferProducer, times(1)).sendToBuffer(captor.capture());
+		assertThat(captor.getValue().getEventType())
+			.isEqualTo(AbsenceDetectionService.TYPE_ABSENCE_EVENT_TYPE + ".PushEvent");
+	}
+
+	@Test
+	@DisplayName("checkPerTypeAbsence does not re-report the same gap on repeated runs")
+	void perTypeAbsenceDedupsRepeatedGaps() {
+		long t1 = 1_000_000L;
+		long t2 = t1 + PER_TYPE_THRESHOLD_MS + 1;
+		EventType type = EventType.builder().name("PushEvent").lastSeenAt(t2).build();
+		when(eventTypeRegistry.getAllEventTypes()).thenReturn(List.of(type));
+		when(rawEventService.findTimestampsByEventTypeOrdered("PushEvent")).thenReturn(List.of(t1, t2));
+
+		service.checkPerTypeAbsence(t2);
+		service.checkPerTypeAbsence(t2);
+
+		// Same internal gap -> emitted only once across two job runs.
+		verify(bufferProducer, times(1)).sendToBuffer(any(EventDTO.class));
 	}
 
 	@Test
@@ -195,13 +231,12 @@ class AbsenceDetectionServiceTest {
 		service.updateLastReceivedTimestamp(frontier);
 
 		// This type went quiet well before the frontier -> genuine per-type absence within the dump.
-		EventType staleType = EventType.builder()
-		                               .name("PushEvent")
-		                               .lastSeenAt(frontier - PER_TYPE_THRESHOLD_MS - 1)
-		                               .build();
+		long lastSeen = frontier - PER_TYPE_THRESHOLD_MS - 1;
+		EventType staleType = EventType.builder().name("PushEvent").lastSeenAt(lastSeen).build();
 		when(eventTypeRegistry.getAllEventTypes()).thenReturn(List.of(staleType));
+		when(rawEventService.findTimestampsByEventTypeOrdered("PushEvent")).thenReturn(List.of(lastSeen));
 
-		//Real-time "now" (far future) is ignored in EVENT_TIME mode.
+		// Real-time "now" (far future) is ignored in EVENT_TIME mode; trailing gap is vs frontier.
 		service.checkPerTypeAbsence(System.currentTimeMillis());
 
 		ArgumentCaptor<EventDTO> captor = ArgumentCaptor.forClass(EventDTO.class);

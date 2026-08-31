@@ -24,4 +24,8 @@ public class RawEventService extends GenericEntityService<RawEvent, RawEventRepo
 	public Long findLastTimestamp() {
 		return getRepository().findLatestTimestamp().orElse(null);
 	}
+
+	public java.util.List<Long> findTimestampsByEventTypeOrdered(String eventType) {
+		return getRepository().findTimestampsByEventTypeOrderByTimestampAsc(eventType);
+	}
 }
