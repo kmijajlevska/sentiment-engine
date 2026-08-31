@@ -77,17 +77,37 @@ public interface ProcessedEventRepository extends GenericRepository<ProcessedEve
 	                                @Param("from") Date from,
 	                                @Param("to") Date to);
 
-	// ─── Detail view queries ────────────────────────────────────────────────────
+	// ─── Detail view queries (null eventType = all types, matching aggregation) ──
 
-	List<ProcessedEvent> findByEventTypeAndMinuteBucketAndEvaluationStatus(String eventType, long minuteBucket, EvaluationStatus evaluationStatus);
+	@Query("SELECT pe FROM ProcessedEvent pe WHERE (:eventType IS NULL OR pe.eventType = :eventType) " +
+		"AND pe.minuteBucket = :bucket AND pe.evaluationStatus = :status")
+	List<ProcessedEvent> findDetailsByMinuteBucket(@Param("eventType") String eventType,
+	                                               @Param("bucket") long bucket,
+	                                               @Param("status") EvaluationStatus status);
 
-	List<ProcessedEvent> findByEventTypeAndHourBucketAndEvaluationStatus(String eventType, long hourBucket, EvaluationStatus evaluationStatus);
+	@Query("SELECT pe FROM ProcessedEvent pe WHERE (:eventType IS NULL OR pe.eventType = :eventType) " +
+		"AND pe.hourBucket = :bucket AND pe.evaluationStatus = :status")
+	List<ProcessedEvent> findDetailsByHourBucket(@Param("eventType") String eventType,
+	                                             @Param("bucket") long bucket,
+	                                             @Param("status") EvaluationStatus status);
 
-	List<ProcessedEvent> findByEventTypeAndDayBucketAndEvaluationStatus(String eventType, Date dayBucket, EvaluationStatus evaluationStatus);
+	@Query("SELECT pe FROM ProcessedEvent pe WHERE (:eventType IS NULL OR pe.eventType = :eventType) " +
+		"AND pe.dayBucket = :bucket AND pe.evaluationStatus = :status")
+	List<ProcessedEvent> findDetailsByDayBucket(@Param("eventType") String eventType,
+	                                            @Param("bucket") Date bucket,
+	                                            @Param("status") EvaluationStatus status);
 
-	List<ProcessedEvent> findByEventTypeAndWeekBucketAndEvaluationStatus(String eventType, Date weekBucket, EvaluationStatus evaluationStatus);
+	@Query("SELECT pe FROM ProcessedEvent pe WHERE (:eventType IS NULL OR pe.eventType = :eventType) " +
+		"AND pe.weekBucket = :bucket AND pe.evaluationStatus = :status")
+	List<ProcessedEvent> findDetailsByWeekBucket(@Param("eventType") String eventType,
+	                                             @Param("bucket") Date bucket,
+	                                             @Param("status") EvaluationStatus status);
 
-	List<ProcessedEvent> findByEventTypeAndMonthBucketAndEvaluationStatus(String eventType, Date monthBucket, EvaluationStatus evaluationStatus);
+	@Query("SELECT pe FROM ProcessedEvent pe WHERE (:eventType IS NULL OR pe.eventType = :eventType) " +
+		"AND pe.monthBucket = :bucket AND pe.evaluationStatus = :status")
+	List<ProcessedEvent> findDetailsByMonthBucket(@Param("eventType") String eventType,
+	                                              @Param("bucket") Date bucket,
+	                                              @Param("status") EvaluationStatus status);
 
 	// ─── Re-evaluation queries ──────────────────────────────────────────────────
 

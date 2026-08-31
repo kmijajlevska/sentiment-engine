@@ -55,9 +55,9 @@ public class AggregationService {
 			case DAY ->
 				processedEventService.findByEventTypeAndDayBucket(eventType, AggregationUtils.toDateTruncatedToDay(bucketStart));
 			case WEEK ->
-				processedEventService.findByEventTypeAndWeekBucket(eventType, AggregationUtils.toDateTruncatedToDay(bucketStart));
+				processedEventService.findByEventTypeAndWeekBucket(eventType, AggregationUtils.toDateTruncatedToWeek(bucketStart));
 			case MONTH ->
-				processedEventService.findByEventTypeAndMonthBucket(eventType, AggregationUtils.toDateTruncatedToDay(bucketStart));
+				processedEventService.findByEventTypeAndMonthBucket(eventType, AggregationUtils.toDateTruncatedToMonth(bucketStart));
 		};
 
 		if (events == null || events.isEmpty()) {

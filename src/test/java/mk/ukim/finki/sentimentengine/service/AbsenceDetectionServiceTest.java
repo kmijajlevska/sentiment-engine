@@ -48,6 +48,7 @@ class AbsenceDetectionServiceTest {
 		ReflectionTestUtils.setField(service, "checkAbsenceOnArrivalEnabled", true);
 		ReflectionTestUtils.setField(service, "absenceGlobalThresholdMs", GLOBAL_THRESHOLD_MS);
 		ReflectionTestUtils.setField(service, "absencePerTypeThresholdMs", PER_TYPE_THRESHOLD_MS);
+		ReflectionTestUtils.setField(service, "absenceClockMode", "REAL_TIME");
 	}
 
 	@Test
@@ -169,5 +170,69 @@ class AbsenceDetectionServiceTest {
 		service.checkForAbsenceOnArrival(10000000L, "PushEvent");
 
 		verifyNoInteractions(bufferProducer);
+	}
+
+	@Test
+	@DisplayName("EVENT_TIME mode: scheduled global check ignores real-time and uses the data frontier (no false global absence for a completed dump)")
+	void eventTimeModeGlobalUsesDataFrontier() {
+		ReflectionTestUtils.setField(service, "absenceClockMode", "EVENT_TIME");
+		// Frontier is the latest ingested (historical) timestamp.
+		long frontier = 1_000_000L;
+		service.updateLastReceivedTimestamp(frontier);
+
+		// Real-time "now" is far in the future, as it would be when replaying an old dump.
+		service.checkGlobalAbsence(frontier + 10L * 365 * 24 * 3600 * 1000);
+
+		// Gap is measured against the frontier (== frontier), so no spurious global absence fires.
+		verifyNoInteractions(bufferProducer);
+	}
+
+	@Test
+	@DisplayName("EVENT_TIME mode: per-type absence fires against the data frontier, not real-time")
+	void eventTimeModePerTypeUsesDataFrontier() {
+		ReflectionTestUtils.setField(service, "absenceClockMode", "EVENT_TIME");
+		long frontier = 10_000_000L;
+		service.updateLastReceivedTimestamp(frontier);
+
+		// This type went quiet well before the frontier -> genuine per-type absence within the dump.
+		EventType staleType = EventType.builder()
+		                               .name("PushEvent")
+		                               .lastSeenAt(frontier - PER_TYPE_THRESHOLD_MS - 1)
+		                               .build();
+		when(eventTypeRegistry.getAllEventTypes()).thenReturn(List.of(staleType));
+
+		//Real-time "now" (far future) is ignored in EVENT_TIME mode.
+		service.checkPerTypeAbsence(System.currentTimeMillis());
+
+		ArgumentCaptor<EventDTO> captor = ArgumentCaptor.forClass(EventDTO.class);
+		verify(bufferProducer).sendToBuffer(captor.capture());
+		assertThat(captor.getValue().getEventType())
+			.isEqualTo(AbsenceDetectionService.TYPE_ABSENCE_EVENT_TYPE + ".PushEvent");
+	}
+
+	@Test
+	@DisplayName("On-arrival re-arms the per-type latch so a later gap for the same type fires again")
+	void onArrivalReArmsPerTypeLatchForRepeatedGaps() {
+		long base = 5_000_000L;
+		service.updateLastReceivedTimestamp(base);
+
+		// First gap for PushEvent -> fires one per-type absence.
+		when(eventTypeRegistry.getLastSeenAt("PushEvent")).thenReturn(base);
+		long firstArrival = base + PER_TYPE_THRESHOLD_MS + 1;
+		service.checkForAbsenceOnArrival(firstArrival, "PushEvent");
+
+		// Type is active again shortly after -> latch re-arms (within threshold).
+		when(eventTypeRegistry.getLastSeenAt("PushEvent")).thenReturn(firstArrival);
+		service.updateLastReceivedTimestamp(firstArrival);
+		service.checkForAbsenceOnArrival(firstArrival + 1000L, "PushEvent");
+
+		// A second genuine gap later -> must fire again (not latched at one).
+		long secondLastSeen = firstArrival + 1000L;
+		when(eventTypeRegistry.getLastSeenAt("PushEvent")).thenReturn(secondLastSeen);
+		service.updateLastReceivedTimestamp(secondLastSeen);
+		service.checkForAbsenceOnArrival(secondLastSeen + PER_TYPE_THRESHOLD_MS + 1, "PushEvent");
+
+		verify(bufferProducer, times(2)).sendToBuffer(
+			argThat(dto -> dto.getEventType().equals(AbsenceDetectionService.TYPE_ABSENCE_EVENT_TYPE + ".PushEvent")));
 	}
 }

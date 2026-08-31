@@ -65,7 +65,7 @@ public class GithubArchiveDataSource implements FileDataSource {
 					}
 
 					EventDTO eventDTO = DtoTransformer.toEventDTO(eventType, timestamp, source, line);
-					bufferProducer.sendToBuffer(eventDTO);
+					sendToBuffer(eventDTO);
 					count++;
 				} catch (Exception e) {
 					logger.error("[DATA-IMPORT][GH-ARCHIVE] An error occurred while processing line {} in {}", lineNumber, filePath, e);
@@ -132,5 +132,10 @@ public class GithubArchiveDataSource implements FileDataSource {
 	@Override
 	public boolean isRunning() {
 		return running;
+	}
+
+	@Override
+	public void sendToBuffer(EventDTO eventDTO) {
+		bufferProducer.sendToBuffer(eventDTO);
 	}
 }

@@ -14,16 +14,16 @@
            ======================================== */
         :root {
             /* Light theme */
-            --color-bg: #f6f7f9;
+            --color-bg: #eef1f6;
             --color-surface: #ffffff;
             --color-surface-raised: #ffffff;
-            --color-border: rgba(0, 0, 0, 0.06);
-            --color-border-subtle: rgba(0, 0, 0, 0.04);
-            --color-text: #1a1d23;
-            --color-text-muted: #7c8497;
+            --color-border: rgba(20, 30, 60, 0.1);
+            --color-border-subtle: rgba(20, 30, 60, 0.06);
+            --color-text: #14181f;
+            --color-text-muted: #667085;
             --color-primary: #5e6ad2;
             --color-primary-hover: #4e5bc2;
-            --color-primary-subtle: rgba(94, 106, 210, 0.07);
+            --color-primary-subtle: rgba(94, 106, 210, 0.09);
             --color-sentiment: #e8590c;
             --color-count: rgba(94, 106, 210, 0.55);
             --color-count-border: rgba(94, 106, 210, 0.9);
@@ -37,8 +37,8 @@
             --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, monospace;
             --radius: 8px;
             --radius-sm: 5px;
-            --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+            --shadow: 0 1px 2px rgba(20, 30, 60, 0.06), 0 2px 6px rgba(20, 30, 60, 0.05);
+            --shadow-lg: 0 4px 12px rgba(20, 30, 60, 0.07), 0 12px 28px rgba(20, 30, 60, 0.09);
             --transition: 150ms ease;
         }
 
@@ -98,11 +98,52 @@
             margin-bottom: 32px;
         }
 
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            background: var(--color-primary-subtle);
+            border: 1px solid var(--color-border);
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .header-logo svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
         .header h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--color-text);
-            letter-spacing: -0.3px;
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: -0.6px;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--color-text) 30%, var(--color-primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-subtitle {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--color-text-muted);
+            letter-spacing: 0.2px;
         }
 
         #theme-toggle {
@@ -169,19 +210,27 @@
         }
 
         #btn-load {
-            padding: 8px 20px;
-            background: var(--color-primary);
+            padding: 8px 22px;
+            background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
             color: white;
             border: none;
             border-radius: var(--radius);
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 6px 16px -6px var(--color-primary);
+            transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
         }
 
         #btn-load:hover {
-            background: var(--color-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 10px 22px -6px var(--color-primary);
+            filter: brightness(1.05);
+        }
+
+        #btn-load:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         /* ========================================
@@ -269,41 +318,100 @@
             border-bottom: none;
         }
 
+        .drilldown-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .drilldown-page-info {
+            font-size: 0.78rem;
+            color: var(--color-text-muted);
+        }
+
+        .drilldown-page-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .drilldown-page-controls button {
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--color-text);
+            transition: background var(--transition), border-color var(--transition);
+        }
+
+        .drilldown-page-controls button:hover:not(:disabled) {
+            background: var(--color-bg);
+            border-color: var(--color-primary);
+        }
+
+        .drilldown-page-controls button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
         /* ========================================
            Tab Navigation
            ======================================== */
         .tab-bar {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             margin-bottom: 28px;
-            padding: 3px;
+            padding: 5px;
             background: var(--color-surface);
             border: 1px solid var(--color-border);
-            border-radius: var(--radius);
+            border-radius: 12px;
             width: fit-content;
+            box-shadow: var(--shadow);
         }
 
         .tab-bar button {
-            padding: 8px 20px;
+            position: relative;
+            padding: 10px 22px;
             background: none;
             border: none;
-            border-radius: var(--radius-sm);
-            font-size: 0.82rem;
-            font-weight: 500;
+            border-radius: 9px;
+            font-size: 0.9rem;
+            font-weight: 600;
             font-family: var(--font-family);
             color: var(--color-text-muted);
             cursor: pointer;
-            transition: color var(--transition), background var(--transition);
+            letter-spacing: 0.01em;
+            transition: color var(--transition), background var(--transition), box-shadow var(--transition), transform var(--transition);
         }
 
         .tab-bar button:hover {
             color: var(--color-text);
+            background: var(--color-primary-subtle);
+        }
+
+        .tab-bar button:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--color-primary-subtle), 0 0 0 3px var(--color-primary);
         }
 
         .tab-bar button.tab-active {
-            color: var(--color-text);
+            color: var(--color-primary);
             background: var(--color-surface-raised);
-            box-shadow: var(--shadow);
+            border-bottom: 2px solid var(--color-primary);
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 10px 22px -8px var(--color-primary);
+            z-index: 1;
+        }
+
+        .tab-bar button.tab-active:hover {
+            color: var(--color-primary);
+            background: var(--color-surface-raised);
+            transform: translateY(-3px) scale(1.04);
         }
 
         /* ========================================
@@ -313,7 +421,7 @@
             display: grid;
             grid-template-columns: 340px 1fr;
             gap: 0;
-            height: calc(100vh - 180px);
+            height: calc(100vh - 100px);
             min-height: 400px;
             max-height: 720px;
             border: 1px solid var(--color-border);
@@ -355,19 +463,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--color-primary);
+            background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
             color: white;
             border: none;
             border-radius: var(--radius-sm);
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 10px -4px var(--color-primary);
+            transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
             line-height: 1;
         }
 
         .btn-icon-create:hover {
-            background: var(--color-primary-hover);
+            transform: translateY(-1px);
+            filter: brightness(1.06);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 7px 16px -4px var(--color-primary);
+        }
+
+        .btn-icon-create:active {
+            transform: translateY(0);
         }
 
         .rules-list-scroll {
@@ -674,7 +789,7 @@
             border: none;
             border-radius: var(--radius-sm);
             font-size: 0.8rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all var(--transition);
             letter-spacing: 0.01em;
@@ -686,12 +801,20 @@
         }
 
         .btn-action.primary {
-            background: var(--color-primary);
+            background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));
             color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 12px -5px var(--color-primary);
         }
 
         .btn-action.primary:hover:not(:disabled) {
-            background: var(--color-primary-hover);
+            transform: translateY(-1px);
+            filter: brightness(1.06);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 8px 18px -5px var(--color-primary);
+        }
+
+        .btn-action.primary:active:not(:disabled) {
+            transform: translateY(0);
+            filter: none;
         }
 
         .btn-action.danger {
@@ -1337,7 +1460,18 @@
      Header
      ======================================== -->
 <div class="header">
-    <h1>Sentiment Engine Dashboard</h1>
+    <div class="header-brand">
+        <span class="header-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 13h3l2.5-6 3.5 12 3-8 2 3h3.5"/>
+            </svg>
+        </span>
+        <div class="header-titles">
+            <h1>Sentiment Engine</h1>
+            <span class="header-subtitle">Real-time event sentiment analytics</span>
+        </div>
+    </div>
     <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
 </div>
 
@@ -1420,6 +1554,13 @@
             </thead>
             <tbody id="drilldown-body"></tbody>
         </table>
+        <div class="drilldown-pagination" id="drilldown-pagination" style="display:none">
+            <span class="drilldown-page-info" id="drilldown-page-info"></span>
+            <div class="drilldown-page-controls">
+                <button type="button" id="btn-drilldown-prev" onclick="changeDrillDownPage(-1)">Prev</button>
+                <button type="button" id="btn-drilldown-next" onclick="changeDrillDownPage(1)">Next</button>
+            </div>
+        </div>
     </div>
 
 </div> <!-- end #tab-analytics -->
@@ -2421,6 +2562,12 @@
     let lastResolution = 'HOUR';
     let lastEventType = '';
 
+    // Drill-down client-side pagination state
+    const DRILLDOWN_PAGE_SIZE = 25;
+    let drillDownEvents = [];
+    let drillDownPage = 0;
+    let drillDownBucketMs = null;
+
     document.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -2452,11 +2599,13 @@
     async function loadEventTypes() {
         try {
             const response = await fetch(`${API_BASE}/event-types`);
-            if (!response.ok) throw new Error('Failed');
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
             allEventTypes = await response.json();
             renderEventTypeOptions();
         } catch (err) {
-            console.warn('Could not load event types:', err.message);
+            console.error('Could not load event types:', err.message);
+            allEventTypes = [];
+            renderEventTypeOptions();
         }
     }
 
@@ -2682,30 +2831,73 @@
     function renderDrillDown(details, bucketStartMs) {
         const container = document.getElementById('drilldown');
         const title = document.getElementById('drilldown-title');
-        const tbody = document.getElementById('drilldown-body');
         title.textContent = `Events in bucket: ${new Date(bucketStartMs).toLocaleString()}`;
+
+        drillDownEvents = (details.events && details.events.length > 0) ? details.events : [];
+        drillDownBucketMs = bucketStartMs;
+        drillDownPage = 0;
+
+        renderDrillDownPage();
+        container.classList.add('visible');
+    }
+
+    function renderDrillDownPage() {
+        const tbody = document.getElementById('drilldown-body');
+        const pagination = document.getElementById('drilldown-pagination');
+        const pageInfo = document.getElementById('drilldown-page-info');
+        const prevBtn = document.getElementById('btn-drilldown-prev');
+        const nextBtn = document.getElementById('btn-drilldown-next');
         tbody.innerHTML = '';
-        if (details.events && details.events.length > 0) {
-            details.events.forEach(ev => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                        <td>${escapeHtml(ev.eventType || '-')}</td>
-                        <td>${ev.eventTimestamp ? new Date(ev.eventTimestamp).toLocaleString() : '-'}</td>
-                        <td>${ev.sentimentScore != null ? ev.sentimentScore.toFixed(3) : '-'}</td>
-                        <td>${ev.confidence != null ? ev.confidence.toFixed(3) : '-'}</td>
-                    `;
-                tbody.appendChild(row);
-            });
-        } else {
+
+        const total = drillDownEvents.length;
+        if (total === 0) {
             const row = document.createElement('tr');
             row.innerHTML = '<td colspan="4" style="text-align:center;color:var(--color-text-muted);">No events in this bucket</td>';
             tbody.appendChild(row);
+            pagination.style.display = 'none';
+            return;
         }
-        container.classList.add('visible');
+
+        const totalPages = Math.ceil(total / DRILLDOWN_PAGE_SIZE);
+        // Clamp current page within bounds
+        drillDownPage = Math.max(0, Math.min(drillDownPage, totalPages - 1));
+        const start = drillDownPage * DRILLDOWN_PAGE_SIZE;
+        const end = Math.min(start + DRILLDOWN_PAGE_SIZE, total);
+
+        for (let i = start; i < end; i++) {
+            const ev = drillDownEvents[i];
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                    <td>${escapeHtml(ev.eventType || '-')}</td>
+                    <td>${ev.eventTimestamp ? new Date(ev.eventTimestamp).toLocaleString() : '-'}</td>
+                    <td>${ev.sentimentScore != null ? ev.sentimentScore.toFixed(3) : '-'}</td>
+                    <td>${ev.confidence != null ? ev.confidence.toFixed(3) : '-'}</td>
+                `;
+            tbody.appendChild(row);
+        }
+
+        // Only show pagination controls when there's more than one page
+        if (totalPages > 1) {
+            pageInfo.textContent = `Showing ${start + 1}–${end} of ${total} events · Page ${drillDownPage + 1} of ${totalPages}`;
+            prevBtn.disabled = drillDownPage === 0;
+            nextBtn.disabled = drillDownPage >= totalPages - 1;
+            pagination.style.display = 'flex';
+        } else {
+            pageInfo.textContent = `${total} event${total === 1 ? '' : 's'}`;
+            pagination.style.display = 'none';
+        }
+    }
+
+    function changeDrillDownPage(delta) {
+        drillDownPage += delta;
+        renderDrillDownPage();
     }
 
     function closeDrillDown() {
         document.getElementById('drilldown').classList.remove('visible');
+        drillDownEvents = [];
+        drillDownPage = 0;
+        drillDownBucketMs = null;
     }
 
     function formatTimestamp(epochMs, resolution) {

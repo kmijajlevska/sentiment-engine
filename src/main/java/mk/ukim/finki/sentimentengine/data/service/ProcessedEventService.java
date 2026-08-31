@@ -46,23 +46,23 @@ public class ProcessedEventService extends GenericEntityService<ProcessedEvent, 
 
 
 	public List<ProcessedEvent> findByEventTypeAndMinuteBucket(String eventType, long minuteBucket) {
-		return getRepository().findByEventTypeAndMinuteBucketAndEvaluationStatus(eventType, minuteBucket, EvaluationStatus.COMPLETED);
+		return getRepository().findDetailsByMinuteBucket(eventType, minuteBucket, EvaluationStatus.COMPLETED);
 	}
 
 	public List<ProcessedEvent> findByEventTypeAndHourBucket(String eventType, long hourBucket) {
-		return getRepository().findByEventTypeAndHourBucketAndEvaluationStatus(eventType, hourBucket, EvaluationStatus.COMPLETED);
+		return getRepository().findDetailsByHourBucket(eventType, hourBucket, EvaluationStatus.COMPLETED);
 	}
 
 	public List<ProcessedEvent> findByEventTypeAndDayBucket(String eventType, Date dayBucket) {
-		return getRepository().findByEventTypeAndDayBucketAndEvaluationStatus(eventType, dayBucket, EvaluationStatus.COMPLETED);
+		return getRepository().findDetailsByDayBucket(eventType, dayBucket, EvaluationStatus.COMPLETED);
 	}
 
 	public List<ProcessedEvent> findByEventTypeAndWeekBucket(String eventType, Date weekBucket) {
-		return getRepository().findByEventTypeAndWeekBucketAndEvaluationStatus(eventType, weekBucket, EvaluationStatus.COMPLETED);
+		return getRepository().findDetailsByWeekBucket(eventType, weekBucket, EvaluationStatus.COMPLETED);
 	}
 
 	public List<ProcessedEvent> findByEventTypeAndMonthBucket(String eventType, Date monthBucket) {
-		return getRepository().findByEventTypeAndMonthBucketAndEvaluationStatus(eventType, monthBucket, EvaluationStatus.COMPLETED);
+		return getRepository().findDetailsByMonthBucket(eventType, monthBucket, EvaluationStatus.COMPLETED);
 	}
 
 	public List<ProcessedEvent> findPendingByEventType(String eventType) {

@@ -46,6 +46,9 @@ public class AbsenceDetectionService {
 	@Value("${absence.threshold-ms.per-type:600000}")
 	private int absencePerTypeThresholdMs;
 
+	@Value("${absence.clock-mode:EVENT_TIME}")
+	private String absenceClockMode;
+
 	@PostConstruct
 	public void init() {
 		Long lastTimestamp = rawEventService.findLastTimestamp();
@@ -58,8 +61,16 @@ public class AbsenceDetectionService {
 		lastTimestampReceived.updateAndGet(current -> Math.max(current, timestamp));
 	}
 
+	private long resolveNow(long now) {
+		if ("REAL_TIME".equalsIgnoreCase(absenceClockMode)) {
+			return now;
+		}
+		return lastTimestampReceived.get();
+	}
+
 	@Timed(value = "sentiment.absence.check.duration", description = "Global absence check duration")
-	public void checkGlobalAbsence(long now) {
+	public void checkGlobalAbsence(long currentTime) {
+		long now = resolveNow(currentTime);
 		long lastTimestamp = lastTimestampReceived.get();
 
 		if (lastTimestamp == 0) {
@@ -82,7 +93,8 @@ public class AbsenceDetectionService {
 		}
 	}
 
-	public void checkPerTypeAbsence(long now) {
+	public void checkPerTypeAbsence(long currentTime) {
+		long now = resolveNow(currentTime);
 		List<EventType> allTypes = eventTypeRegistry.getAllEventTypes();
 
 		// skip absence event types — they are outputs, not inputs for detection
@@ -130,32 +142,46 @@ public class AbsenceDetectionService {
 			return; // first event
 		}
 
+		// Only measure forward gaps. Under concurrent import events can arrive out of timestamp
+		// order; an out-of-order (older) event must not be treated as a gap.
 		long gap = eventTimestamp - lastTimestamp;
 
 		// GLOBAL
-		if (gap > absenceGlobalThresholdMs && !globalAbsenceFired) {
-			EventDTO absenceEventDto = this.createAbsenceEventDto(GLOBAL_ABSENCE_EVENT_TYPE, lastTimestamp, gap,
-				lastTimestamp + absenceGlobalThresholdMs, true);
-			bufferProducer.sendToBuffer(absenceEventDto);
-			globalAbsenceFired = true;
+		if (gap > absenceGlobalThresholdMs) {
+			if (!globalAbsenceFired) {
+				EventDTO absenceEventDto = this.createAbsenceEventDto(GLOBAL_ABSENCE_EVENT_TYPE, lastTimestamp, gap,
+					lastTimestamp + absenceGlobalThresholdMs, true);
+				bufferProducer.sendToBuffer(absenceEventDto);
+				globalAbsenceFired = true;
 
-			log.info("[ABSENCE-DETECTION][GLOBAL] Detected global absence on arrival, lastReceivedTimestamp:{}, gapDurationMs:{}", lastTimestamp, gap);
+				log.info("[ABSENCE-DETECTION][GLOBAL] Detected global absence on arrival, lastReceivedTimestamp:{}, gapDurationMs:{}", lastTimestamp, gap);
+			}
+		} else if (gap >= 0) {
+			// Event arrived within the global threshold: the stream is active again, so re-arm the
+			// latch. Without this reset the latch would stay stuck after the first fire and only one
+			// global absence would ever be emitted (the "exactly one per type" symptom).
+			globalAbsenceFired = false;
 		}
 
 		// TYPE
 		long perTypeLastSeen = eventTypeRegistry.getLastSeenAt(eventType);
 		if (perTypeLastSeen > 0) {
 			long perTypeGap = eventTimestamp - perTypeLastSeen;
-			if (perTypeGap > absencePerTypeThresholdMs && !perTypeAbsenceFired.contains(eventType)) {
+			if (perTypeGap > absencePerTypeThresholdMs) {
+				if (!perTypeAbsenceFired.contains(eventType)) {
+					String messageType = TYPE_ABSENCE_EVENT_TYPE + "." + eventType;
+					EventDTO typeAbsenceEventDto = this.createAbsenceEventDto(messageType, perTypeLastSeen, perTypeGap,
+						perTypeLastSeen + absencePerTypeThresholdMs, true);
+					bufferProducer.sendToBuffer(typeAbsenceEventDto);
+					perTypeAbsenceFired.add(eventType);
 
-				String messageType = TYPE_ABSENCE_EVENT_TYPE + "." + eventType;
-				EventDTO typeAbsenceEventDto = this.createAbsenceEventDto(messageType, perTypeLastSeen, perTypeGap,
-					perTypeLastSeen + absencePerTypeThresholdMs, true);
-				bufferProducer.sendToBuffer(typeAbsenceEventDto);
-				perTypeAbsenceFired.add(eventType);
-
-				log.info("[ABSENCE-DETECTION][TYPE] Detected absence on arrival for event type:{}, lastSeenAt={}, gapDurationMs={}",
-					eventType, perTypeLastSeen, gap);
+					log.info("[ABSENCE-DETECTION][TYPE] Detected absence on arrival for event type:{}, lastSeenAt={}, gapDurationMs={}",
+						eventType, perTypeLastSeen, perTypeGap);
+				}
+			} else if (perTypeGap >= 0) {
+				// This type is active again within its threshold: re-arm its latch so a later genuine
+				// gap for the same type can fire again.
+				perTypeAbsenceFired.remove(eventType);
 			}
 		}
 	}

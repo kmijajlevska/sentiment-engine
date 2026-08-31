@@ -86,6 +86,7 @@ public class SentimentEvaluationService {
 				}
 			}
 		}
+		//todo: for absence events, take gapDurationMs into account
 
 		// compute score
 		double score = baseScore + (positiveHits * 0.1) - (negativeHits * 0.1);
