@@ -150,19 +150,59 @@
             letter-spacing: 0.2px;
         }
 
-        #theme-toggle {
-            background: none;
-            border: 1px solid var(--color-border);
-            font-size: 1.1rem;
-            cursor: pointer;
-            padding: 6px 10px;
-            border-radius: var(--radius-sm);
-            transition: background var(--transition), border-color var(--transition);
+        /* #theme-toggle now uses the shared .job-btn styling for a consistent toolbar look. */
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        #theme-toggle:hover {
+        #grafana-link {
+            text-decoration: none;
+        }
+
+        .job-triggers {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-right: 8px;
+            margin-right: 4px;
+            border-right: 1px solid var(--color-border);
+        }
+
+        .job-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            color: var(--color-text-muted);
+            background: none;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background var(--transition), border-color var(--transition), color var(--transition);
+        }
+
+        .job-btn:hover:not(:disabled) {
             background: var(--color-surface-raised);
             border-color: var(--color-border);
+            color: var(--color-primary);
+        }
+
+        .job-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .job-btn.spinning svg {
+            animation: job-spin 0.8s linear infinite;
+        }
+
+        @keyframes job-spin {
+            to { transform: rotate(360deg); }
         }
 
         /* ========================================
@@ -1476,7 +1516,55 @@
             <span class="header-subtitle">Real-time event sentiment analytics</span>
         </div>
     </div>
-    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <div class="header-actions">
+        <div class="job-triggers">
+            <button type="button" class="job-btn" onclick="triggerJob('rule-gen', this)"
+                    title="Run rule generation for event types without rules">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+            <button type="button" class="job-btn" onclick="triggerJob('reevaluate', this)"
+                    title="Re-evaluate pending events">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 2v6h-6"/>
+                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+                    <path d="M3 22v-6h6"/>
+                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                </svg>
+            </button>
+            <button type="button" class="job-btn" onclick="triggerJob('absence', this)"
+                    title="Run absence detection">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 7v5l3 2"/>
+                </svg>
+            </button>
+        </div>
+        <a id="grafana-link" class="job-btn" href="http://localhost:3000/" target="_blank" rel="noopener noreferrer"
+           title="Open Grafana monitoring dashboard">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 3v18h18"/>
+                <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+            </svg>
+        </a>
+        <button id="theme-toggle" class="job-btn" onclick="toggleTheme()" title="Toggle theme">
+            <svg id="theme-icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+            </svg>
+            <svg id="theme-icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+            </svg>
+        </button>
+    </div>
 </div>
 
 <!-- ========================================
@@ -1835,7 +1923,39 @@
         const newTheme = isDark ? 'light' : 'dark';
         html.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+        const isDark = theme === 'dark';
+        // In dark mode show the sun (switch to light); in light mode show the moon (switch to dark).
+        document.getElementById('theme-icon-sun').style.display = isDark ? '' : 'none';
+        document.getElementById('theme-icon-moon').style.display = isDark ? 'none' : '';
+    }
+
+    // ==========================================
+    // Scheduled job triggers (header)
+    // ==========================================
+    const JOB_LABELS = {
+        'rule-gen': 'Rule generation',
+        'reevaluate': 'Re-evaluation',
+        'absence': 'Absence detection'
+    };
+
+    async function triggerJob(jobKey, btn) {
+        const label = JOB_LABELS[jobKey] || jobKey;
+        btn.disabled = true;
+        btn.classList.add('spinning');
+        try {
+            const response = await fetch(`${API_BASE}/jobs/${jobKey}`, {method: 'POST'});
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            showToast(`${label} job started.`, 'success');
+        } catch (err) {
+            showToast(`Failed to start ${label} job: ${err.message}`, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.classList.remove('spinning');
+        }
     }
 
     // ==========================================
@@ -2575,7 +2695,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        updateThemeIcon(savedTheme);
         setDefaultDateRange();
         loadEventTypes();
         document.getElementById('btn-load').addEventListener('click', loadTimeSeries);
