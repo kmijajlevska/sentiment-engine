@@ -65,6 +65,7 @@ public class ProcessedEventService extends GenericEntityService<ProcessedEvent, 
 		return getRepository().findDetailsByMonthBucket(eventType, monthBucket, EvaluationStatus.COMPLETED);
 	}
 
+	//todo add filter eventTimestamp>:date to reevaluate only more recent events
 	public List<ProcessedEvent> findPendingByEventType(String eventType) {
 		return getRepository().findByEvaluationStatusAndEventType(EvaluationStatus.PENDING, eventType);
 	}
